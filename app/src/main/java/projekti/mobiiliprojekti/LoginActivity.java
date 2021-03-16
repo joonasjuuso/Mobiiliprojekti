@@ -17,8 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class LoginActivity extends AppCompatActivity {
-    FirebaseDatabase database;
-    DatabaseReference reference;
+    FirebaseDatabase database = com.google.firebase.database.FirebaseDatabase.getInstance("https://mokkidata-default-rtdb.europe-west1.firebasedatabase.app/");
+    DatabaseReference reference = database.getReference().child("Users");
     Button button;
     EditText edtEmail;
     EditText edtPass;
@@ -30,11 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        FirebaseDatabase database = com.google.firebase.database.FirebaseDatabase.getInstance("https://mokkidata-default-rtdb.europe-west1.firebasedatabase.app/");
-        DatabaseReference reference = database.getReference().child("Users");
         button = (Button) findViewById(R.id.buttonKirjaudu);
-        edtEmail = (EditText) findViewById(R.id.editTextUser);
-        edtPass = (EditText) findViewById(R.id.editTextPass);
+        edtEmail = (EditText) findViewById(R.id.editTextPass);
+        edtPass = (EditText) findViewById(R.id.editTextUser);
         reference.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -94,13 +92,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                maxid++;
-                reference.child(email).child("Id").setValue(maxid);
-                reference.child(email).child("Password").setValue(password);
-            }
+        button.setOnClickListener(view -> {
+            maxid = maxid + 1;
+            reference.child(String.valueOf(maxid)).child("Email").setValue(email);
+            reference.child(String.valueOf(maxid)).child("Password").setValue(password);
         });
     }
 
