@@ -98,8 +98,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 maxid++;
-                reference.child(String.valueOf(maxid)).child("Email").setValue(email);
-                reference.child(String.valueOf(maxid)).child("Password").setValue(password);
+                reference.child(email).child("Id").setValue(maxid);
+                reference.child(email).child("Password").setValue(password);
             }
         });
     }
