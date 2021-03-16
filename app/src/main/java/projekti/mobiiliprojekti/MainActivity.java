@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 }
 
         public void onClick(View view) {
-            DatabaseReference myRef = database.getReference("message");
+            DatabaseReference myRef = database.getReference("Users");
             myRef.setValue(message);
         }
 }
