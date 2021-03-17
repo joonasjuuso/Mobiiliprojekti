@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,10 +23,9 @@ public class LoginActivity extends AppCompatActivity {
     Button button;
     EditText edtEmail;
     EditText edtPass;
-    private String email;
+    private String email ="aaasssssdasd";
     private String password;
     long maxid = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +38,29 @@ public class LoginActivity extends AppCompatActivity {
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                if(dataSnapshot.exists())
                    maxid=(dataSnapshot.getChildrenCount());
+
+               String checkEmail;
+               for(int i = 1; i < maxid; i++) {
+                  // email == dataSnapshot.child("Users").child(String.valueOf(i)).child("Email").getValue()
+                      // Log.e("Printline","Same email");
+                      // Log.e("Print",email);
+                   checkEmail = (String) dataSnapshot.child(String.valueOf(i)).child("Email").getValue();
+
+                   if(checkEmail == email) {
+                       Log.e("Print","Same email");
+                   }
+                   else {
+                       Log.e("Print",checkEmail);
+                       return;
+                   }
+                   
+                   // Tämä toimii jos määrittää i:n tilalle jonkin numeron
+                   // else {
+                   //Log.e("yes", (String) dataSnapshot.child("Users").child(String.valueOf(i)).child("Email").getValue());
+                      // return;
+                    // }
+               }
+
            }
 
             @Override

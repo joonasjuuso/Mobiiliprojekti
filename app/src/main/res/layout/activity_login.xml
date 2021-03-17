@@ -36,7 +36,7 @@
         android:id="@+id/textViewKirjaudu"
         android:layout_width="145dp"
         android:layout_height="25dp"
-        android:text="Kirjaudu sisään"
+        android:text="Rekisteröidy"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
