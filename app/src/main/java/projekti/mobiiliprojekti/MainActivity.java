@@ -2,6 +2,7 @@ package projekti.mobiiliprojekti;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -52,5 +53,9 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             DatabaseReference myRef = database.getReference("Ville");
             myRef.setValue(message);
+
+            Intent intent = new Intent(this, Mokki_List.class);
+
+            startActivity(intent);
         }
 }
