@@ -11,13 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobiiliprojekti">
-<<<<<<< Updated upstream
         <activity android:name=".LoginActivity"
             android:label="Login">
-=======
+        </activity>
+
         <activity android:name=".Mokki_List"></activity>
         <activity android:name=".MainActivity">
->>>>>>> Stashed changes
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        </activity>
+
     </application>
 
 </manifest>
