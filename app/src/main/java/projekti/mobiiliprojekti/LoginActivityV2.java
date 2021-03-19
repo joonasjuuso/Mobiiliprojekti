@@ -29,8 +29,7 @@ public class LoginActivityV2 extends AppCompatActivity {
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build(),
-                new AuthUI.IdpConfig.TwitterBuilder().build());
+                new AuthUI.IdpConfig.FacebookBuilder().build());
 
 // Create and launch sign-in intent
         startActivityForResult(
@@ -50,6 +49,10 @@ public class LoginActivityV2 extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                Intent signIntent = new Intent(this,Mokki_List.class);
+                signIntent.putExtra("user",user);
+                startActivity(signIntent);
+                finish();
                 // ...
             } else {
                 // Sign in failed. If response is null the user canceled the

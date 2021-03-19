@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobiiliprojekti">
-        <activity android:name=".LoginActivityV2">
+        <activity android:name=".LoginActivityV2"
+            android:label="Valitse miten rekisteröidyt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
