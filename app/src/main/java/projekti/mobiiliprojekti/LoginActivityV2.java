@@ -1,12 +1,17 @@
 package projekti.mobiiliprojekti;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -48,6 +53,7 @@ public class LoginActivityV2 extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
+                sendEmailVerificationWithContinueUrl();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Intent signIntent = new Intent(this,Mokki_List.class);
                 signIntent.putExtra("user",user);
@@ -61,5 +67,33 @@ public class LoginActivityV2 extends AppCompatActivity {
                 // ...
             }
         }
+    }
+    public void sendEmailVerificationWithContinueUrl() {
+        // [START send_email_verification_with_continue_url]
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        String url = "http://www.example.com/verify?uid=" + user.getUid();
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl(url)
+                .setAndroidPackageName("projekti.mobiiliprojekti", false, null)
+                .build();
+
+        user.sendEmailVerification(actionCodeSettings)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "Email sent.");
+                        }
+                    }
+                });
+
+        // [END send_email_verification_with_continue_url]
+        // [START localize_verification_email]
+        auth.useAppLanguage();
+        // To apply the default app language instead of explicitly setting it.
+        // auth.useAppLanguage();
+        // [END localize_verification_email]
     }
 }
