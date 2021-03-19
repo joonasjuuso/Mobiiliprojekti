@@ -17,6 +17,11 @@
         </activity>
         <activity android:name=".AloitusLogin"
             android:label="Kirjaudu sisään">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
 
@@ -24,11 +29,6 @@
         <activity android:name=".Mokki_List" />
         <activity android:name=".MainActivity">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         
 

@@ -7,9 +7,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     Button button;
     EditText edtEmail;
     EditText edtPass;
-    private String email ="aaasssssdasd";
+    private String email;
     private String password;
     long maxid = 0;
     @Override
@@ -40,26 +42,30 @@ public class LoginActivity extends AppCompatActivity {
                    maxid=(dataSnapshot.getChildrenCount());
 
                String checkEmail;
-               for(int i = 1; i < maxid; i++) {
+               //for(DataSnapshot data: dataSnapshot.getChildren()) {
+
                   // email == dataSnapshot.child("Users").child(String.valueOf(i)).child("Email").getValue()
                       // Log.e("Printline","Same email");
                       // Log.e("Print",email);
-                   checkEmail = (String) dataSnapshot.child(String.valueOf(i)).child("Email").getValue();
+                   //checkEmail = (String) dataSnapshot.child(String.valueOf(i)).child("Email").getValue();
 
-                   if(checkEmail == email) {
+                   /*if(checkEmail == email) {
                        Log.e("Print","Same email");
-                   }
-                   else {
-                       Log.e("Print",checkEmail);
+                   }*/
+                   //if(dataSnapshot.child(String.valueOf(i)).child("Email").exists()) {
+                       //Log.e("Print","Same email");
+                   //}
+                   /*else {
+                       Log.e("yes", (String) dataSnapshot.child(String.valueOf(3)).child("Email").getValue());
                        return;
-                   }
+                   }*/
                    
                    // Tämä toimii jos määrittää i:n tilalle jonkin numeron
                    // else {
                    //Log.e("yes", (String) dataSnapshot.child("Users").child(String.valueOf(i)).child("Email").getValue());
                       // return;
                     // }
-               }
+               //}
 
            }
 
@@ -69,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         });
-
 
         edtEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -116,10 +121,37 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         button.setOnClickListener(view -> {
-            maxid = maxid + 1;
-            reference.child(String.valueOf(maxid)).child("Email").setValue(email);
-            reference.child(String.valueOf(maxid)).child("Password").setValue(password);
+            writeUser(reference.push().getKey(),email,password);
+            //reference.child(String.valueOf(maxid)).child("Email").setValue(email);
+            //reference.child(String.valueOf(maxid)).child("Password").setValue(password);
         });
+    }
+
+    public void writeUser(String userId, String email, String password) {
+        Users user = new Users(email,password);
+        Query queryToGetData = reference.orderByChild("Email").equalTo(email);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> userChildren = snapshot.getChildren();
+
+                for (DataSnapshot user : userChildren) {
+                    Users u = user.getValue(Users.class);
+
+                    if (u.email.equalsIgnoreCase(email)) {
+                        Log.e("Print", "Email exists");
+                    } else {
+                        reference.child(userId).setValue(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
 
