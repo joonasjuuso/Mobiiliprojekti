@@ -35,7 +35,7 @@ public class MokkiAdapter extends RecyclerView.Adapter<MokkiAdapter.MokkiViewHol
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
             mTextViewOtsikko = itemView.findViewById(R.id.TextViewOtsikko);
-            mTextViewKuvaus = itemView.findViewById(R.id.TextViewKuvaus);
+            //mTextViewKuvaus = itemView.findViewById(R.id.TextViewKuvaus);
             mTextViewHinta = itemView.findViewById(R.id.TextViewHinta);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +73,7 @@ public class MokkiAdapter extends RecyclerView.Adapter<MokkiAdapter.MokkiViewHol
 
         holder.mImageView.setImageResource(currentMokki.getMokkiImage());
         holder.mTextViewOtsikko.setText(currentMokki.getOtsikko());
-        holder.mTextViewKuvaus.setText(currentMokki.getKuvaus());
+        //holder.mTextViewKuvaus.setText(currentMokki.getKuvaus());
         holder.mTextViewHinta.setText(currentMokki.getHinta());
     }
 
