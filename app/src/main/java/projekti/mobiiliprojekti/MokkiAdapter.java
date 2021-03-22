@@ -67,6 +67,8 @@ public class MokkiAdapter extends RecyclerView.Adapter<MokkiAdapter.MokkiViewHol
         return mvh;
     }
 
+    //position = kohde mitä klikataan
+    //tällä haetaan position variaabelilla haetaan kohde ja sitä tarvitaan ainakun listaobjekteja haetaan
     @Override
     public void onBindViewHolder(MokkiViewHolder holder, int position) {
         MokkiItem currentMokki = mMokki_scroll_list.get(position);
