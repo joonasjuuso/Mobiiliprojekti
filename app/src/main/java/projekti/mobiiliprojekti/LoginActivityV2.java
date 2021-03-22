@@ -27,7 +27,6 @@ public class LoginActivityV2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_v2);
         mAuth = FirebaseAuth.getInstance();
 
         List<AuthUI.IdpConfig> providers = Arrays.asList(
