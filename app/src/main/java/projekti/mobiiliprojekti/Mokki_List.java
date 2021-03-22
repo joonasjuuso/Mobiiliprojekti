@@ -26,6 +26,8 @@ public class Mokki_List extends AppCompatActivity {
         buildRecyclerView();
     }
 
+
+    //Manuaalisesti täytettävä
     public void createMokkiItem()
     {
         mMokkiItem = new ArrayList<>();
@@ -69,13 +71,15 @@ public class Mokki_List extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+        //käytetään position atribuuttia jolla mökkejä targetataan.
+        //siirrytään tarkempaan mökki näkymään
         mAdapter.setOnItemClickListener(new MokkiAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Intent intent = new Intent(Mokki_List.this, MokkiNakyma.class);
-                intent.putExtra("Mokki", mMokkiItem.get(position));
+                Intent intentMokkiNakyma = new Intent(Mokki_List.this, MokkiNakyma.class);
+                intentMokkiNakyma.putExtra("Mokki", mMokkiItem.get(position));
 
-                startActivity(intent);
+                startActivity(intentMokkiNakyma);
             }
         });
     }
