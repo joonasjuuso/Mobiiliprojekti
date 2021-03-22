@@ -22,7 +22,7 @@ import java.util.List;
 public class LoginActivityV2 extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
-    private FirebaseAuth mAuth;
+    protected FirebaseAuth mAuth;
     private String mCustomToken;
 
     @Override
@@ -80,12 +80,18 @@ public class LoginActivityV2 extends AppCompatActivity {
 
                             /* Handle Case When Email Not Verified */
                         }
+                        else if(currentUser.isEmailVerified()) {
+                            Intent loginIntent = new Intent(this,Mokki_List.class);
+                            startActivity(loginIntent);
+                            finish();
+                        }
+                        Intent varmistusIntent = new Intent(this,varmistusActivity.class);
+                        startActivity(varmistusIntent);
+                        finish();
                     }
 
                     /* Login Success */
-                    startActivity(new Intent(this, Mokki_List.class));
-                    finish();
-                    return;
+
                 }
                 /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Intent signIntent = new Intent(this,Mokki_List.class);
