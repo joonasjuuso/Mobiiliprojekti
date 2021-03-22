@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -28,6 +29,7 @@ public class LoginActivityV2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+
 
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -52,12 +54,44 @@ public class LoginActivityV2 extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                sendEmailVerificationWithContinueUrl();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final FirebaseUser currentUser = mAuth.getCurrentUser();
+                currentUser.reload();
+                if(null != currentUser) {
+                    if(currentUser.getEmail()!=null) {
+                        if(!currentUser.isEmailVerified()) {
+                            /* Send Verification Email */
+                            currentUser.sendEmailVerification()
+                                    .addOnCompleteListener(this, new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task task) {
+                                            /* Check Success */
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(getApplicationContext(),
+                                                        "Verification Email Sent To: " + currentUser.getEmail(),
+                                                        Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.e("TAG", "sendEmailVerification", task.getException());
+                                                Toast.makeText(getApplicationContext(),
+                                                        "Failed To Send Verification Email!",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                            /* Handle Case When Email Not Verified */
+                        }
+                    }
+
+                    /* Login Success */
+                    startActivity(new Intent(this, Mokki_List.class));
+                    finish();
+                    return;
+                }
+                /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Intent signIntent = new Intent(this,Mokki_List.class);
                 signIntent.putExtra("user",user);
                 startActivity(signIntent);
-                finish();
+                finish();*/
                 // ...
             } else {
                 // Sign in failed. If response is null the user canceled the
