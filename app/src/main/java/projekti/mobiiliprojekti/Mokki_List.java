@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,29 +30,26 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private FirebaseAuth mauth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mauth.getCurrentUser();
+    ImageView profiiliKuva;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki__list);
         drawerLayout = findViewById(R.id.drawer_layout);
+        profiiliKuva = findViewById(R.id.profiiliKuva);
 
         createMokkiItem();
         buildRecyclerView();
+
+        profiiliKuva.setOnClickListener(View -> {
+            Intent profiiliIntent = new Intent(this,ProfiiliActivity.class);
+            startActivity(profiiliIntent);
+            finish();
+        });
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list, menu);
-        return true;
-    }
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.user);
-        item.setTitle(currentUser.getDisplayName());
-        return super.onPrepareOptionsMenu(menu);
-    }
 
 
     //Manuaalisesti täytettävä
