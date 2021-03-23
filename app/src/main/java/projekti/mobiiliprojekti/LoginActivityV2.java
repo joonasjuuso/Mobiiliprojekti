@@ -55,6 +55,7 @@ public class LoginActivityV2 extends AppCompatActivity {
                 // Successfully signed in
                 final FirebaseUser currentUser = mAuth.getCurrentUser();
                 currentUser.reload();
+                Intent varmistusIntent = new Intent(this,varmistusActivity.class);
                 if(null != currentUser) {
                     if(currentUser.getEmail()!=null) {
                         if(!currentUser.isEmailVerified()) {
@@ -68,6 +69,8 @@ public class LoginActivityV2 extends AppCompatActivity {
                                                 Toast.makeText(getApplicationContext(),
                                                         "Verification Email Sent To: " + currentUser.getEmail(),
                                                         Toast.LENGTH_SHORT).show();
+                                                startActivity(varmistusIntent);
+                                                finish();
                                             } else {
                                                 Log.e("TAG", "sendEmailVerification", task.getException());
                                                 Toast.makeText(getApplicationContext(),
@@ -84,9 +87,6 @@ public class LoginActivityV2 extends AppCompatActivity {
                             startActivity(loginIntent);
                             finish();
                         }
-                        Intent varmistusIntent = new Intent(this,varmistusActivity.class);
-                        startActivity(varmistusIntent);
-                        finish();
                     }
 
                     /* Login Success */
