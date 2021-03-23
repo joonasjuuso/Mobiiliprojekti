@@ -9,6 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -22,6 +27,8 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MokkiAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = mauth.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,19 @@ public class Mokki_List extends AppCompatActivity {
 
         createMokkiItem();
         buildRecyclerView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_list, menu);
+        return true;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.user);
+        item.setTitle(currentUser.getDisplayName());
+        return super.onPrepareOptionsMenu(menu);
     }
 
 

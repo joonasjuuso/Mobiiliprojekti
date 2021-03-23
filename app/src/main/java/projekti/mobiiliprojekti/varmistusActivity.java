@@ -13,8 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class varmistusActivity extends AppCompatActivity  {
-    FirebaseAuth mauth = FirebaseAuth.getInstance();
-    FirebaseUser currentUser = mauth.getCurrentUser();
+    private FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = mauth.getCurrentUser();
     Button checkBtn;
     boolean IS_EMAIL_VERIFIED = false;
 

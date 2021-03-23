@@ -23,7 +23,6 @@ public class LoginActivityV2 extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
     protected FirebaseAuth mAuth;
-    private String mCustomToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +32,6 @@ public class LoginActivityV2 extends AppCompatActivity {
 
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
                 new AuthUI.IdpConfig.FacebookBuilder().build());
 
@@ -51,11 +49,11 @@ public class LoginActivityV2 extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 final FirebaseUser currentUser = mAuth.getCurrentUser();
                 currentUser.reload();
+                Intent varmistusIntent = new Intent(this,varmistusActivity.class);
                 if(null != currentUser) {
                     if(currentUser.getEmail()!=null) {
                         if(!currentUser.isEmailVerified()) {
@@ -69,6 +67,8 @@ public class LoginActivityV2 extends AppCompatActivity {
                                                 Toast.makeText(getApplicationContext(),
                                                         "Verification Email Sent To: " + currentUser.getEmail(),
                                                         Toast.LENGTH_SHORT).show();
+                                                startActivity(varmistusIntent);
+                                                finish();
                                             } else {
                                                 Log.e("TAG", "sendEmailVerification", task.getException());
                                                 Toast.makeText(getApplicationContext(),
@@ -85,21 +85,19 @@ public class LoginActivityV2 extends AppCompatActivity {
                             startActivity(loginIntent);
                             finish();
                         }
-                        Intent varmistusIntent = new Intent(this,varmistusActivity.class);
-                        startActivity(varmistusIntent);
-                        finish();
                     }
 
                     /* Login Success */
 
                 }
-                /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Intent signIntent = new Intent(this,Mokki_List.class);
-                signIntent.putExtra("user",user);
-                startActivity(signIntent);
-                finish();*/
-                // ...
-            } else {
+            }
+            else {
+                    if(response == null) {
+                        Log.e("Tag","Aborted");
+                        Intent newIntent = new Intent(this,AloitusLogin.class);
+                        startActivity(newIntent);
+                        finish();
+                    }
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
@@ -107,32 +105,5 @@ public class LoginActivityV2 extends AppCompatActivity {
             }
         }
     }
-    public void sendEmailVerificationWithContinueUrl() {
-        // [START send_email_verification_with_continue_url]
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
 
-        String url = "http://www.example.com/verify?uid=" + user.getUid();
-        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
-                .setUrl(url)
-                .setAndroidPackageName("projekti.mobiiliprojekti", false, null)
-                .build();
-
-        user.sendEmailVerification(actionCodeSettings)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TAG", "Email sent.");
-                        }
-                    }
-                });
-
-        // [END send_email_verification_with_continue_url]
-        // [START localize_verification_email]
-        auth.useAppLanguage();
-        // To apply the default app language instead of explicitly setting it.
-        // auth.useAppLanguage();
-        // [END localize_verification_email]
-    }
 }
