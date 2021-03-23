@@ -6,5 +6,5 @@
     <item
         android:id="@+id/user" app:showAsAction="never" android:title="Tili"/>
     <item
-        android:id="@+id/logout" app:showAsAction="never" android:title="Logout"/>
+        android:id="@+id/logout" app:showAsAction="never" android:title="Kirjaudu ulos"/>
 </menu>
