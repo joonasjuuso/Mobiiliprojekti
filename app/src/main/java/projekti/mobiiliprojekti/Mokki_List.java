@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CalendarView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +22,7 @@ public class Mokki_List extends AppCompatActivity {
 
 
     DrawerLayout drawerLayout;
+    CalendarView calendarView;
 
     private ArrayList<MokkiItem> mMokkiItem;
 
@@ -124,4 +126,6 @@ public class Mokki_List extends AppCompatActivity {
     private static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
+
+
 }
