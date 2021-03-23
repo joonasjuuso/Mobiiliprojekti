@@ -23,7 +23,6 @@ public class LoginActivityV2 extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
     protected FirebaseAuth mAuth;
-    private String mCustomToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +32,6 @@ public class LoginActivityV2 extends AppCompatActivity {
 
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
                 new AuthUI.IdpConfig.FacebookBuilder().build());
 
