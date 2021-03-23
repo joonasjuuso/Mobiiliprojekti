@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobiiliprojekti">
-        <activity android:name=".varmistusActivity"></activity>
+        <activity android:name=".ProfiiliActivity"></activity>
+        <activity android:name=".varmistusActivity" />
         <activity
             android:name=".AloitusLogin"
             android:label="Kirjaudu sisään">
@@ -21,10 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivityV2"></activity>
-        <activity
-            android:name=".LoginActivity"
-            android:label="Login" />
+        <activity android:name=".LoginActivityV2" />
         <activity android:name=".MokkiNakyma" />
         <activity android:name=".Mokki_List" />
         <activity android:name=".MainActivity" />
