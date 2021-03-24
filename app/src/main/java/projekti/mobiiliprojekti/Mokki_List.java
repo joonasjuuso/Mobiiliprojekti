@@ -69,11 +69,19 @@ public class Mokki_List extends AppCompatActivity {
             startActivity(vuokraaIntent);
         });
 
-        profiiliKuva.setOnClickListener(View -> {
-            Intent profiiliIntent = new Intent(this,ProfiiliActivity.class);
-            startActivity(profiiliIntent);
-            finish();
-        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_list, menu);
+        return true;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.user);
+        item.setTitle(currentUser.getDisplayName());
+        return super.onPrepareOptionsMenu(menu);
     }
 
 
