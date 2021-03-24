@@ -40,7 +40,7 @@ public class AloitusLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aloitus_login);
-        kirjauduBtn = (Button) findViewById(R.id.buttonKirjaudu_aloitus);
+        kirjauduBtn = (Button) findViewById(R.id.button_Kirjaudu);
         jatkaBtn = (Button) findViewById(R.id.buttonJatka);
 
 
