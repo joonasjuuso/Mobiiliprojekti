@@ -153,6 +153,10 @@ public class Mokki_List extends AppCompatActivity {
                     break;
                 case R.id.logout:
                     Log.d("TAGI", "1");
+                    mauth.signOut();
+                    Intent signOutIntent = new Intent(this,AloitusLogin.class);
+                    startActivity(signOutIntent);
+                    finish();
                     break;
             }
             return false;
