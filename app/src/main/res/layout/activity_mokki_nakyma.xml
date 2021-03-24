@@ -52,14 +52,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Takaisin"/>
+        android:text="Takaisin"
+        android:onClick="onClick_Takaisin"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:text="Vuokraa"/>
+        android:text="Vuokraa"
+        />
 
 
 </RelativeLayout>

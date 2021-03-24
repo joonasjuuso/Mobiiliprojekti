@@ -1,32 +1,44 @@
 package projekti.mobiiliprojekti;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyboardShortcutGroup;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-<<<<<<< HEAD
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CalendarView;
-=======
 import android.widget.ImageView;
->>>>>>> 8ac72d7f3b10c0e61c1d4ccbaaf5c09d87b01243
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Mokki_List extends AppCompatActivity {
 
 
-    DrawerLayout drawerLayout;
-    CalendarView calendarView;
+    private DrawerLayout drawerLayout;
 
     private ArrayList<MokkiItem> mMokkiItem;
 
@@ -35,6 +47,7 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private FirebaseAuth mauth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mauth.getCurrentUser();
+
     ImageView profiiliKuva;
 
     @Override
@@ -43,20 +56,10 @@ public class Mokki_List extends AppCompatActivity {
         setContentView(R.layout.activity_mokki__list);
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
-
         createMokkiItem();
         buildRecyclerView();
 
-        profiiliKuva.setOnClickListener(View -> {
-            Intent profiiliIntent = new Intent(this,ProfiiliActivity.class);
-            startActivity(profiiliIntent);
-            finish();
-        });
-
     }
-
-
-
     //Manuaalisesti täytettävä
     public void createMokkiItem()
     {
@@ -108,25 +111,43 @@ public class Mokki_List extends AppCompatActivity {
             public void onItemClick(int position) {
                 Intent intentMokkiNakyma = new Intent(Mokki_List.this, MokkiNakyma.class);
                 intentMokkiNakyma.putExtra("Mokki", mMokkiItem.get(position));
-
                 startActivity(intentMokkiNakyma);
             }
         });
     }
 
-    public void openMenu(View view) {
-        openDrawer(drawerLayout);
+    //Vasemman vetolaatikon metoodeja avaamiseen ja sulkemiseen
+    public void onClick_Drawermenu(View view) {
+        openDrawermenu(drawerLayout);
     }
 
-    public void closeMenu(View view) {
+    public void closeDrawermenu(View view) {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
-
-    private static void openDrawer(DrawerLayout drawerLayout) {
+    private static void openDrawermenu(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    public void onClick_Usermenu(View view) {
+        PopupMenu popup = new PopupMenu(this, profiiliKuva);
+        popup.setOnMenuItemClickListener(item -> {
+            final Intent intent;
+            switch (item.getItemId()) {
+                case R.id.user:
+                    Log.d("TAGI", "0");
+                    intent = new Intent(Mokki_List.this, ProfiiliActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.logout:
+                    Log.d("TAGI", "1");
+                    break;
+            }
+            return false;
+        });
+        popup.inflate(R.menu.menu_list);
+        popup.show();
+    }
 
 }

@@ -4,4 +4,10 @@
     <string name="facebook_application_id" translatable="false">1:262513005229:android:cc7da87b6ee02734d7ac24</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1:262513005229:android:cc7da87b6ee02734d7ac24</string>
 
+    <string-array name="userMenuitems">
+        <item>Tili</item>
+        <item>Kirjaudu ulos</item>
+        <item>Tyhjä</item>
+    </string-array>
+
 </resources>

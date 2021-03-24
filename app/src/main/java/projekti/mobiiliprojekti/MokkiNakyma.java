@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,5 +34,10 @@ public class MokkiNakyma extends AppCompatActivity {
 
         TextView textViewHinta = findViewById(R.id.HintaMokkiNakyma);
         textViewHinta.setText(MokkiHinta);
+    }
+
+    public void onClick_Takaisin(View view) {
+        Intent i = new Intent(this, Mokki_List.class);
+        startActivity(i);
     }
 }
