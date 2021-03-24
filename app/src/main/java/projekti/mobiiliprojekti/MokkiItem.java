@@ -4,22 +4,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class MokkiItem implements Parcelable {
-    private int mMokkiImage;
+    //private int mMokkiImage;
     private String mOtsikko;
     private String mKuvaus;
     private String mHinta;
 
-    public MokkiItem(int MokkiImage, String otsikko, String kuvaus, String hinta)
+    public MokkiItem(/*int MokkiImage,*/ String otsikko, String kuvaus, String hinta)
     {
-        mMokkiImage = MokkiImage;
+        //mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
         mKuvaus = kuvaus;
         mHinta = hinta;
-
     }
 
     protected MokkiItem(Parcel in) {
-        mMokkiImage = in.readInt();
+        //mMokkiImage = in.readInt();
         mOtsikko = in.readString();
         mKuvaus = in.readString();
         mHinta = in.readString();
@@ -37,10 +36,10 @@ public class MokkiItem implements Parcelable {
         }
     };
 
-    public int getMokkiImage()
+    /*public int getMokkiImage()
     {
         return mMokkiImage;
-    }
+    }*/
     public String getOtsikko()
     {
         return mOtsikko;
@@ -58,7 +57,7 @@ public class MokkiItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mMokkiImage);
+        //dest.writeInt(mMokkiImage);
         dest.writeString(mOtsikko);
         dest.writeString(mKuvaus);
         dest.writeString(mHinta);

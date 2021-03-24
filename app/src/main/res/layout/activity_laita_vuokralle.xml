@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LaitaVuokralle"
+    android:orientation="vertical">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bTakaisinMokkiListaan">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/TextOtsikko"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Otsikko:"/>
+            <EditText
+                android:id="@+id/EditOtsikko"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Anna ilmoituksellesi otsikko"/>
+
+            <TextView
+                android:id="@+id/TextKuvaus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Kuvaus:"/>
+            <EditText
+                android:id="@+id/EditKuvaus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="anna kuvaus mökistäsi"/>
+
+            <TextView
+                android:id="@+id/TextHinta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Hinta €/pvä:"/>
+            <EditText
+                android:id="@+id/EditHinta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Aseta hinta päivältä"
+                android:inputType="numberDecimal"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/bTakaisinMokkiListaan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Takaisin"/>
+
+    <Button
+        android:id="@+id/bAsetaVuokralle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Ilmoita"/>
+
+</RelativeLayout>

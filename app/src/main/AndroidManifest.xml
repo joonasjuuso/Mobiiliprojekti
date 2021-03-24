@@ -26,6 +26,8 @@
         <activity android:name=".MokkiNakyma" />
         <activity android:name=".Mokki_List" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".LaitaVuokralle"/>
+        <activity android:name=".IlmoitusVarmistus"/>
     </application>
 
 </manifest>

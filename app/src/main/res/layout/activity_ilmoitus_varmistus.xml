@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".IlmoitusVarmistus"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Otsikko:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sOtsikko"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kuvaus:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sKuvaus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hinta €/pvä:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sHinta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/bTakaisinIlmoitukseen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Takaisin"/>
+
+    <Button
+        android:id="@+id/bAsetaVuokralle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Ilmoita"/>
+
+</RelativeLayout>
