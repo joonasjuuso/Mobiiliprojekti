@@ -10,12 +10,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
 public class IlmoitusVarmistus extends AppCompatActivity {
+
+    private FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = mauth.getCurrentUser();
 
     private String eOtsikko;
     private String eHinta;
@@ -27,6 +32,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String eSauna;
     private String eKuvaus;
     private String eOtsikkoID;
+    private String eVuokraaja;
     //private String eOmistaja;
 
     private Button bTakaisinIlmoitukseen;
@@ -92,11 +98,13 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
     private void addMokki()
     {
-            eOtsikkoID = eOtsikko;
+        eVuokraaja = currentUser.getDisplayName();
 
-            eOtsikkoID = dbMokki.push().getKey();
+        eOtsikkoID = eOtsikko;
 
-            MokkiItem mokki = new MokkiItem(eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys, eVesi, eSauna, eKuvaus, eOtsikkoID/*, eOmistaja*/);
-            dbMokki.child(eOtsikkoID).setValue(mokki);
+        eOtsikkoID = dbMokki.push().getKey();
+
+        MokkiItem mokki = new MokkiItem(eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys, eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja/*, eOmistaja*/);
+        dbMokki.child(eOtsikkoID).setValue(mokki);
     }
 }

@@ -15,12 +15,14 @@ public class MokkiItem implements Parcelable {
     private String mSauna;
     private String mKuvaus;
     private String mOtsikkoID;
+    private String mVuokraaja;
     //private String mOmistaja;
 
 
 
     public MokkiItem(/*int MokkiImage,*/ String otsikko, String hinta, String osoite, String huoneMaara,
-                                         String nelioMaara, String lammitys, String vesi, String sauna, String kuvaus, String otsikkoID/*, String omistaja*/)
+                                         String nelioMaara, String lammitys, String vesi, String sauna,
+                                         String kuvaus, String otsikkoID, String vuokraaja/*, String omistaja*/)
     {
         //mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
@@ -33,6 +35,7 @@ public class MokkiItem implements Parcelable {
         mSauna = sauna;
         mKuvaus = kuvaus;
         mOtsikkoID = otsikkoID;
+        mVuokraaja = vuokraaja;
         //mOmistaja = omistaja;
     }
 
@@ -48,6 +51,7 @@ public class MokkiItem implements Parcelable {
         mSauna = in.readString();
         mKuvaus = in.readString();
         mOtsikkoID = in.readString();
+        mVuokraaja = in.readString();
         //mOmistaja = in.readString();
     }
 
@@ -67,10 +71,7 @@ public class MokkiItem implements Parcelable {
     {
         return mMokkiImage;
     }*/
-    public String getOtsikko()
-    {
-        return mOtsikko;
-    }
+    public String getOtsikko() { return mOtsikko; }
     public String getHinta() { return mHinta; }
     public String getOsoite() { return mOsoite; }
     public String getHuoneMaara() { return mHuoneMaara; }
@@ -78,11 +79,9 @@ public class MokkiItem implements Parcelable {
     public String getLammitys() { return mLammitys; }
     public String getVesi() { return mVesi; }
     public String getSauna() { return mSauna; }
-    public String getKuvaus()
-    {
-        return mKuvaus;
-    }
+    public String getKuvaus() { return mKuvaus; }
     public String getOtsikkoID() { return mOtsikkoID; }
+    public String getVuokraaja() { return mVuokraaja; }
     //public String getOmistaja() { return mOmistaja; }
 
     @Override
@@ -103,6 +102,7 @@ public class MokkiItem implements Parcelable {
         dest.writeString(mSauna);
         dest.writeString(mKuvaus);
         dest.writeString(mOtsikkoID);
+        dest.writeString(mVuokraaja);
         //dest.writeString(mOmistaja);
     }
 }

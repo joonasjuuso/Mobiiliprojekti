@@ -33,6 +33,7 @@ public class MokkiNakyma extends AppCompatActivity {
         String MokkiSauna = mokkiItem.getSauna();
         String MokkiKuvaus = mokkiItem.getKuvaus();
         String OtsikkoID = mokkiItem.getOtsikkoID();
+        String Vuokraaja = mokkiItem.getVuokraaja();
         //String Mokkiomistaja = mokkiItem.getOmistaja();
 
         /*ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
