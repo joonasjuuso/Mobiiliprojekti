@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -76,14 +78,27 @@ public class ProfiiliActivity extends AppCompatActivity {
         profiiliKuva = findViewById(R.id.profiiliKuva);
 
         imageView = findViewById(R.id.imageAvatar);
+        lataaButton.setVisibility(View.GONE);
         txtEmail.setText(currentUser.getEmail());
         txtNimi.setText(currentUser.getDisplayName());
-        imageView.setImageResource(R.mipmap.ic_launcher);
+
+
         if(currentUser.getDisplayName() != null) {
             txtNimi.setText("Hei " + currentUser.getDisplayName());
         }
-
-
+        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext()).load(uri.toString()).into(imageView);
+            }
+        })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(),"Ei lisättyä kuvaa",Toast.LENGTH_SHORT).show();
+                    imageView.setImageResource(R.mipmap.ic_launcher);
+                }
+            });
 
         txtEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +125,7 @@ public class ProfiiliActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadImage();
+                lataaButton.setVisibility(View.GONE);
             }
         });
     }
