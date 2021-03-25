@@ -33,13 +33,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kuvaus:"
+                android:text="Hinta €/pvä:"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
             <TextView
-                android:id="@+id/sKuvaus"
+                android:id="@+id/sHinta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="">
@@ -48,13 +48,103 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hinta €/pvä:"
+                android:text="Kohteen osoite:"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
             <TextView
-                android:id="@+id/sHinta"
+                android:id="@+id/sOsoite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Huonemäärä:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sHuoneet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kohteen neliömäärä:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sNeliot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kohteen lämmitys:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sLammitys"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Onko kohteessa juokseva vesi?"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sVesi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Onko kohteessa saunaa?"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sSauna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kuvaus:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20dp">
+            </TextView>
+            <TextView
+                android:id="@+id/sKuvaus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="">

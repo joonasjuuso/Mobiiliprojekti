@@ -28,20 +28,7 @@
                 android:id="@+id/EditOtsikko"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Anna ilmoituksellesi otsikko"/>
-
-            <TextView
-                android:id="@+id/TextKuvaus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:text="Kuvaus:"/>
-            <EditText
-                android:id="@+id/EditKuvaus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="anna kuvaus mökistäsi"/>
+                android:hint="Anna ilmoituksellesi otsikko:"/>
 
             <TextView
                 android:id="@+id/TextHinta"
@@ -56,6 +43,103 @@
                 android:layout_height="wrap_content"
                 android:hint="Aseta hinta päivältä"
                 android:inputType="numberDecimal"/>
+
+            <TextView
+                android:id="@+id/TextOsoite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Mökin osoite:"/>
+            <EditText
+                android:id="@+id/EditOsoite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mökin osoite:"/>
+
+            <TextView
+                android:id="@+id/TextHuoneMaara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Huoneiden lukumäärä:"/>
+
+            <Spinner
+                android:id="@+id/HuoneMaaraSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/HuoneMaara">
+            </Spinner>
+
+            <TextView
+                android:id="@+id/TextNelioMaara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Kohteen pinta-ala:"/>
+            <EditText
+                android:id="@+id/EditNelioMaara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Aseta kohteen pinta-ala"
+                android:inputType="numberDecimal"/>
+
+            <TextView
+                android:id="@+id/TextLammitys"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Kohteen Lämmitys:"/>
+            <EditText
+                android:id="@+id/EditLammitys"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kohteen lämmitys" />
+
+            <TextView
+                android:id="@+id/TextVesi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Onko mökillä juokseva vesi?"/>
+            <Spinner
+                android:id="@+id/VesiSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/kylla_ei_spinner">
+            </Spinner>
+
+            <TextView
+                android:id="@+id/TextSauna"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Onko kohteessa saunaa?"/>
+            <Spinner
+                android:id="@+id/SaunaSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/kylla_ei_spinner">
+            </Spinner>
+
+            <TextView
+                android:id="@+id/TextKuvaus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Kuvaus:"/>
+            <EditText
+                android:id="@+id/EditKuvaus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="anna kuvaus mökistäsi:"/>
+
         </LinearLayout>
     </ScrollView>
 

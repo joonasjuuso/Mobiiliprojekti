@@ -76,17 +76,7 @@ public class Mokki_List extends AppCompatActivity {
     {
         mMokkiItem = new ArrayList<>();
 
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 20", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 22", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 24", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 26", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 28", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 30", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 32", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 34", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 36", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 38", "1000"));
-        mMokkiItem.add(new MokkiItem( "Line 1", "Line 40", "1000"));
+
     }
 
     public void buildRecyclerView()

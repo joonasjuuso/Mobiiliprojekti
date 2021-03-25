@@ -18,8 +18,16 @@ import java.util.HashMap;
 public class IlmoitusVarmistus extends AppCompatActivity {
 
     private String eOtsikko;
-    private String eKuvaus;
     private String eHinta;
+    private String eOsoite;
+    private String eHuoneet;
+    private String eNeliot;
+    private String eLammitys;
+    private String eVesi;
+    private String eSauna;
+    private String eKuvaus;
+    private String eOtsikkoID;
+    //private String eOmistaja;
 
     private Button bTakaisinIlmoitukseen;
     private Button bAsetaVuokralle;
@@ -39,16 +47,34 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
         Intent varmistaIntent = getIntent();
         eOtsikko = varmistaIntent.getStringExtra("eOtsikko");
-        eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
         eHinta = varmistaIntent.getStringExtra("eHinta");
+        eOsoite = varmistaIntent.getStringExtra("eOsoite");
+        eHuoneet = varmistaIntent.getStringExtra("eHuoneet");
+        eNeliot = varmistaIntent.getStringExtra("eNeliot");
+        eLammitys = varmistaIntent.getStringExtra("eLammitys");
+        eVesi = varmistaIntent.getStringExtra("eVesi");
+        eSauna = varmistaIntent.getStringExtra("eSauna");
+        eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
 
         TextView sOtsikko = findViewById(R.id.sOtsikko);
-        TextView sKuvaus = findViewById(R.id.sKuvaus);
         TextView sHinta = findViewById(R.id.sHinta);
+        TextView sOsoite = findViewById(R.id.sOsoite);
+        TextView sHuoneet = findViewById(R.id.sHuoneet);
+        TextView sNeliot = findViewById(R.id.sNeliot);
+        TextView sLammitys = findViewById(R.id.sLammitys);
+        TextView sVesi = findViewById(R.id.sVesi);
+        TextView sSauna = findViewById(R.id.sSauna);
+        TextView sKuvaus = findViewById(R.id.sKuvaus);
 
         sOtsikko.setText(eOtsikko);
-        sKuvaus.setText(eKuvaus);
         sHinta.setText(eHinta);
+        sOsoite.setText(eOsoite);
+        sHuoneet.setText(eHuoneet);
+        sNeliot.setText(eNeliot);
+        sLammitys.setText(eLammitys);
+        sVesi.setText(eVesi);
+        sSauna.setText(eSauna);
+        sKuvaus.setText(eKuvaus);
 
         bTakaisinIlmoitukseen.setOnClickListener( view -> {
             Intent takaisinIlmoitukseen = new Intent(this, LaitaVuokralle.class);
@@ -66,12 +92,11 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
     private void addMokki()
     {
+            eOtsikkoID = eOtsikko;
 
-            eOtsikko = dbMokki.push().getKey();
+            eOtsikkoID = dbMokki.push().getKey();
 
-            MokkiItem mokki = new MokkiItem(eOtsikko, eKuvaus, eHinta);
-            dbMokki.child(eOtsikko).setValue(mokki);
-
-
+            MokkiItem mokki = new MokkiItem(eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys, eVesi, eSauna, eKuvaus, eOtsikkoID/*, eOmistaja*/);
+            dbMokki.child(eOtsikkoID).setValue(mokki);
     }
 }

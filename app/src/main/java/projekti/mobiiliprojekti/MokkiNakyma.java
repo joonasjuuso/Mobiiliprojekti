@@ -24,8 +24,16 @@ public class MokkiNakyma extends AppCompatActivity {
 
         //int MokkiImage = mokkiItem.getMokkiImage();
         String MokkiOtsikko = mokkiItem.getOtsikko();
-        String MokkiKuvaus = mokkiItem.getKuvaus();
         String MokkiHinta = mokkiItem.getHinta();
+        String MokkiOsoite = mokkiItem.getOsoite();
+        String MokkiHuoneet = mokkiItem.getHuoneMaara();
+        String MokkiNelio = mokkiItem.getNelioMaara();
+        String MokkiLammitys = mokkiItem.getLammitys();
+        String MokkiVesi = mokkiItem.getVesi();
+        String MokkiSauna = mokkiItem.getSauna();
+        String MokkiKuvaus = mokkiItem.getKuvaus();
+        String OtsikkoID = mokkiItem.getOtsikkoID();
+        //String Mokkiomistaja = mokkiItem.getOmistaja();
 
         /*ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
         imageViewMokki.setImageResource(MokkiImage);*/
@@ -33,14 +41,35 @@ public class MokkiNakyma extends AppCompatActivity {
         TextView textViewOtsikko = findViewById(R.id.OtsikkoMokkiNakyma);
         textViewOtsikko.setText(MokkiOtsikko);
 
-        TextView textViewKuvaus = findViewById(R.id.KuvausMokkiNakyma);
-        textViewKuvaus.setText(MokkiKuvaus);
-
         TextView textViewHinta = findViewById(R.id.HintaMokkiNakyma);
         textViewHinta.setText(MokkiHinta);
 
-        bTakaisinMokkilistaan = (Button) findViewById(R.id.bTakaisinMokkiListaan);
-        bVuokraa = (Button) findViewById(R.id.bVuokraa);
+        TextView textViewOsoite = findViewById(R.id.OsoiteMokkiNakyma);
+        textViewOsoite.setText(MokkiOsoite);
+
+        TextView textViewHuoneet = findViewById(R.id.HuoneetMokkiNakyma);
+        textViewHuoneet.setText(MokkiHuoneet);
+
+        TextView textViewNeliot = findViewById(R.id.NeliotMokkiNakyma);
+        textViewNeliot.setText(MokkiNelio);
+
+        TextView textViewLammitys = findViewById(R.id.LammitysMokkiNakyma);
+        textViewLammitys.setText(MokkiLammitys);
+
+        TextView textViewVesi = findViewById(R.id.VesiMokkiNakyma);
+        textViewVesi.setText(MokkiVesi);
+
+        TextView textViewSauna = findViewById(R.id.SaunaMokkiNakyma);
+        textViewSauna.setText(MokkiSauna);
+
+        TextView textViewKuvaus = findViewById(R.id.KuvausMokkiNakyma);
+        textViewKuvaus.setText(MokkiKuvaus);
+
+
+
+
+        bTakaisinMokkilistaan = findViewById(R.id.bTakaisinMokkiListaan);
+        bVuokraa = findViewById(R.id.bVuokraa);
 
         bTakaisinMokkilistaan.setOnClickListener(View ->{
             Intent mokkiIntent = new Intent(this,Mokki_List.class);
