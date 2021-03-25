@@ -7,9 +7,13 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,22 +26,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
 
 public class ProfiiliActivity extends AppCompatActivity {
     private FirebaseAuth mauth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mauth.getCurrentUser();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef =  storage.getReference();
+    private StorageReference profileRef = storageRef.child("ProfilePictures");
+    private Uri filePath;
+    private final int PICK_IMAGE_REQUEST = 22;
 
-    ImageView profiiliKuva;
+    private ImageView profiiliKuva;
 
     TextView txtNimi;
     TextView txtEmail;
     TextView txtSalasana;
     ImageView imageView;
+    Button lataaButton;
 
     boolean PASSWORD_CHANGE = false;
     boolean EMAIL_CHANGE = false;
@@ -51,9 +69,10 @@ public class ProfiiliActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profiili);
-        txtNimi = (TextView) findViewById(R.id.textNiminayta);
-        txtEmail = (TextView) findViewById(R.id.textEmail);
-        txtSalasana = (TextView) findViewById(R.id.textPass);
+        txtNimi = findViewById(R.id.textNiminayta);
+        txtEmail = findViewById(R.id.textEmail);
+        txtSalasana = findViewById(R.id.textPass);
+        lataaButton = findViewById(R.id.buttonLataa);
         profiiliKuva = findViewById(R.id.profiiliKuva);
 
         imageView = findViewById(R.id.imageAvatar);
@@ -80,6 +99,71 @@ public class ProfiiliActivity extends AppCompatActivity {
                 reAuthenticate();
             }
         });
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+                lataaButton.setVisibility(View.VISIBLE);
+            }
+        });
+        lataaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
+    }
+
+    private void selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Valitse kuva..."),PICK_IMAGE_REQUEST);
+    }
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
+                imageView.setImageBitmap(bitmap);
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage() {
+        if (filePath != null) {
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Lataus käynnissä...");
+            progressDialog.show();
+
+            profileRef.child("/"+currentUser.getUid()).putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(),"Profiilikuva päivitetty!",Toast.LENGTH_LONG).show();
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(),"Virhe kuvan päivityksessä",Toast.LENGTH_LONG).show();
+                }
+            })
+            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    progressDialog.setMessage("Ladattu " + (int)progress + "%");
+                }
+            });
+        }
     }
 
     private void setEmail() {
@@ -168,11 +252,11 @@ public class ProfiiliActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
         AlertDialog alert = new AlertDialog.Builder(this).create();
         final EditText newEmail = new EditText(this);
-        newEmail.setHint("EmaiL");
+        newEmail.setHint("Sähköposti");
         newEmail.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         layout.addView(newEmail);
         final EditText newPass = new EditText(this);
-        newPass.setHint("Password");
+        newPass.setHint("Salasana");
         newPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         layout.addView(newPass);
 
