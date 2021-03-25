@@ -71,22 +71,6 @@ public class Mokki_List extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list, menu);
-        return true;
-    }
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.user);
-        item.setTitle(currentUser.getDisplayName());
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-
-
-
     //Manuaalisesti täytettävä
     public void createMokkiItem()
     {
@@ -162,6 +146,12 @@ public class Mokki_List extends AppCompatActivity {
             return false;
         });
         popup.inflate(R.menu.menu_list);
+        if(currentUser.getDisplayName() != null) {
+            popup.getMenu().findItem(R.id.user).setTitle(currentUser.getDisplayName());
+        }
+        else {
+            popup.getMenu().findItem(R.id.user).setTitle(currentUser.getEmail());
+        }
         popup.show();
     }
 

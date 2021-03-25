@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,9 @@ public class ProfiiliActivity extends AppCompatActivity {
     TextView txtSalasana;
     ImageView imageView;
 
+    boolean PASSWORD_CHANGE = false;
+    boolean EMAIL_CHANGE = false;
+
     EditText edtText;
     Button submitButton;
     Button cancelButton;
@@ -65,12 +69,14 @@ public class ProfiiliActivity extends AppCompatActivity {
         txtEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EMAIL_CHANGE = true;
                 reAuthenticate();
             }
         });
         txtSalasana.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PASSWORD_CHANGE = true;
                 reAuthenticate();
             }
         });
@@ -80,6 +86,7 @@ public class ProfiiliActivity extends AppCompatActivity {
         Log.e("Tag","setEmail");
         AlertDialog alert = new AlertDialog.Builder(this).create();
         final EditText edittext = new EditText(this);
+        edittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         alert.setMessage("Syötä uusi sähköposti:");
         alert.setTitle("Sähköpostin muutos");
 
@@ -89,7 +96,8 @@ public class ProfiiliActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 currentUser.updateEmail(edittext.getText().toString());
-                verifyEmail();
+                Toast.makeText(getApplicationContext(),"Email updated!",Toast.LENGTH_SHORT).show();
+                EMAIL_CHANGE = false;
             }
         });
 
@@ -107,6 +115,7 @@ public class ProfiiliActivity extends AppCompatActivity {
         Log.e("Tag","setPass");
         AlertDialog alert = new AlertDialog.Builder(this).create();
         final EditText edittext = new EditText(this);
+        edittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         alert.setMessage("Syötä uusi salasana:");
         alert.setTitle("Salasanan muutos");
 
@@ -116,6 +125,8 @@ public class ProfiiliActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 currentUser.updatePassword(edittext.getText().toString());
+                Toast.makeText(getApplicationContext(),"Password updated!",Toast.LENGTH_SHORT).show();
+                PASSWORD_CHANGE = false;
             }
         });
 
@@ -127,14 +138,6 @@ public class ProfiiliActivity extends AppCompatActivity {
         });
         alert.show();
         Log.e("Tag","FinishedPass");
-    }
-
-
-
-    private void verifyEmail() {
-        Intent varmistusIntent = new Intent(this,varmistusActivity.class);
-        startActivity(varmistusIntent);
-        finish();
     }
 
     public void onClick_Usermenu(View view) {
@@ -166,9 +169,11 @@ public class ProfiiliActivity extends AppCompatActivity {
         AlertDialog alert = new AlertDialog.Builder(this).create();
         final EditText newEmail = new EditText(this);
         newEmail.setHint("EmaiL");
+        newEmail.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         layout.addView(newEmail);
         final EditText newPass = new EditText(this);
         newPass.setHint("Password");
+        newPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         layout.addView(newPass);
 
         alert.setMessage("Varmista kirjautumalla uudestaan");
@@ -179,11 +184,21 @@ public class ProfiiliActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 AuthCredential credential = EmailAuthProvider
-                        .getCredential("email","password"/*newEmail.getText().toString(),newPass.getText().toString()*/);
+                        .getCredential(newEmail.getText().toString(),newPass.getText().toString());
                 currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.e("Tag","User re-authenticated");
+                        if(task.isSuccessful()) {
+                            Log.e("Tag", "User re-authenticated");
+                            if(PASSWORD_CHANGE == true) {
+                                setPass();
+                            }
+                            else if (EMAIL_CHANGE == true) {
+                                setEmail();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(),"Wrong email / password",Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }
