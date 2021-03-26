@@ -64,6 +64,7 @@ public class ProfiiliActivity extends AppCompatActivity {
     ImageView imageView;
     Button lataaButton;
     ImageView goBack;
+    Button meneMaksamaanButton;
 
     boolean PASSWORD_CHANGE = false;
     boolean EMAIL_CHANGE = false;
@@ -83,7 +84,7 @@ public class ProfiiliActivity extends AppCompatActivity {
         txtEmail.setText(currentUser.getEmail());
         txtNimi.setText(currentUser.getDisplayName());
         goBack = findViewById(R.id.goBack);
-
+        meneMaksamaanButton = findViewById(R.id.buttonMeneMaksamaan);
 
 
         if(currentUser.getDisplayName() != null) {
@@ -121,6 +122,10 @@ public class ProfiiliActivity extends AppCompatActivity {
         lataaButton.setOnClickListener(v -> {
             uploadImage();
             lataaButton.setVisibility(View.GONE);
+        });
+        meneMaksamaanButton.setOnClickListener(v -> {
+            Intent maksuIntent = new Intent(getApplicationContext(),MaksuActivity.class);
+            startActivity(maksuIntent);
         });
     }
 

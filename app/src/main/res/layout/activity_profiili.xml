@@ -102,4 +102,16 @@
         app:layout_constraintTop_toTopOf="@+id/testipaska"
         app:layout_constraintVertical_bias="0.266" />
 
+    <Button
+        android:id="@+id/buttonMeneMaksamaan"
+        android:layout_width="238dp"
+        android:layout_height="63dp"
+        android:text="Mene maksamaan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.445"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/testipaska"
+        app:layout_constraintVertical_bias="0.859" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
