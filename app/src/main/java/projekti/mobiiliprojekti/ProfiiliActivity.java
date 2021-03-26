@@ -8,9 +8,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,6 +20,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,9 +40,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProfiiliActivity extends AppCompatActivity {
@@ -62,11 +67,6 @@ public class ProfiiliActivity extends AppCompatActivity {
     boolean PASSWORD_CHANGE = false;
     boolean EMAIL_CHANGE = false;
 
-    EditText edtText;
-    Button submitButton;
-    Button cancelButton;
-    String newStuff;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,47 +86,28 @@ public class ProfiiliActivity extends AppCompatActivity {
         if(currentUser.getDisplayName() != null) {
             txtNimi.setText("Hei " + currentUser.getDisplayName());
         }
-        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext()).load(uri.toString()).into(imageView);
-            }
-        })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getApplicationContext(),"Ei lisättyä kuvaa",Toast.LENGTH_SHORT).show();
-                    imageView.setImageResource(R.mipmap.ic_launcher);
-                }
+        else {
+            txtNimi.setText("Hei " + currentUser.getEmail());
+        }
+        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
+                .addOnSuccessListener(uri -> Glide.with(getApplicationContext()).load(uri.toString()).into(imageView))
+            .addOnFailureListener(e -> {
+                Toast.makeText(getApplicationContext(),"Ei lisättyä kuvaa",Toast.LENGTH_LONG).show();
+                imageView.setImageResource(R.mipmap.ic_launcher);
             });
 
-        txtEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EMAIL_CHANGE = true;
-                reAuthenticate();
-            }
+        txtEmail.setOnClickListener(v -> {
+            EMAIL_CHANGE = true;
+            reAuthenticate();
         });
-        txtSalasana.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PASSWORD_CHANGE = true;
-                reAuthenticate();
-            }
+        txtSalasana.setOnClickListener(v -> {
+            PASSWORD_CHANGE = true;
+            reAuthenticate();
         });
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-                lataaButton.setVisibility(View.VISIBLE);
-            }
-        });
-        lataaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage();
-                lataaButton.setVisibility(View.GONE);
-            }
+        imageView.setOnClickListener(v -> selectImage());
+        lataaButton.setOnClickListener(v -> {
+            uploadImage();
+            lataaButton.setVisibility(View.GONE);
         });
     }
 
@@ -139,46 +120,77 @@ public class ProfiiliActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode,int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
-
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-                imageView.setImageBitmap(bitmap);
-            }
-            catch(IOException e) {
+                BitmapFactory.decodeStream(getContentResolver().openInputStream(filePath), null, options);
+                int imageWidth = options.outWidth;
+                int imageHeight = options.outHeight;
+                if(imageHeight >= 1) {
+                    if(imageWidth >= 1) {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
+                        imageView.setImageBitmap(bitmap);
+                        lataaButton.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Virhe kuvan kanssa, syötä toinen kuva",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Virhe kuvan kanssa, syötä toinen kuva",Toast.LENGTH_SHORT).show();
+                }
+                Log.e("TAg", String.valueOf(imageWidth));
+                Log.e("Tag", String.valueOf(imageHeight));
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void uploadImage() {
-        if (filePath != null) {
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Lataus käynnissä...");
-            progressDialog.show();
+    private String getfileExtension(Uri uri)
+    {
+        String extension;
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        extension= mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        return extension;
+    }
 
-            profileRef.child("/"+currentUser.getUid()).putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(),"Profiilikuva päivitetty!",Toast.LENGTH_LONG).show();
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(),"Virhe kuvan päivityksessä",Toast.LENGTH_LONG).show();
-                }
-            })
-            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    progressDialog.setMessage("Ladattu " + (int)progress + "%");
-                }
-            });
+    private void uploadImage() {
+        if (getfileExtension(filePath) == "jpg" || getfileExtension(filePath) == "png" || getfileExtension(filePath) == "jpeg") {
+            Log.e("Tag", getfileExtension(filePath));
+            if (filePath != null) {
+                ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Lataus käynnissä...");
+                progressDialog.show();
+
+                profileRef.child("/" + currentUser.getUid()).putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Profiilikuva päivitetty!", Toast.LENGTH_LONG).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "Virhe kuvan päivityksessä", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                                double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                                progressDialog.setMessage("Ladattu " + (int) progress + "%");
+                            }
+                        });
+            }
+        }
+        else {
+            Toast.makeText(getApplicationContext(),"Virheellinen tiedostomuoto",Toast.LENGTH_SHORT).show();
         }
     }
 
