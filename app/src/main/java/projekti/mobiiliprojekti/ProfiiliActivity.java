@@ -90,10 +90,14 @@ public class ProfiiliActivity extends AppCompatActivity {
             txtNimi.setText("Hei " + currentUser.getEmail());
         }
         storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
-                .addOnSuccessListener(uri -> Glide.with(getApplicationContext()).load(uri.toString()).into(imageView))
+                .addOnSuccessListener(uri -> {
+                        Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(imageView);
+                        Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
+                })
             .addOnFailureListener(e -> {
                 Toast.makeText(getApplicationContext(),"Ei lisättyä kuvaa",Toast.LENGTH_LONG).show();
                 imageView.setImageResource(R.mipmap.ic_launcher);
+                profiiliKuva.setImageResource(R.mipmap.ic_launcher);
             });
 
         txtEmail.setOnClickListener(v -> {
@@ -170,6 +174,11 @@ public class ProfiiliActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressDialog.dismiss();
+                        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(imageView);
+                                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
+                                });
                         Toast.makeText(getApplicationContext(), "Profiilikuva päivitetty!", Toast.LENGTH_LONG).show();
                     }
                 })

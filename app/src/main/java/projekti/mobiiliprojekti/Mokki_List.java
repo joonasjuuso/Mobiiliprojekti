@@ -32,8 +32,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,8 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private FirebaseAuth mauth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mauth.getCurrentUser();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef =  storage.getReference();
 
     ImageView profiiliKuva;
     Button bLaitaVuokralle;
@@ -62,6 +67,14 @@ public class Mokki_List extends AppCompatActivity {
         profiiliKuva = findViewById(R.id.profiiliKuva);
         createMokkiItem();
         buildRecyclerView();
+
+        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
+                })
+                .addOnFailureListener(e -> {
+                    profiiliKuva.setImageResource(R.mipmap.ic_launcher);
+                });
 
         bLaitaVuokralle = findViewById(R.id.bLaitaVuokralle);
         bLaitaVuokralle.setOnClickListener(view -> {

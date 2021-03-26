@@ -65,7 +65,7 @@ public class LoginActivityV2 extends AppCompatActivity {
                                             /* Check Success */
                                             if (task.isSuccessful()) {
                                                 Toast.makeText(getApplicationContext(),
-                                                        "Verification Email Sent To: " + currentUser.getEmail(),
+                                                        "Sähköposti lähetetty " + currentUser.getEmail(),
                                                         Toast.LENGTH_SHORT).show();
                                                 startActivity(varmistusIntent);
                                                 finish();
