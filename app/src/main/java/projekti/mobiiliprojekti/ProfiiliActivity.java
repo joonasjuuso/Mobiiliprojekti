@@ -48,11 +48,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProfiiliActivity extends AppCompatActivity {
-    private FirebaseAuth mauth = FirebaseAuth.getInstance();
-    private FirebaseUser currentUser = mauth.getCurrentUser();
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference storageRef =  storage.getReference();
-    private StorageReference profileRef = storageRef.child("ProfilePictures");
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
+    private final StorageReference profileRef = storageRef.child("ProfilePictures");
     private Uri filePath;
     private final int PICK_IMAGE_REQUEST = 22;
 
@@ -63,6 +63,7 @@ public class ProfiiliActivity extends AppCompatActivity {
     TextView txtSalasana;
     ImageView imageView;
     Button lataaButton;
+    ImageView goBack;
 
     boolean PASSWORD_CHANGE = false;
     boolean EMAIL_CHANGE = false;
@@ -81,6 +82,8 @@ public class ProfiiliActivity extends AppCompatActivity {
         lataaButton.setVisibility(View.GONE);
         txtEmail.setText(currentUser.getEmail());
         txtNimi.setText(currentUser.getDisplayName());
+        goBack = findViewById(R.id.goBack);
+
 
 
         if(currentUser.getDisplayName() != null) {
@@ -99,6 +102,12 @@ public class ProfiiliActivity extends AppCompatActivity {
                 imageView.setImageResource(R.mipmap.ic_launcher);
                 profiiliKuva.setImageResource(R.mipmap.ic_launcher);
             });
+
+        goBack.setOnClickListener(v -> {
+            Intent backIntent = new Intent(this,Mokki_List.class);
+            startActivity(backIntent);
+            finish();
+        });
 
         txtEmail.setOnClickListener(v -> {
             EMAIL_CHANGE = true;
@@ -260,6 +269,7 @@ public class ProfiiliActivity extends AppCompatActivity {
         alert.show();
         Log.e("Tag","FinishedPass");
     }
+
 
     public void onClick_Usermenu(View view) {
         PopupMenu popup = new PopupMenu(this, profiiliKuva);
