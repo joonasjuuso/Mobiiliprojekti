@@ -43,7 +43,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private FirebaseUser currentUser = mauth.getCurrentUser();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef =  storage.getReference();
-    private StorageReference mokkiRef = storageRef.child(currentUser.getDisplayName() + "/" + "Mökkien kuvat");
+    private StorageReference mokkiRef = storageRef.child(currentUser.getDisplayName() + "/" + "Mökkien kuvat/Varmistamattomat kuvat");
 
     private Button bChooseimage;
     private Button bUploadImage;
@@ -188,21 +188,16 @@ public class LaitaVuokralle extends AppCompatActivity {
 
     private void uploadImage() {
         if (mImageUri != null) {
-            //ProgressDialog progressDialog = new ProgressDialog(this);
-            //progressDialog.setTitle("Lataus käynnissä...");
-            //progressDialog.show();
 
             mokkiRef.child("/"+currentUser.getUid()).putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(),"Kuva Lisätty!",Toast.LENGTH_LONG).show();
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(),"Virhe kuvan päivityksessä",Toast.LENGTH_LONG).show();
                         }
                     })
@@ -210,7 +205,6 @@ public class LaitaVuokralle extends AppCompatActivity {
                         @Override
                         public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                             double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                            //progressDialog.setMessage("Ladattu " + (int)progress + "%");
                         }
                     });
         }
