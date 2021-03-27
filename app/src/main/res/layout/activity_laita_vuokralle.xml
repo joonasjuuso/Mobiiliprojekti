@@ -30,6 +30,33 @@
                 android:layout_height="wrap_content"
                 android:hint="Anna ilmoituksellesi otsikko:"/>
 
+            <Button
+                android:id="@+id/bChooseImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Choose File">
+            </Button>
+            <ImageView
+                android:id="@+id/ImageViewUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp">
+            </ImageView>
+            <ProgressBar
+                android:id="@+id/UploadImageProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal">
+            </ProgressBar>
+            <Button
+                android:id="@+id/bUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Upload"
+                android:layout_gravity="center">
+            </Button>
+
             <TextView
                 android:id="@+id/TextHinta"
                 android:layout_width="match_parent"

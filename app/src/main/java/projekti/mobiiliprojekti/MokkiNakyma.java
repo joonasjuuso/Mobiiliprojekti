@@ -36,8 +36,8 @@ public class MokkiNakyma extends AppCompatActivity {
         String Vuokraaja = mokkiItem.getVuokraaja();
         //String Mokkiomistaja = mokkiItem.getOmistaja();
 
-        /*ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
-        imageViewMokki.setImageResource(MokkiImage);*/
+        //ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
+        //imageViewMokki.setImageResource(MokkiImage);
 
         TextView textViewOtsikko = findViewById(R.id.OtsikkoMokkiNakyma);
         textViewOtsikko.setText(MokkiOtsikko);

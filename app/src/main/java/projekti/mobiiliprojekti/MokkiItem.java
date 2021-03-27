@@ -21,8 +21,8 @@ public class MokkiItem implements Parcelable {
 
 
     public MokkiItem(/*int MokkiImage,*/ String otsikko, String hinta, String osoite, String huoneMaara,
-                                         String nelioMaara, String lammitys, String vesi, String sauna,
-                                         String kuvaus, String otsikkoID, String vuokraaja/*, String omistaja*/)
+                     String nelioMaara, String lammitys, String vesi, String sauna,
+                     String kuvaus, String otsikkoID, String vuokraaja/*, String omistaja*/)
     {
         //mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
@@ -67,10 +67,7 @@ public class MokkiItem implements Parcelable {
         }
     };
 
-    /*public int getMokkiImage()
-    {
-        return mMokkiImage;
-    }*/
+    //public int getMokkiImage() { return mMokkiImage; }
     public String getOtsikko() { return mOtsikko; }
     public String getHinta() { return mHinta; }
     public String getOsoite() { return mOsoite; }
