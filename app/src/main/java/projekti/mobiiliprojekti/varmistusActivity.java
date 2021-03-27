@@ -36,7 +36,7 @@ public class varmistusActivity extends AppCompatActivity  {
         Log.e("Tag", String.valueOf(currentUser.isEmailVerified()));
         if (currentUser.isEmailVerified()) {
             IS_EMAIL_VERIFIED = true;
-            Toast.makeText(getApplicationContext(), "Email verification complete!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Sähköposti varmennettu!", Toast.LENGTH_LONG).show();
             Intent mokkiIntent = new Intent(this, Mokki_List.class);
             startActivity(mokkiIntent);
             finish();
