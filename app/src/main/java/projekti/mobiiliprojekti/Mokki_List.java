@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.Login;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -67,14 +68,17 @@ public class Mokki_List extends AppCompatActivity {
         profiiliKuva = findViewById(R.id.profiiliKuva);
         createMokkiItem();
         buildRecyclerView();
-
-        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
-                .addOnSuccessListener(uri -> {
-                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
-                })
-                .addOnFailureListener(e -> {
-                    profiiliKuva.setImageResource(R.mipmap.ic_launcher);
-                });
+        if(currentUser!=null) {
+            storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
+                    .addOnSuccessListener(uri -> {
+                        Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
+                    })
+                    .addOnFailureListener(e -> {
+                        profiiliKuva.setImageResource(R.mipmap.ic_launcher);
+                    });
+        } else if(currentUser==null) {
+            profiiliKuva.setImageResource(R.mipmap.ic_launcher);
+        }
 
         bLaitaVuokralle = findViewById(R.id.bLaitaVuokralle);
         bLaitaVuokralle.setOnClickListener(view -> {
@@ -148,14 +152,21 @@ public class Mokki_List extends AppCompatActivity {
             }
             return false;
         });
-        popup.inflate(R.menu.menu_list);
-        if(currentUser.getDisplayName() != null) {
-            popup.getMenu().findItem(R.id.user).setTitle(currentUser.getDisplayName());
+        if(currentUser != null) {
+            popup.inflate(R.menu.menu_list);
+            if (currentUser.getDisplayName() != null) {
+                popup.getMenu().findItem(R.id.user).setTitle(currentUser.getDisplayName());
+            } else {
+                popup.getMenu().findItem(R.id.user).setTitle(currentUser.getEmail());
+            }
+            popup.show();
         }
-        else {
-            popup.getMenu().findItem(R.id.user).setTitle(currentUser.getEmail());
+        else if(currentUser == null) {
+            Intent kirjauduIntent = new Intent(this, LoginActivityV2.class);
+            startActivity(kirjauduIntent);
+            finish();
         }
-        popup.show();
+
     }
 
 }

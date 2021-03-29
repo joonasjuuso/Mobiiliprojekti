@@ -146,19 +146,17 @@ public class ProfiiliActivity extends AppCompatActivity {
                 BitmapFactory.decodeStream(getContentResolver().openInputStream(filePath), null, options);
                 int imageWidth = options.outWidth;
                 int imageHeight = options.outHeight;
-                if(imageHeight >= 1) {
-                    if(imageWidth >= 1) {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-                        imageView.setImageBitmap(bitmap);
-                        lataaButton.setVisibility(View.VISIBLE);
+                    if (imageHeight >= 1) {
+                        if (imageWidth >= 1) {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                            imageView.setImageBitmap(bitmap);
+                            lataaButton.setVisibility(View.VISIBLE);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        Toast.makeText(getApplicationContext(),"Virhe kuvan kanssa, syötä toinen kuva",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Virhe kuvan kanssa, syötä toinen kuva",Toast.LENGTH_SHORT).show();
-                }
                 Log.e("TAg", String.valueOf(imageWidth));
                 Log.e("Tag", String.valueOf(imageHeight));
             } catch (IOException e) {
@@ -177,7 +175,7 @@ public class ProfiiliActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        if (getfileExtension(filePath) == "jpg" || getfileExtension(filePath) == "png" || getfileExtension(filePath) == "jpeg") {
+        if (getfileExtension(filePath).equals("jpg") || getfileExtension(filePath).equals("png") || getfileExtension(filePath).equals("jpeg")) {
             Log.e("Tag", getfileExtension(filePath));
             if (filePath != null) {
                 ProgressDialog progressDialog = new ProgressDialog(this);

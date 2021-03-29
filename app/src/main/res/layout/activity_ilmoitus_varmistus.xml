@@ -43,8 +43,7 @@
                 android:text="Hinta €/pvä:"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="20dp">
-            </TextView>
+                android:textSize="20dp" />
             <TextView
                 android:id="@+id/sHinta"
                 android:layout_width="wrap_content"
