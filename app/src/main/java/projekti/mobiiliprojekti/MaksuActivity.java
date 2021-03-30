@@ -29,7 +29,7 @@ public class MaksuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_maksu);
         MobilePay.getInstance().init("APPFI0000000000", Country.FINLAND);
         isMobilePayInstalled = MobilePay.getInstance().isMobilePayInstalled(getApplicationContext());
-        maksuButton = findViewById(R.id.buttonMaksu);
+        maksuButton = findViewById(R.id.buttonMobilepay);
 
         maksuButton.setOnClickListener(new View.OnClickListener() {
             @Override

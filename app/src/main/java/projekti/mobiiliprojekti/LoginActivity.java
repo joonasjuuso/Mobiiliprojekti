@@ -109,12 +109,10 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.signOut();
             Intent i = new Intent(this, LuoTunnus.class);
             startActivity(i);
-            finish();
         } else {
             Log.d("TAG", "moikka tyhjä käyttäjä, luodaan uusi");
             Intent i = new Intent(this, LuoTunnus.class);
             startActivity(i);
-            finish();
         }
     }
 
