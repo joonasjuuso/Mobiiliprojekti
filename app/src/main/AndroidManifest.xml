@@ -17,14 +17,15 @@
         <activity android:name=".ProfiiliActivity" />
         <activity android:name=".varmistusActivity" />
         <activity
-            android:name=".AloitusLogin"
-            android:label="Kirjaudu sisään">
+            android:name=".LoginActivity"
+            android:label="Mökki mobiiliprojekti">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LuoTunnus" />
         <activity android:name=".LoginActivityV2" />
         <activity android:name=".MokkiNakyma" />
         <activity android:name=".Mokki_List" />
