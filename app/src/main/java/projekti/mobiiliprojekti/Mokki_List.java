@@ -1,49 +1,25 @@
 package projekti.mobiiliprojekti;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyboardShortcutGroup;
-import android.view.MenuInflater;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.Toast;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-
 import com.bumptech.glide.Glide;
-import com.facebook.login.Login;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Mokki_List extends AppCompatActivity {
-
 
     private DrawerLayout drawerLayout;
 
@@ -118,7 +94,7 @@ public class Mokki_List extends AppCompatActivity {
         });
     }
 
-    //Vasemman vetolaatikon metoodeja avaamiseen ja sulkemiseen
+    //Vasemman vetolaatikon metoodeja
     public void onClick_Drawermenu(View view) {
         openDrawermenu(drawerLayout);
     }
@@ -132,20 +108,18 @@ public class Mokki_List extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    //Oikeanpuolen menu hommelit
     public void onClick_Usermenu(View view) {
         PopupMenu popup = new PopupMenu(this, profiiliKuva);
         popup.setOnMenuItemClickListener(item -> {
-            final Intent intent;
             switch (item.getItemId()) {
                 case R.id.user:
-                    Log.d("TAGI", "0");
-                    intent = new Intent(Mokki_List.this, ProfiiliActivity.class);
+                    Intent intent = new Intent(Mokki_List.this, ProfiiliActivity.class);
                     startActivity(intent);
                     break;
                 case R.id.logout:
-                    Log.d("TAGI", "1");
                     mauth.signOut();
-                    Intent signOutIntent = new Intent(this,AloitusLogin.class);
+                    Intent signOutIntent = new Intent(this,LoginActivity.class);
                     startActivity(signOutIntent);
                     finish();
                     break;
@@ -162,11 +136,9 @@ public class Mokki_List extends AppCompatActivity {
             popup.show();
         }
         else if(currentUser == null) {
-            Intent kirjauduIntent = new Intent(this, LoginActivityV2.class);
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
             startActivity(kirjauduIntent);
             finish();
         }
-
     }
-
 }
