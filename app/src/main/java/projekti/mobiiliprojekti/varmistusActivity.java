@@ -17,6 +17,7 @@ public class varmistusActivity extends AppCompatActivity  {
     private FirebaseUser currentUser = mauth.getCurrentUser();
     Button checkBtn;
     boolean IS_EMAIL_VERIFIED = false;
+    private int count = 0;
 
 
     @Override
@@ -28,18 +29,44 @@ public class varmistusActivity extends AppCompatActivity  {
         checkBtn.setOnClickListener(View -> {
             startCheck();
         });
+        content();
     }
 
     public void startCheck() {
+        checkVerificationStatus();
+    }
+
+    public boolean checkVerificationStatus() {
         currentUser.reload();
         Log.e("Tag", "Verifying");
         Log.e("Tag", String.valueOf(currentUser.isEmailVerified()));
         if (currentUser.isEmailVerified()) {
             IS_EMAIL_VERIFIED = true;
-            Toast.makeText(getApplicationContext(), "Sähköposti varmennettu!", Toast.LENGTH_LONG).show();
-            Intent mokkiIntent = new Intent(this, Mokki_List.class);
-            startActivity(mokkiIntent);
+            Toast.makeText(getApplicationContext(), "Email verification complete!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
             finish();
+            return true;
+        }
+        return false;
+    }
+
+    //Ajastus jolla varmennus tsekataan 2 sekunnin välein
+    public void content() {
+        count++;
+        refresh(2000);
+    }
+    private void refresh(int milliseconds) {
+        Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                content();
+            }
+        };
+        handler.postDelayed(runnable, milliseconds);
+        if(checkVerificationStatus()) {
+            handler.removeCallbacks(runnable);
         }
     }
 }

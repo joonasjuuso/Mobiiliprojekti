@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -18,7 +16,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -29,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,11 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProfiiliActivity extends AppCompatActivity {
@@ -146,19 +139,17 @@ public class ProfiiliActivity extends AppCompatActivity {
                 BitmapFactory.decodeStream(getContentResolver().openInputStream(filePath), null, options);
                 int imageWidth = options.outWidth;
                 int imageHeight = options.outHeight;
-                if(imageHeight >= 1) {
-                    if(imageWidth >= 1) {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-                        imageView.setImageBitmap(bitmap);
-                        lataaButton.setVisibility(View.VISIBLE);
+                    if (imageHeight >= 1) {
+                        if (imageWidth >= 1) {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                            imageView.setImageBitmap(bitmap);
+                            lataaButton.setVisibility(View.VISIBLE);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        Toast.makeText(getApplicationContext(),"Virhe kuvan kanssa, syötä toinen kuva",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Virhe kuvan kanssa, syötä toinen kuva",Toast.LENGTH_SHORT).show();
-                }
                 Log.e("TAg", String.valueOf(imageWidth));
                 Log.e("Tag", String.valueOf(imageHeight));
             } catch (IOException e) {
@@ -177,7 +168,7 @@ public class ProfiiliActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        if (getfileExtension(filePath) == "jpg" || getfileExtension(filePath) == "png" || getfileExtension(filePath) == "jpeg") {
+        if (getfileExtension(filePath).equals("jpg") || getfileExtension(filePath).equals("png") || getfileExtension(filePath).equals("jpeg")) {
             Log.e("Tag", getfileExtension(filePath));
             if (filePath != null) {
                 ProgressDialog progressDialog = new ProgressDialog(this);
@@ -279,17 +270,14 @@ public class ProfiiliActivity extends AppCompatActivity {
     public void onClick_Usermenu(View view) {
         PopupMenu popup = new PopupMenu(this, profiiliKuva);
         popup.setOnMenuItemClickListener(item -> {
-            final Intent intent;
             switch (item.getItemId()) {
                 case R.id.user:
-                    Log.d("TAGI", "0");
                     finish();
                     startActivity(getIntent());
                     break;
                 case R.id.logout:
-                    Log.d("TAGI", "1");
                     mauth.signOut();
-                    Intent signOutIntent = new Intent(this,AloitusLogin.class);
+                    Intent signOutIntent = new Intent(this, LoginActivity.class);
                     startActivity(signOutIntent);
                     finish();
                     break;
