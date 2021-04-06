@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(mokkiIntent);
+                finish();
             }
         });
         textUnohdus.setOnClickListener(new View.OnClickListener() {

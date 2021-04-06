@@ -43,7 +43,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private FirebaseUser currentUser = mauth.getCurrentUser();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef =  storage.getReference();
-    private StorageReference mokkiRef = storageRef.child(currentUser.getDisplayName() + "/" + "Mökkien kuvat");
+    private StorageReference mokkiRef;
 
     private Button bChooseimage;
     private Button bUploadImage;
@@ -70,6 +70,10 @@ public class LaitaVuokralle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laita_vuokralle);
+
+        if(currentUser != null) {
+             mokkiRef = storageRef.child(currentUser.getDisplayName() + "/" + "Mökkien kuvat");
+        }
 
         bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
         bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);

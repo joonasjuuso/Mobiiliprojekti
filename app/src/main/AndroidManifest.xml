@@ -26,7 +26,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".LuoTunnus" />
-        <activity android:name=".LoginActivityV2" />
         <activity android:name=".MokkiNakyma" />
         <activity android:name=".Mokki_List" />
         <activity android:name=".LaitaVuokralle" />
