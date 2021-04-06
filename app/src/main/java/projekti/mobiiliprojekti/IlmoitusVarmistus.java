@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -138,6 +139,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
     private void addMokki()
     {
+
         eVuokraaja = currentUser.getDisplayName();
         eOtsikkoID = eOtsikko;
 
