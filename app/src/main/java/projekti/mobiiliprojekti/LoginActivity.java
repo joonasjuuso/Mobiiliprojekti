@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                     }else {
                         Log.d("TAG", "creatUserWithEmail:failed");
                         Toast.makeText(getApplicationContext(),
-                                "Tarkasta Sähköposti tai salasana", Toast.LENGTH_SHORT).show();
+                                "Tarkista Sähköposti tai Salasana", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -219,10 +219,8 @@ public class LoginActivity extends AppCompatActivity {
             if (!currentUser.isEmailVerified()) {
                 Log.d("TAG", "emaili ei ole vahvistettu ;)");
             }
-            String tervehdys = "Terve " + currentUser.getEmail();
             String email = currentUser.getEmail();
 
-            textTervehdys.setText(tervehdys);
             editEmail.setText(email);
         } else {
             Log.d("TAG", "user on null");
