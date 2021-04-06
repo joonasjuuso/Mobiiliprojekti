@@ -15,7 +15,7 @@
 
     <CalendarView
         android:id="@+id/calender"
-        android:layout_width="387dp"
+        android:layout_width="278dp"
         android:layout_height="311dp"
         android:layout_gravity="center"
         android:background="@drawable/calender">

@@ -1,7 +1,9 @@
 package projekti.mobiiliprojekti;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -31,8 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     protected FirebaseUser currentUser;
     GoogleSignInClient mGoogleSignInClient;
     private EditText editEmail, editPassword;
-    private TextView textTervehdys;
+    private TextView textTervehdys, textKirjautumatta, textUnohdus;
     private Intent mokkiIntent, varmistusIntent;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.edittext_email);
         editPassword = findViewById(R.id.edittext_password);
         textTervehdys = findViewById(R.id.textview_tervehdys);
+        textKirjautumatta = findViewById(R.id.textViewKirjautumatta);
+        textUnohdus = findViewById(R.id.textViewUnohdus);
         varmistusIntent = new Intent(this, varmistusActivity.class);
         mokkiIntent = new Intent(this, Mokki_List.class);
 
@@ -54,6 +60,20 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+
+        textKirjautumatta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(mokkiIntent);
+                finish();
+            }
+        });
+        textUnohdus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetEmail();
+            }
+        });
 
     }
     @Override
@@ -96,6 +116,46 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+
+    private void resetEmail() {
+        Log.e("Tag","resetEmail");
+        AlertDialog alert = new AlertDialog.Builder(this).create();
+        final EditText edittext = new EditText(this);
+        edittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        alert.setMessage("Syötä sähköpostisi:");
+        alert.setTitle("Salasanan resetointi");
+
+        alert.setView(edittext);
+
+        alert.setButton(AlertDialog.BUTTON_POSITIVE,"Muuta", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                email = edittext.getText().toString();
+                mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()) {
+                            alert.dismiss();
+                            Toast.makeText(getApplicationContext(),"Tarkista sähköpostisi!",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(),"Jokin meni pieleen",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+            }
+        });
+        alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Peruuta", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alert.dismiss();
+            }
+        });
+
+        alert.show();
+        Log.e("Tag","FinishedPass");
+    }
 
     public void clickGoogle(View view) {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -146,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                     }else {
                         Log.d("TAG", "creatUserWithEmail:failed");
                         Toast.makeText(getApplicationContext(),
-                                "Tarkasta Sähköposti tai salasana", Toast.LENGTH_SHORT).show();
+                                "Tarkista Sähköposti tai Salasana", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -159,10 +219,8 @@ public class LoginActivity extends AppCompatActivity {
             if (!currentUser.isEmailVerified()) {
                 Log.d("TAG", "emaili ei ole vahvistettu ;)");
             }
-            String tervehdys = "Terve " + currentUser.getEmail();
             String email = currentUser.getEmail();
 
-            textTervehdys.setText(tervehdys);
             editEmail.setText(email);
         } else {
             Log.d("TAG", "user on null");
