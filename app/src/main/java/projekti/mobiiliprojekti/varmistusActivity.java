@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,22 +19,28 @@ public class varmistusActivity extends AppCompatActivity  {
     Button checkBtn;
     boolean IS_EMAIL_VERIFIED = false;
     private int count = 0;
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_varmistus);
+        Intent i = new Intent(this, LoginActivity.class);
         checkBtn = (Button) findViewById(R.id.checkBtn);
         Log.e("Tag","oncreate");
         checkBtn.setOnClickListener(View -> {
-            startCheck();
+            backtoLogin();
         });
         content();
     }
 
-    public void startCheck() {
-        checkVerificationStatus();
+    public void backtoLogin() {
+        handler.removeCallbacks(runnable);
+        Intent setIntent = new Intent(varmistusActivity.this, LoginActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 
     public boolean checkVerificationStatus() {
@@ -43,8 +50,8 @@ public class varmistusActivity extends AppCompatActivity  {
         if (currentUser.isEmailVerified()) {
             IS_EMAIL_VERIFIED = true;
             Toast.makeText(getApplicationContext(), "Email verification complete!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivity(i);
+            Intent setIntent = new Intent(varmistusActivity.this, LoginActivity.class);
+            startActivity(setIntent);
             finish();
             return true;
         }
@@ -57,8 +64,8 @@ public class varmistusActivity extends AppCompatActivity  {
         refresh(2000);
     }
     private void refresh(int milliseconds) {
-        Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
+
+        runnable = new Runnable() {
             @Override
             public void run() {
                 content();
@@ -68,5 +75,13 @@ public class varmistusActivity extends AppCompatActivity  {
         if(checkVerificationStatus()) {
             handler.removeCallbacks(runnable);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        handler.removeCallbacks(runnable);
+        Intent setIntent = new Intent(this, LoginActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 }
