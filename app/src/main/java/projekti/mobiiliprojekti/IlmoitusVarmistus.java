@@ -139,7 +139,6 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
     private void addMokki()
     {
-
         eVuokraaja = currentUser.getDisplayName();
         eOtsikkoID = eOtsikko;
 

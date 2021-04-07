@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -97,6 +99,7 @@ public class Mokki_List extends AppCompatActivity {
     //Vasemman vetolaatikon metoodeja
     public void onClick_Drawermenu(View view) {
         openDrawermenu(drawerLayout);
+        Log.d("TAG", "moro " + currentUser.getDisplayName());
     }
 
     public void closeDrawermenu(View view) {
@@ -108,18 +111,35 @@ public class Mokki_List extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+
     //Oikeanpuolen menu hommelit
     public void onClick_Usermenu(View view) {
+        if(currentUser == null){
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
+            startActivity(kirjauduIntent);
+            finish();
+        } else {
+            //PASKA HOMMA TÄSSÄ ON ETTÄ GOOGLE TILILTÄ KIRJAUTUNEITTEN NIMET MENEE VITUIKS
+            if(currentUser.getDisplayName() == null) {
+                String cutattu = currentUser.getEmail();
+                cutattu = cutattu.split("@")[0];
+                UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(cutattu).build();
+                currentUser.updateProfile(profileUpdate);
+                Log.d("TAG", "moro " + currentUser.getDisplayName());
+            } else { Log.d("TAG", "EI OO NULL"); }
+        }
+
         PopupMenu popup = new PopupMenu(this, profiiliKuva);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.user:
-                    Intent intent = new Intent(Mokki_List.this, ProfiiliActivity.class);
+                    Intent intent = new Intent(this, ProfiiliActivity.class);
                     startActivity(intent);
                     break;
                 case R.id.logout:
-                    mauth.signOut();
                     Intent signOutIntent = new Intent(this,LoginActivity.class);
+                    mauth.signOut();
                     startActivity(signOutIntent);
                     finish();
                     break;
@@ -134,11 +154,6 @@ public class Mokki_List extends AppCompatActivity {
                 popup.getMenu().findItem(R.id.user).setTitle(currentUser.getEmail());
             }
             popup.show();
-        }
-        else if(currentUser == null) {
-            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
-            startActivity(kirjauduIntent);
-            finish();
         }
     }
 }

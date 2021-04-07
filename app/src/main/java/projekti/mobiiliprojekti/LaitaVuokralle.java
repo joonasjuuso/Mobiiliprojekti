@@ -71,10 +71,11 @@ public class LaitaVuokralle extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laita_vuokralle);
 
+        /*
         if(currentUser != null) {
              mokkiRef = storageRef.child(currentUser.getDisplayName() + "/" + "Mökkien kuvat");
         }
-
+         */
         bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
         bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 

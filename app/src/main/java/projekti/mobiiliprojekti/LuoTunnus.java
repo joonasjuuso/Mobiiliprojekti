@@ -63,11 +63,8 @@ public class LuoTunnus extends AppCompatActivity {
                         if(!currentUser.isEmailVerified()) {
                             vahvistaEmail();
                         }
-                        //FirebaseUser user = mAuth.getCurrentUser();
-                        //updateUI(user);
                     } else {
                         Toast.makeText(getApplicationContext(), "Käyttäjän luonnissa virhe", Toast.LENGTH_SHORT).show();
-                        //updateUI(null);
                     }
                 }
             });
