@@ -139,6 +139,10 @@ public class Mokki_List extends AppCompatActivity {
                     Intent intent = new Intent(this, ProfiiliActivity.class);
                     startActivity(intent);
                     break;
+                case R.id.chat:
+                    Intent chatIntent = new Intent(this,ChatActivity.class);
+                    startActivity(chatIntent);
+                    break;
                 case R.id.logout:
                     Intent signOutIntent = new Intent(this,LoginActivity.class);
                     mauth.signOut();

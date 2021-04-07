@@ -275,6 +275,11 @@ public class ProfiiliActivity extends AppCompatActivity {
                     finish();
                     startActivity(getIntent());
                     break;
+                case R.id.chat:
+                    Intent chatIntent = new Intent(this,ChatActivity.class);
+                    startActivity(chatIntent);
+                    finish();
+                    break;
                 case R.id.logout:
                     mauth.signOut();
                     Intent signOutIntent = new Intent(this, LoginActivity.class);

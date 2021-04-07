@@ -17,7 +17,6 @@ public class varmistusActivity extends AppCompatActivity  {
     private FirebaseAuth mauth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mauth.getCurrentUser();
     Button checkBtn;
-    boolean IS_EMAIL_VERIFIED = false;
     private int count = 0;
     private Handler handler = new Handler();
     private Runnable runnable;
@@ -48,7 +47,6 @@ public class varmistusActivity extends AppCompatActivity  {
         Log.e("Tag", "Verifying");
         Log.e("Tag", String.valueOf(currentUser.isEmailVerified()));
         if (currentUser.isEmailVerified()) {
-            IS_EMAIL_VERIFIED = true;
             Toast.makeText(getApplicationContext(), "Email verification complete!", Toast.LENGTH_LONG).show();
             Intent setIntent = new Intent(varmistusActivity.this, LoginActivity.class);
             startActivity(setIntent);
