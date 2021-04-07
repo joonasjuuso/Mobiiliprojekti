@@ -46,6 +46,7 @@ public class Mokki_List extends AppCompatActivity {
         profiiliKuva = findViewById(R.id.profiiliKuva);
         createMokkiItem();
         buildRecyclerView();
+
         if(currentUser!=null) {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
                     .addOnSuccessListener(uri -> {
@@ -54,6 +55,13 @@ public class Mokki_List extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         profiiliKuva.setImageResource(R.mipmap.ic_launcher);
                     });
+
+
+            if(currentUser.getDisplayName() == null) {
+                Log.d("TAG", "moro " + currentUser.getDisplayName());
+            } else { Log.d("TAG", "EI OO NULL"); }
+
+
         } else if(currentUser==null) {
             profiiliKuva.setImageResource(R.mipmap.ic_launcher);
         }
@@ -63,7 +71,12 @@ public class Mokki_List extends AppCompatActivity {
             Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
             startActivity(vuokraaIntent);
         });
-
+    }
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this, LoginActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 
     //Manuaalisesti täytettävä
@@ -99,7 +112,6 @@ public class Mokki_List extends AppCompatActivity {
     //Vasemman vetolaatikon metoodeja
     public void onClick_Drawermenu(View view) {
         openDrawermenu(drawerLayout);
-        Log.d("TAG", "moro " + currentUser.getDisplayName());
     }
 
     public void closeDrawermenu(View view) {
@@ -118,16 +130,6 @@ public class Mokki_List extends AppCompatActivity {
             Intent kirjauduIntent = new Intent(this, LoginActivity.class);
             startActivity(kirjauduIntent);
             finish();
-        } else {
-            //PASKA HOMMA TÄSSÄ ON ETTÄ GOOGLE TILILTÄ KIRJAUTUNEITTEN NIMET MENEE VITUIKS
-            if(currentUser.getDisplayName() == null) {
-                String cutattu = currentUser.getEmail();
-                cutattu = cutattu.split("@")[0];
-                UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(cutattu).build();
-                currentUser.updateProfile(profileUpdate);
-                Log.d("TAG", "moro " + currentUser.getDisplayName());
-            } else { Log.d("TAG", "EI OO NULL"); }
         }
 
         PopupMenu popup = new PopupMenu(this, profiiliKuva);

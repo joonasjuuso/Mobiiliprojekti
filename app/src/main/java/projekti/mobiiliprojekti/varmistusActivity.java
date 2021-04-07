@@ -80,7 +80,7 @@ public class varmistusActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         handler.removeCallbacks(runnable);
-        Intent setIntent = new Intent(varmistusActivity.this, LoginActivity.class);
+        Intent setIntent = new Intent(this, LoginActivity.class);
         startActivity(setIntent);
         finish();
     }

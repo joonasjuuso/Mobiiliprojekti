@@ -26,6 +26,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -85,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                 resetEmail();
             }
         });
-
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -122,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
+            }
 
     private void resetEmail() {
         Log.e("Tag", "resetEmail");
@@ -170,12 +171,12 @@ public class LoginActivity extends AppCompatActivity {
     public void clickLuoTunnus(View view) {
 
         if (currentUser != null) {
-            Log.d("TAG", "kirjaudutaan ulos ekaksi ;)");
+            Log.d("TAG", "kirjaudutaan ulos ekaksi ");
             mAuth.signOut();
             Intent i = new Intent(this, LuoTunnus.class);
             startActivity(i);
         } else {
-            Log.d("TAG", "moikka tyhjä käyttäjä, luodaan uusi");
+            Log.d("TAG", "null käyttäjä, luodaan uusi");
             Intent i = new Intent(this, LuoTunnus.class);
             startActivity(i);
         }
@@ -198,6 +199,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (currentUser.isEmailVerified()) {
                                 Log.d("TAG", "emaili on vahvistettu");
                                 startActivity(mokkiIntent);
+                                finish();
                             } else {
                                 Log.d("TAG", "emaili ei ole vahvistettu");
                                 startActivity(varmistusIntent);
@@ -220,11 +222,24 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if (currentUser != null) {
             currentUser.reload();
-            String email = currentUser.getEmail();
-            editEmail.setText(email);
             Log.d("TAG", "DEBUGuser ei ole null");
+
+            //tarkistetaan onko käyttäjä email/passu vai google useri
+            String strProvider = FirebaseAuth.getInstance().
+                    getAccessToken(false).getResult().getSignInProvider();
+            if (strProvider.equals("password")) {
+
+                textTervehdys.setText("Terve " + currentUser.getDisplayName());
+                Log.d("TAG", "email/passu käyttäjä");
+                editEmail.setText(currentUser.getEmail());
+
+            } else if (strProvider.equals("google.com")) {
+                Log.d("TAG", "google käyttäjä");
+                textTervehdys.setText("Terve " + currentUser.getDisplayName() + "\n(google käyttäjä)");
+                editEmail.setText("PAINA GOOGLE NAPPIA");
+            }
             if (!currentUser.isEmailVerified()) {
-                Log.d("TAG", "DEBUGemaili ei ole vahvistettu ;)");
+                Log.d("TAG", "DEBUGemaili ei ole vahvistettu");
             }
         } else {
             Log.d("TAG", "DEBUGuser on null");

@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class LuoTunnus extends AppCompatActivity {
 
@@ -59,6 +60,15 @@ public class LuoTunnus extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Käyttäjä luotu", Toast.LENGTH_SHORT).show();
                         currentUser = mAuth.getCurrentUser();
                         currentUser.reload();
+
+                        //jos email/passu käyttäjällä ei ole nimeä, splitataan displayNameksi sähköpostin nimi
+                        if(currentUser.getDisplayName() == null) {
+                            String cutattu = currentUser.getEmail();
+                            cutattu = cutattu.split("@")[0];
+                            UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(cutattu).build();
+                            currentUser.updateProfile(profileUpdate);
+                        }
 
                         if(!currentUser.isEmailVerified()) {
                             vahvistaEmail();
