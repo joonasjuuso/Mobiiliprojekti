@@ -1,0 +1,49 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10sp"
+    android:background="@color/alpha_gray"
+    android:id="@+id/mainScreen">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:onClick="onClick_Drawermenu"
+        android:src="@drawable/ic_arrow_back"/>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_action_msg"
+        android:padding="2dp"/>
+
+    <TextView
+        android:layout_width="302dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick_Usermenu"
+            android:id="@+id/profiiliKuva"
+            android:src="@drawable/ic_account_box"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

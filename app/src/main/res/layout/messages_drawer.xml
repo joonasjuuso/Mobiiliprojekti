@@ -1,0 +1,30 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layoutScreen"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/backButton"
+        android:src="@drawable/ic_arrow_back"
+        android:layout_gravity="end"
+        android:padding="2dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"/>
+
+</LinearLayout>
+<androidx.recyclerview.widget.RecyclerView
+android:id="@+id/private_messages_list_of_users"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_above="@+id/chat_linear_layout"
+android:layout_below="@+id/layoutScreen"
+android:layout_marginTop="0dp"
+android:layout_marginBottom="6dp"></androidx.recyclerview.widget.RecyclerView>
+    </RelativeLayout>

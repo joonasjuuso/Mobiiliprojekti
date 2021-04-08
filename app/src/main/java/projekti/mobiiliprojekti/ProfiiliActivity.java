@@ -275,6 +275,11 @@ public class ProfiiliActivity extends AppCompatActivity {
                     finish();
                     startActivity(getIntent());
                     break;
+                case R.id.chat:
+                    Intent chatIntent = new Intent(this,ChatActivity.class);
+                    startActivity(chatIntent);
+                    finish();
+                    break;
                 case R.id.logout:
                     mauth.signOut();
                     Intent signOutIntent = new Intent(this, LoginActivity.class);
@@ -284,9 +289,22 @@ public class ProfiiliActivity extends AppCompatActivity {
             }
             return false;
         });
-        popup.inflate(R.menu.profiilimenu_list);
-        popup.show();
+        if(currentUser != null) {
+            popup.inflate(R.menu.menu_list);
+            if (currentUser.getDisplayName() != null) {
+                popup.getMenu().findItem(R.id.user).setTitle(currentUser.getDisplayName());
+            } else {
+                popup.getMenu().findItem(R.id.user).setTitle(currentUser.getEmail());
+            }
+            popup.show();
+        }
+        else if(currentUser == null) {
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
+            startActivity(kirjauduIntent);
+            finish();
+        }
     }
+
     private void reAuthenticate() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);

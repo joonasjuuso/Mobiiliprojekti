@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -44,6 +46,7 @@ public class Mokki_List extends AppCompatActivity {
         profiiliKuva = findViewById(R.id.profiiliKuva);
         createMokkiItem();
         buildRecyclerView();
+
         if(currentUser!=null) {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
                     .addOnSuccessListener(uri -> {
@@ -52,6 +55,13 @@ public class Mokki_List extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         profiiliKuva.setImageResource(R.mipmap.ic_launcher);
                     });
+
+
+            if(currentUser.getDisplayName() == null) {
+                Log.d("TAG", "moro " + currentUser.getDisplayName());
+            } else { Log.d("TAG", "EI OO NULL"); }
+
+
         } else if(currentUser==null) {
             profiiliKuva.setImageResource(R.mipmap.ic_launcher);
         }
@@ -61,7 +71,12 @@ public class Mokki_List extends AppCompatActivity {
             Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
             startActivity(vuokraaIntent);
         });
-
+    }
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this, LoginActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 
     //Manuaalisesti täytettävä
@@ -108,18 +123,29 @@ public class Mokki_List extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+
     //Oikeanpuolen menu hommelit
     public void onClick_Usermenu(View view) {
+        if(currentUser == null){
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
+            startActivity(kirjauduIntent);
+            finish();
+        }
+
         PopupMenu popup = new PopupMenu(this, profiiliKuva);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.user:
-                    Intent intent = new Intent(Mokki_List.this, ProfiiliActivity.class);
+                    Intent intent = new Intent(this, ProfiiliActivity.class);
                     startActivity(intent);
                     break;
+                case R.id.chat:
+                    Intent chatIntent = new Intent(this,ChatActivity.class);
+                    startActivity(chatIntent);
+                    break;
                 case R.id.logout:
-                    mauth.signOut();
                     Intent signOutIntent = new Intent(this,LoginActivity.class);
+                    mauth.signOut();
                     startActivity(signOutIntent);
                     finish();
                     break;
@@ -134,11 +160,6 @@ public class Mokki_List extends AppCompatActivity {
                 popup.getMenu().findItem(R.id.user).setTitle(currentUser.getEmail());
             }
             popup.show();
-        }
-        else if(currentUser == null) {
-            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
-            startActivity(kirjauduIntent);
-            finish();
         }
     }
 }
