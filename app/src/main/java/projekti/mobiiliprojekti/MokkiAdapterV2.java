@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
     public interface OnItemClickListener
     {
         void onItemClick(int position);
+        void onDeleteClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener)
@@ -57,6 +59,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         public TextView textViewOtsikko;
         public TextView textViewHinta;
         public ImageView imageViewKuva;
+        public ImageView imageViewDelete;
 
         public MokkiviewHolderV2(View itemView, OnItemClickListener listener)
         {
@@ -65,6 +68,10 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
             textViewOtsikko = itemView.findViewById(R.id.TextViewOtsikko);
             textViewHinta = itemView.findViewById(R.id.TextViewHinta);
             imageViewKuva = itemView.findViewById(R.id.imageViewMokkiKuva);
+            imageViewDelete = itemView.findViewById(R.id.ImageViewDelete);
+
+            imageViewDelete.setVisibility(View.INVISIBLE);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -73,6 +80,18 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
                             listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+            imageViewDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onDeleteClick(position);
                         }
                     }
                 }

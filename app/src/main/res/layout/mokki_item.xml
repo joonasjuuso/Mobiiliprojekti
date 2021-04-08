@@ -20,6 +20,15 @@
             android:layout_marginBottom="24dp"
             android:id="@+id/imageViewMokkiKuva"/>
 
+        <ImageView
+            android:id="@+id/ImageViewDelete"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_delete"
+            android:layout_alignParentRight="true">
+
+        </ImageView>
+
 
         <TextView
             android:id="@+id/TextViewOtsikko"

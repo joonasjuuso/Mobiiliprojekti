@@ -3,6 +3,8 @@ package projekti.mobiiliprojekti;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
 public class MokkiItem implements Parcelable{
     private String mMokkiImage;
     private String mOtsikko;
@@ -16,6 +18,7 @@ public class MokkiItem implements Parcelable{
     private String mKuvaus;
     private String mOtsikkoID;
     private String mVuokraaja;
+    private String mKey;
     //private String mOmistaja;
 
     public MokkiItem()
@@ -120,10 +123,8 @@ public class MokkiItem implements Parcelable{
         //dest.writeString(mOmistaja);
     }
 
-    @Override
-    public String toString()
-    {
-        return "MokkiItem{" +
-                "vuokraaja='" + mVuokraaja + '/' + '}';
-    }
+    @Exclude
+    public String getKey() { return mKey; }
+    @Exclude
+    public void setKey(String key) { mKey = key; }
 }

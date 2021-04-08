@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -43,27 +44,23 @@ public class Mokki_List extends AppCompatActivity {
 
     private RecyclerView fbRecyclerView;
 
-    //private RecyclerView.LayoutManager mLayoutManager;
-
     private DatabaseReference fbDatabaseRef;
     private List<MokkiItem> mMokkiItem;
     private MokkiAdapterV2 mAdapter;
-    //private MokkiAdapterV2.OnItemClickListener listener;
-
-    //private DatabaseReference mDataBaseRef;
-
 
     private FirebaseAuth mauth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mauth.getCurrentUser();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef =  storage.getReference();
 
-
+    private ValueEventListener fbDbListener;
 
     ImageView profiiliKuva;
     private Button bLaitaVuokralle;
     private  Button bNaytaKaikkienMokit;
     private Button bOmatMokit;
+
+    //private ImageView imageViewDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +70,8 @@ public class Mokki_List extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
 
+        //imageViewDelete = findViewById(R.id.ImageViewDelete);
+
         fbRecyclerView = findViewById(R.id.recyclerView);
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -80,6 +79,10 @@ public class Mokki_List extends AppCompatActivity {
 
         mMokkiItem = new ArrayList<>();
 
+        //mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
+        //fbRecyclerView.setAdapter(mAdapter);
+
+        //imageViewDelete.setVisibility(View.INVISIBLE);
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
         bLaitaVuokralle.setOnClickListener(view -> {
@@ -92,6 +95,7 @@ public class Mokki_List extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 naytaOmatMokit();
+                //imageViewDelete.setVisibility(View.VISIBLE);
             }
         });
 
@@ -100,6 +104,7 @@ public class Mokki_List extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 naytaKaikkiMokit();
+                //imageViewDelete.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -129,30 +134,26 @@ public class Mokki_List extends AppCompatActivity {
 
     private void naytaOmatMokit()
     {
-        /*fbRecyclerView = findViewById(R.id.recyclerView);
-        fbRecyclerView.setHasFixedSize(true);
-        fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mMokkiItem = new ArrayList<>();*/
-
         mMokkiItem.clear();
 
         Intent intent = new Intent(this, MokkiNakyma.class);
 
-        //fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
         Query query = fbDatabaseRef.orderByChild("vuokraaja").equalTo(currentUser.getDisplayName());
 
-        query.addValueEventListener(new ValueEventListener() {
+        fbDbListener = query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    mokkiItem.setKey(postSnapshot.getKey());
                     mMokkiItem.add(mokkiItem);
                 }
+
 
                 mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
 
                 fbRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
 
                 mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
                     @Override
@@ -160,6 +161,11 @@ public class Mokki_List extends AppCompatActivity {
                         mMokkiItem.get(position);
                         intent.putExtra("Mokki", mMokkiItem.get(position));
                         startActivity(intent);
+                    }
+
+                    @Override
+                    public void onDeleteClick(int position) {
+                        deleteMokki(position);
                     }
                 });
             }
@@ -177,20 +183,21 @@ public class Mokki_List extends AppCompatActivity {
 
         Intent intent = new Intent(this, MokkiNakyma.class);
 
-        //fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
-        //Query query = fbDatabaseRef.orderByChild("vuokraaja").equalTo(currentUser.getDisplayName());
-
-        fbDatabaseRef.addValueEventListener(new ValueEventListener() {
+        fbDbListener = fbDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    mokkiItem.setKey(postSnapshot.getKey());
                     mMokkiItem.add(mokkiItem);
                 }
+
+
 
                 mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
 
                 fbRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
 
                 mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
                     @Override
@@ -199,12 +206,35 @@ public class Mokki_List extends AppCompatActivity {
                         intent.putExtra("Mokki", mMokkiItem.get(position));
                         startActivity(intent);
                     }
+
+                    @Override
+                    public void onDeleteClick(int position) {
+                        deleteMokki(position);
+                    }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //@Override
+    private void deleteMokki(int position)
+    {
+        MokkiItem selectedItem = mMokkiItem.get(position);
+        String selectedKey = selectedItem.getKey();
+        //fbDatabaseRef.child(selectedKey).removeValue();
+        //mAdapter.notifyItemRemoved(position);
+
+        StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
+        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                fbDatabaseRef.child(selectedKey).removeValue();
+                Toast.makeText(Mokki_List.this, "Mökki poistettu", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -266,5 +296,12 @@ public class Mokki_List extends AppCompatActivity {
             startActivity(kirjauduIntent);
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        fbDatabaseRef.removeEventListener(fbDbListener);
     }
 }

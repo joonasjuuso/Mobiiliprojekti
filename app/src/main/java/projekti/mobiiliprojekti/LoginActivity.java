@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        //updateUI(currentUser);
 
         textKirjautumatta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
     public void clickKirjaudu(View view) {
         String email = editEmail.getText().toString();
         String password = editPassword.getText().toString();
-        updateUI(currentUser);
+        //updateUI(currentUser);
 
         if (email.matches("") || password.matches("")) {
             Log.d("TAG", "tyhjä salis tai tyhjä email");
@@ -219,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-    private void updateUI(FirebaseUser user) {
+    /*private void updateUI(FirebaseUser user) {
         if (currentUser != null) {
             currentUser.reload();
             Log.d("TAG", "DEBUGuser ei ole null");
@@ -244,5 +244,5 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Log.d("TAG", "DEBUGuser on null");
         }
-    }
+    }*/
 }
