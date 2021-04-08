@@ -3,8 +3,8 @@ package projekti.mobiiliprojekti;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MokkiItem implements Parcelable {
-    //private int mMokkiImage;
+public class MokkiItem implements Parcelable{
+    private String mMokkiImage;
     private String mOtsikko;
     private String mHinta;
     private String mOsoite;
@@ -18,13 +18,16 @@ public class MokkiItem implements Parcelable {
     private String mVuokraaja;
     //private String mOmistaja;
 
-
-
-    public MokkiItem(/*int MokkiImage,*/ String otsikko, String hinta, String osoite, String huoneMaara,
-                     String nelioMaara, String lammitys, String vesi, String sauna,
-                     String kuvaus, String otsikkoID, String vuokraaja/*, String omistaja*/)
+    public MokkiItem()
     {
-        //mMokkiImage = MokkiImage;
+
+    }
+
+    public MokkiItem(String MokkiImage, String otsikko, String hinta, String osoite, String huoneMaara,
+                     String nelioMaara, String lammitys, String vesi, String sauna, String kuvaus, String otsikkoID,
+                     String vuokraaja /*, String omistaja*/)
+    {
+        mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
         mHinta = hinta;
         mOsoite = osoite;
@@ -40,7 +43,7 @@ public class MokkiItem implements Parcelable {
     }
 
     protected MokkiItem(Parcel in) {
-        //mMokkiImage = in.readInt();
+        mMokkiImage = in.readString();
         mOtsikko = in.readString();
         mHinta = in.readString();
         mOsoite = in.readString();
@@ -67,7 +70,7 @@ public class MokkiItem implements Parcelable {
         }
     };
 
-    //public int getMokkiImage() { return mMokkiImage; }
+    public String getMokkiImage() { return mMokkiImage; }
     public String getOtsikko() { return mOtsikko; }
     public String getHinta() { return mHinta; }
     public String getOsoite() { return mOsoite; }
@@ -81,6 +84,20 @@ public class MokkiItem implements Parcelable {
     public String getVuokraaja() { return mVuokraaja; }
     //public String getOmistaja() { return mOmistaja; }
 
+
+    public void setMokkiImage(String mokkiImage) { this.mMokkiImage = mokkiImage; }
+    public void setOtsikko(String otsikko ) { this.mOtsikko = otsikko; }
+    public void setHinta(String hinta ) { this.mHinta = hinta; }
+    public void setOsoite(String osoite ) { this.mOsoite = osoite; }
+    public void setHuoneMaara(String huoneMaara ) { this.mHuoneMaara = huoneMaara; }
+    public void setNelioMaara(String nelioMaara ) { this.mNelioMaara = nelioMaara; }
+    public void setLammitys(String lammitys ) { this.mLammitys = lammitys; }
+    public void setVesi(String vesi ) { this.mVesi = vesi; }
+    public void setSauna(String sauna ) { this.mSauna = sauna; }
+    public void setKuvaus(String kuvaus ) { this.mKuvaus = kuvaus; }
+    public void setOtsikkoID(String otsikkoID ) { this.mOtsikkoID = otsikkoID; }
+    public void setVuokraaja(String vuokraaja ) { this.mVuokraaja = vuokraaja; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -88,7 +105,7 @@ public class MokkiItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        //dest.writeInt(mMokkiImage);
+        dest.writeString(mMokkiImage);
         dest.writeString(mOtsikko);
         dest.writeString(mHinta);
         dest.writeString(mOsoite);
@@ -101,5 +118,12 @@ public class MokkiItem implements Parcelable {
         dest.writeString(mOtsikkoID);
         dest.writeString(mVuokraaja);
         //dest.writeString(mOmistaja);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "MokkiItem{" +
+                "vuokraaja='" + mVuokraaja + '/' + '}';
     }
 }

@@ -17,6 +17,31 @@
         </include>
 
         <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/bNaytaKaikkienMokit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kaikki Mökit">
+            </Button>
+            <Button
+                android:id="@+id/bOmatMökit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Omat Mökit"
+                android:layout_toEndOf="@+id/bNaytaKaikkienMokit">
+            </Button>
+            <Button
+                android:id="@+id/bVuokratut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vuokra Mökit"
+                android:layout_toEndOf="@+id/bOmatMökit">
+            </Button>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -26,16 +51,6 @@
                 android:layout_height="match_parent"
                 android:padding="4dp"
                 android:scrollbars="vertical"/>
-
-
-            <Button
-                android:id="@+id/bLaitaVuokralle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:text="V">
-            </Button>
 
         </RelativeLayout>
 

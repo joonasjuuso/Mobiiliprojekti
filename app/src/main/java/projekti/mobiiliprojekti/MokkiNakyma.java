@@ -2,6 +2,7 @@ package projekti.mobiiliprojekti;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,10 +10,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+
 public class MokkiNakyma extends AppCompatActivity {
 
     Button bTakaisinMokkilistaan;
     Button bVuokraa;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +27,7 @@ public class MokkiNakyma extends AppCompatActivity {
         Intent intent = getIntent();
         MokkiItem mokkiItem = intent.getParcelableExtra("Mokki");
 
-        //int MokkiImage = mokkiItem.getMokkiImage();
+        String MokkiImage = mokkiItem.getMokkiImage();
         String MokkiOtsikko = mokkiItem.getOtsikko();
         String MokkiHinta = mokkiItem.getHinta();
         String MokkiOsoite = mokkiItem.getOsoite();
@@ -36,8 +41,8 @@ public class MokkiNakyma extends AppCompatActivity {
         String Vuokraaja = mokkiItem.getVuokraaja();
         //String Mokkiomistaja = mokkiItem.getOmistaja();
 
-        //ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
-        //imageViewMokki.setImageResource(MokkiImage);
+        ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
+        Picasso.with(mContext).load(mokkiItem.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(imageViewMokki);
 
         TextView textViewOtsikko = findViewById(R.id.OtsikkoMokkiNakyma);
         textViewOtsikko.setText(MokkiOtsikko);

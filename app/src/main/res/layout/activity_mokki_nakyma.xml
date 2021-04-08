@@ -20,7 +20,7 @@
 
             <ImageView
                 android:id="@+id/ImageMokkiNakyma"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="250dp" />
 
             <TextView
@@ -32,45 +32,87 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Hinta:"/>
+            <TextView
                 android:id="@+id/HintaMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Osoite:"/>
             <TextView
                 android:id="@+id/OsoiteMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Huoneiden lukumäärä:"/>
             <TextView
                 android:id="@+id/HuoneetMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Kohteen pinta-ala:"/>
             <TextView
                 android:id="@+id/NeliotMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Kohteen lämmitys:"/>
             <TextView
                 android:id="@+id/LammitysMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Onko kohteessa juokseva vesi:"/>
             <TextView
                 android:id="@+id/VesiMokkiNakyma"
                 android:layout_width="wrap_content"
@@ -79,6 +121,13 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Onko kohteessa sauna:"/>
             <TextView
                 android:id="@+id/SaunaMokkiNakyma"
                 android:layout_width="wrap_content"

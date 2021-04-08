@@ -21,8 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -33,16 +35,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 
 public class IlmoitusVarmistus extends AppCompatActivity {
 
-    private FirebaseAuth mauth = FirebaseAuth.getInstance();
-    private FirebaseUser currentUser = mauth.getCurrentUser();
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
 
-    private StorageReference mStorageRef;
     private DatabaseReference mDataBaseref;
+
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
 
     private String eOtsikko;
     private String eHinta;
@@ -55,11 +60,14 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String eKuvaus;
     private String eOtsikkoID;
     private String eVuokraaja;
-    private Bitmap eMokkiKuva = null;
+    private String MokkiKuva;
     //private String eOmistaja;
 
-    private Button bTakaisinIlmoitukseen;
-    private Button bAsetaVuokralle;
+    private Uri mImageUri;
+
+    File file = new File (String.valueOf(mImageUri));
+
+    private ImageView sImageUpload;
 
     DatabaseReference dbMokki;
 
@@ -69,13 +77,11 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ilmoitus_varmistus);
 
-        dbMokki = FirebaseDatabase.getInstance().getReference("Käyttäjät/" + currentUser.getDisplayName() + "/" + "Vuokralla olevat mökit");
+        dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
 
-        bTakaisinIlmoitukseen = findViewById(R.id.bTakaisinIlmoitukseen);
-        bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
+        Button bTakaisinIlmoitukseen = findViewById(R.id.bTakaisinIlmoitukseen);
+        Button bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference( "Mökkien kuvia");
-        mDataBaseref = FirebaseDatabase.getInstance().getReference("Mökkien kuvia");
 
         Intent varmistaIntent = getIntent();
         eOtsikko = varmistaIntent.getStringExtra("eOtsikko");
@@ -88,15 +94,6 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eSauna = varmistaIntent.getStringExtra("eSauna");
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
 
-        String filename = varmistaIntent.getStringExtra("eKuva");
-        try
-        {
-            FileInputStream is = this.openFileInput(filename);
-            eMokkiKuva = BitmapFactory.decodeStream(is);
-            is.close();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
 
         TextView sOtsikko = findViewById(R.id.sOtsikko);
         TextView sHinta = findViewById(R.id.sHinta);
@@ -107,7 +104,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         TextView sVesi = findViewById(R.id.sVesi);
         TextView sSauna = findViewById(R.id.sSauna);
         TextView sKuvaus = findViewById(R.id.sKuvaus);
-        ImageView sImageUpload = findViewById(R.id.ImageViewUpload);
+        sImageUpload = findViewById(R.id.ImageViewUpload);
 
         sOtsikko.setText(eOtsikko);
         sHinta.setText(eHinta);
@@ -119,35 +116,55 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sSauna.setText(eSauna);
         sKuvaus.setText(eKuvaus);
 
-        sImageUpload.setImageBitmap(eMokkiKuva);
+        if(currentUser!=null) {
+            storageRef.child("Mökkien kuvia/" + currentUser.getUid()).getDownloadUrl()
+                    .addOnSuccessListener(uri -> {
+                        Glide.with(getApplicationContext()).load(uri.toString()).into(sImageUpload);
+                        MokkiKuva = uri.toString();
+                    })
+                    .addOnFailureListener(e -> sImageUpload.setImageResource(R.mipmap.ic_launcher));
+        } else if(currentUser==null) {
+            sImageUpload.setImageResource(R.mipmap.ic_launcher);
+        }
 
 
-        bTakaisinIlmoitukseen.setOnClickListener( view -> {
+        bTakaisinIlmoitukseen.setOnClickListener(view -> {
             Intent takaisinIlmoitukseen = new Intent(this, LaitaVuokralle.class);
             startActivity(takaisinIlmoitukseen);
         });
 
 
-        bAsetaVuokralle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addMokki();
-            }
-        });
+        bAsetaVuokralle.setOnClickListener(v -> addMokki());
+        //getUrlAsync();
 
     }
 
     private void addMokki()
     {
         eVuokraaja = currentUser.getDisplayName();
-        eOtsikkoID = eOtsikko;
+        eOtsikkoID = eVuokraaja + eOtsikko;
 
         eOtsikkoID = dbMokki.push().getKey();
 
-        MokkiItem mokki = new MokkiItem(/*MokkiKuva,*/ eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
+        MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
                 eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja/*, eOmistaja*/);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
+    }
+
+    private void getUrlAsync(String date)
+    {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference dateRef = storageRef.child("Mökkien kuvia/" + currentUser.getDisplayName());
+        dateRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri downloadUri) {
+                MokkiKuva = String.valueOf(downloadUri);
+
+                Glide.with(getApplicationContext()).load(downloadUri.toString()).into(sImageUpload);
+                //return date;
+            }
+        });
     }
 
 }

@@ -5,13 +5,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,10 +27,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -39,31 +50,17 @@ public class LaitaVuokralle extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    private FirebaseAuth mauth = FirebaseAuth.getInstance();
-    private FirebaseUser currentUser = mauth.getCurrentUser();
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference storageRef =  storage.getReference();
-    private StorageReference mokkiRef = storageRef.child(currentUser.getDisplayName() + "/" + "Mökkien kuvat/Varmistamattomat kuvat");
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
+    //private FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    private Button bChooseimage;
-    private Button bUploadImage;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
+    private final StorageReference mokkiRef = storageRef.child("Mökkien kuvia");
+
     private ImageView ImageViewUpload;
-    private ProgressBar UploadImageProgressBar;
 
     private Uri mImageUri;
-
-    private Button bTakaisinMokkiListaan;
-    private Button bAsetaVuokralle;
-
-    private EditText EditOtsikko;
-    private EditText EditHinta;
-    private EditText EditOsoite;
-    private Spinner EditHuoneet;
-    private EditText EditNeliot;
-    private EditText EditLammitys;
-    private Spinner EditVesi;
-    private Spinner EditSauna;
-    private EditText EditKuvaus;
 
 
     @Override
@@ -71,37 +68,26 @@ public class LaitaVuokralle extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laita_vuokralle);
 
-        bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
-        bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
+        Button bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
+        Button bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 
 
-        bChooseimage = findViewById(R.id.bChooseImage);
-        bUploadImage = findViewById(R.id.bUpload);
+        Button bChooseimage = findViewById(R.id.bChooseImage);
+        Button bUploadImage = findViewById(R.id.bUpload);
         ImageViewUpload = findViewById(R.id.ImageViewUpload);
-        UploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
+        ProgressBar uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
 
-        bChooseimage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OpenImageChooser();
-            }
-        });
 
-        bUploadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage();
-            }
-        });
+        bChooseimage.setOnClickListener(v -> OpenImageChooser());
+
+        bUploadImage.setOnClickListener(v -> uploadImage());
 
         bTakaisinMokkiListaan.setOnClickListener(View -> {
             Intent takaisinMokkiListaan = new Intent(this, Mokki_List.class);
             startActivity(takaisinMokkiListaan);
         });
 
-        bAsetaVuokralle.setOnClickListener(view -> {
-            AsetaVuokralle();
-        });
+        bAsetaVuokralle.setOnClickListener(view -> AsetaVuokralle());
 
     }
 
@@ -109,35 +95,35 @@ public class LaitaVuokralle extends AppCompatActivity {
     {
         Intent varmistaIntent = new Intent(this, IlmoitusVarmistus.class);
 
-        EditOtsikko =  findViewById(R.id.EditOtsikko);
-        String eOtsikko = EditOtsikko.getText().toString();
+        EditText editOtsikko = findViewById(R.id.EditOtsikko);
+        String mOtsikko = editOtsikko.getText().toString();
 
-        EditHinta = findViewById(R.id.EditHinta);
-        String eHinta = EditHinta.getText().toString();
+        EditText editHinta = findViewById(R.id.EditHinta);
+        String eHinta = editHinta.getText().toString();
 
-        EditOsoite = findViewById(R.id.EditOsoite);
-        String eOsoite = EditOsoite.getText().toString();
+        EditText editOsoite = findViewById(R.id.EditOsoite);
+        String eOsoite = editOsoite.getText().toString();
 
-        EditHuoneet = findViewById(R.id.HuoneMaaraSpinner);
-        String eHuoneet = EditHuoneet.getSelectedItem().toString();
+        Spinner editHuoneet = findViewById(R.id.HuoneMaaraSpinner);
+        String eHuoneet = editHuoneet.getSelectedItem().toString();
 
-        EditNeliot = findViewById(R.id.EditNelioMaara);
-        String eNeliot = EditNeliot.getText().toString();
+        EditText editNeliot = findViewById(R.id.EditNelioMaara);
+        String eNeliot = editNeliot.getText().toString();
 
-        EditLammitys = findViewById(R.id.EditLammitys);
-        String eLammitys = EditLammitys.getText().toString();
+        EditText editLammitys = findViewById(R.id.EditLammitys);
+        String eLammitys = editLammitys.getText().toString();
 
-        EditVesi = findViewById(R.id.VesiSpinner);
-        String eVesi = EditVesi.getSelectedItem().toString();
+        Spinner editVesi = findViewById(R.id.VesiSpinner);
+        String eVesi = editVesi.getSelectedItem().toString();
 
-        EditSauna = findViewById(R.id.SaunaSpinner);
-        String eSauna = EditSauna.getSelectedItem().toString();
+        Spinner editSauna = findViewById(R.id.SaunaSpinner);
+        String eSauna = editSauna.getSelectedItem().toString();
 
-        EditKuvaus = findViewById(R.id.EditKuvaus);
-        String eKuvaus = EditKuvaus.getText().toString();
+        EditText editKuvaus = findViewById(R.id.EditKuvaus);
+        String eKuvaus = editKuvaus.getText().toString();
 
 
-        varmistaIntent.putExtra("eOtsikko", eOtsikko);
+        varmistaIntent.putExtra("eOtsikko", mOtsikko);
         varmistaIntent.putExtra("eHinta", eHinta);
         varmistaIntent.putExtra("eOsoite", eOsoite);
         varmistaIntent.putExtra("eHuoneet", eHuoneet);
@@ -159,28 +145,19 @@ public class LaitaVuokralle extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+    protected void onActivityResult(int requestCode,int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             mImageUri = data.getData();
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
             try
             {
+                BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri), null, options);
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
                 ImageViewUpload.setImageBitmap(bitmap);
-
-                String filename = "bitmap.png";
-                //Bitmap bmp;
-                FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                //stream.close();
-                //bitmap.recycle();
-
-                Intent varmistaIntent = new Intent(this, IlmoitusVarmistus.class);
-                varmistaIntent.putExtra("eKuva", filename);
-
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -189,24 +166,18 @@ public class LaitaVuokralle extends AppCompatActivity {
     private void uploadImage() {
         if (mImageUri != null) {
 
-            mokkiRef.child("/"+currentUser.getUid()).putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(getApplicationContext(),"Kuva Lisätty!",Toast.LENGTH_LONG).show();
-                }
+            mokkiRef.child("/" + currentUser.getUid()).putFile(mImageUri).addOnSuccessListener(taskSnapshot -> {
+                Toast.makeText(getApplicationContext(),"Kuva Lisätty!",Toast.LENGTH_LONG).show();
+                storageRef.child("Mökkien kuvia/"+currentUser.getUid()).getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            Glide.with(getApplicationContext()).load(uri.toString()).into(ImageViewUpload);
+                        });
             })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(),"Virhe kuvan päivityksessä",Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                        }
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"Virhe kuvan päivityksessä",Toast.LENGTH_LONG).show())
+                    .addOnProgressListener(snapshot -> {
+                        double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                     });
         }
     }
+
 }

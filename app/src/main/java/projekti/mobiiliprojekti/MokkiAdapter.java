@@ -6,9 +6,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+
 import java.util.ArrayList;
+
 
 public class MokkiAdapter extends RecyclerView.Adapter<MokkiAdapter.MokkiViewHolder> {
     private ArrayList<MokkiItem> mMokki_scroll_list;
