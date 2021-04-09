@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobiiliprojekti"
         android:name=".setDeleteVisible">
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".ChatActivity" />
         <activity android:name=".MaksuActivity" />
         <activity android:name=".ProfiiliActivity" />
         <activity android:name=".varmistusActivity" />

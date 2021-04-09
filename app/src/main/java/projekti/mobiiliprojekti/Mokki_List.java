@@ -274,7 +274,8 @@ public class Mokki_List extends AppCompatActivity {
                     Intent intent = new Intent(this, ProfiiliActivity.class);
                     startActivity(intent);
                     break;
-                case R.id.chat:
+                case R.id.msg:
+                    Log.d("Tag","Valikko painettu");
                     Intent chatIntent = new Intent(this,ChatActivity.class);
                     startActivity(chatIntent);
                     break;

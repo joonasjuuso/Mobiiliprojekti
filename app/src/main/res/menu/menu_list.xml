@@ -6,6 +6,9 @@
         android:id="@+id/user"
         android:title="Tili" />
     <item
+        android:id="@+id/msg"
+        android:title="Viestit"/>
+    <item
         android:id="@+id/logout"
         android:title="Kirjaudu ulos"/>
 </menu>
