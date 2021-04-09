@@ -1,5 +1,6 @@
 package projekti.mobiiliprojekti;
 
+import android.app.Application;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +18,14 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.MokkiviewHolderV2>
 {
     private Context mContext;
     private List<MokkiItem> mMokkiList;
     private OnItemClickListener mOnItemClickListener;
+
 
     public interface OnItemClickListener
     {
@@ -46,7 +50,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         MokkiItem mokkiItemCurrent = mMokkiList.get(position);
         holder.textViewOtsikko.setText(mokkiItemCurrent.getOtsikko());
         holder.textViewHinta.setText(mokkiItemCurrent.getHinta());
-        Picasso.with(mContext).load(mokkiItemCurrent.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(holder.imageViewKuva);
+        Picasso.get().load(mokkiItemCurrent.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(holder.imageViewKuva);
     }
 
     @Override
@@ -59,7 +63,9 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         public TextView textViewOtsikko;
         public TextView textViewHinta;
         public ImageView imageViewKuva;
-        public ImageView imageViewDelete;
+        ImageView imageViewDelete;
+        public Button bOmatMokit;
+
 
         public MokkiviewHolderV2(View itemView, OnItemClickListener listener)
         {
@@ -70,7 +76,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
             imageViewKuva = itemView.findViewById(R.id.imageViewMokkiKuva);
             imageViewDelete = itemView.findViewById(R.id.ImageViewDelete);
 
-            imageViewDelete.setVisibility(View.INVISIBLE);
+            bOmatMokit = itemView.findViewById(R.id.bOmatMökit);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

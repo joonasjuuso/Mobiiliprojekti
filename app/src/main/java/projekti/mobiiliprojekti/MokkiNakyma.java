@@ -42,7 +42,7 @@ public class MokkiNakyma extends AppCompatActivity {
         //String Mokkiomistaja = mokkiItem.getOmistaja();
 
         ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
-        Picasso.with(mContext).load(mokkiItem.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(imageViewMokki);
+        Picasso.get().load(mokkiItem.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(imageViewMokki);
 
         TextView textViewOtsikko = findViewById(R.id.OtsikkoMokkiNakyma);
         textViewOtsikko.setText(MokkiOtsikko);

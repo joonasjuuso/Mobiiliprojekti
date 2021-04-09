@@ -38,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static projekti.mobiiliprojekti.R.id.ImageViewDelete;
+
 public class Mokki_List extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -60,7 +62,7 @@ public class Mokki_List extends AppCompatActivity {
     private  Button bNaytaKaikkienMokit;
     private Button bOmatMokit;
 
-    //private ImageView imageViewDelete;
+    ImageView ImageViewDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,6 @@ public class Mokki_List extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
 
-        //imageViewDelete = findViewById(R.id.ImageViewDelete);
 
         fbRecyclerView = findViewById(R.id.recyclerView);
         fbRecyclerView.setHasFixedSize(true);
@@ -82,7 +83,6 @@ public class Mokki_List extends AppCompatActivity {
         //mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
         //fbRecyclerView.setAdapter(mAdapter);
 
-        //imageViewDelete.setVisibility(View.INVISIBLE);
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
         bLaitaVuokralle.setOnClickListener(view -> {
@@ -91,20 +91,21 @@ public class Mokki_List extends AppCompatActivity {
         });
 
         bOmatMokit = findViewById(R.id.bOmatMökit);
-        bOmatMokit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                naytaOmatMokit();
-                //imageViewDelete.setVisibility(View.VISIBLE);
-            }
-        });
+        if( currentUser.getDisplayName() != null) {
+            bOmatMokit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    naytaOmatMokit();
+
+                }
+            });
+        }
 
         bNaytaKaikkienMokit = findViewById(R.id.bNaytaKaikkienMokit);
         bNaytaKaikkienMokit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 naytaKaikkiMokit();
-                //imageViewDelete.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -209,7 +210,7 @@ public class Mokki_List extends AppCompatActivity {
 
                     @Override
                     public void onDeleteClick(int position) {
-                        deleteMokki(position);
+                        //deleteMokki(position);
                     }
                 });
             }
@@ -235,6 +236,10 @@ public class Mokki_List extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 fbDatabaseRef.child(selectedKey).removeValue();
                 Toast.makeText(Mokki_List.this, "Mökki poistettu", Toast.LENGTH_SHORT).show();
+                //fbRecyclerView.setAdapter(mAdapter);
+                //mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemRemoved(position);
+                naytaOmatMokit();
             }
         });
     }
