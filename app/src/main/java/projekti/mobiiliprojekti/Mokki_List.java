@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static projekti.mobiiliprojekti.R.id.ImageViewDelete;
+import static projekti.mobiiliprojekti.R.id.image;
 
 public class Mokki_List extends AppCompatActivity {
 
@@ -47,7 +49,7 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView fbRecyclerView;
 
     private DatabaseReference fbDatabaseRef;
-    private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private List<MokkiItem> mMokkiItem;
     private MokkiAdapterV2 mAdapter;
 
@@ -85,11 +87,49 @@ public class Mokki_List extends AppCompatActivity {
         //mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
         //fbRecyclerView.setAdapter(mAdapter);
 
-        if(userRef.child("Users").child(currentUser.getUid()) == null) {
-            Contacts newContact = new Contacts(currentUser.getUid(),"");
-            userRef.child("Users").child(currentUser.getUid()).setValue(newContact);
+        userRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()) {
+                    Contacts newContact = new Contacts(currentUser.getUid(),"");
+                    userRef.child(currentUser.getUid()).setValue(newContact);
+                    Log.d("Tag","new user");
+                }
+            }
 
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        userRef.child(currentUser.getUid()).child("image").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                imageString = uri.toString();
+                                Log.d("Tag",imageString);
+                                if(!snapshot.getValue().equals(imageString)) {
+                                    Contacts newContact = new Contacts(currentUser.getUid(),imageString);
+                                    userRef.child(currentUser.getUid()).removeValue();
+                                    userRef.child(currentUser.getUid()).setValue(newContact);
+                                    Log.d("Tag","Image addeasdasdd");
+                                }
+                                else {
+                                    return;
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
@@ -123,9 +163,6 @@ public class Mokki_List extends AppCompatActivity {
                     .addOnSuccessListener(uri -> {
                         Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
                         imageString = uri.toString();
-                        Contacts newContact = new Contacts(currentUser.getUid(),imageString);
-                        userRef.child("Users").child(currentUser.getUid()).removeValue();
-                        userRef.child("Users").child(currentUser.getUid()).setValue(newContact);
                     })
                     .addOnFailureListener(e -> {
                         profiiliKuva.setImageResource(R.mipmap.ic_launcher);
