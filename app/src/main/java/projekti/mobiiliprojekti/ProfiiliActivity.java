@@ -34,6 +34,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -46,6 +48,7 @@ public class ProfiiliActivity extends AppCompatActivity {
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef =  storage.getReference();
     private final StorageReference profileRef = storageRef.child("ProfilePictures");
+    private final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
     private Uri filePath;
     private final int PICK_IMAGE_REQUEST = 22;
 
@@ -56,11 +59,13 @@ public class ProfiiliActivity extends AppCompatActivity {
     TextView txtSalasana;
     ImageView imageView;
     Button lataaButton;
+    Button poistaTiliBtn;
     ImageView goBack;
     Button meneMaksamaanButton;
 
     boolean PASSWORD_CHANGE = false;
     boolean EMAIL_CHANGE = false;
+    boolean DELETE_ACCOUNT = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,7 @@ public class ProfiiliActivity extends AppCompatActivity {
         txtSalasana = findViewById(R.id.textPass);
         lataaButton = findViewById(R.id.buttonLataa);
         profiiliKuva = findViewById(R.id.profiiliKuva);
+        poistaTiliBtn = findViewById(R.id.buttonPoista);
 
         imageView = findViewById(R.id.imageAvatar);
         lataaButton.setVisibility(View.GONE);
@@ -119,6 +125,11 @@ public class ProfiiliActivity extends AppCompatActivity {
         meneMaksamaanButton.setOnClickListener(v -> {
             Intent maksuIntent = new Intent(getApplicationContext(),MaksuActivity.class);
             startActivity(maksuIntent);
+        });
+
+        poistaTiliBtn.setOnClickListener(v -> {
+            DELETE_ACCOUNT = true;
+            reAuthenticate();
         });
     }
 
@@ -266,6 +277,28 @@ public class ProfiiliActivity extends AppCompatActivity {
         Log.e("Tag","FinishedPass");
     }
 
+    private void deleteAccount() {
+        profileRef.child(currentUser.getUid()).delete();
+        dbRef.child("Users").child(currentUser.getUid()).removeValue();
+        dbRef.child("Contacts").child(currentUser.getUid()).removeValue();
+        dbRef.child("Messages").child(currentUser.getUid()).removeValue();
+        currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Tili poistettu.", Toast.LENGTH_SHORT).show();
+                    update();
+                }
+            }
+        });
+    }
+
+    private void update() {
+        Intent startActivity2 = new Intent(this,LoginActivity.class);
+        startActivity(startActivity2);
+        finish();
+    }
+
 
     public void onClick_Usermenu(View view) {
         PopupMenu popup = new PopupMenu(this, profiiliKuva);
@@ -332,11 +365,16 @@ public class ProfiiliActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
                             Log.e("Tag", "User re-authenticated");
-                            if(PASSWORD_CHANGE == true) {
+                            if(PASSWORD_CHANGE) {
                                 setPass();
+                                PASSWORD_CHANGE = false;
                             }
-                            else if (EMAIL_CHANGE == true) {
+                            else if (EMAIL_CHANGE) {
                                 setEmail();
+                                EMAIL_CHANGE = false;
+                            }
+                            else if(DELETE_ACCOUNT) {
+                                deleteAccount();
                             }
                         } else {
                             Toast.makeText(getApplicationContext(),"Wrong email / password",Toast.LENGTH_LONG).show();
