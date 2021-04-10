@@ -122,7 +122,6 @@ public class LaitaVuokralle extends AppCompatActivity {
         EditText editKuvaus = findViewById(R.id.EditKuvaus);
         String eKuvaus = editKuvaus.getText().toString();
 
-
         varmistaIntent.putExtra("eOtsikko", mOtsikko);
         varmistaIntent.putExtra("eHinta", eHinta);
         varmistaIntent.putExtra("eOsoite", eOsoite);

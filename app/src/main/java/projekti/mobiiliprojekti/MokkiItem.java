@@ -18,6 +18,7 @@ public class MokkiItem implements Parcelable{
     private String mKuvaus;
     private String mOtsikkoID;
     private String mVuokraaja;
+    private String mVuokraajaID;
     private String mKey;
     //private String mOmistaja;
 
@@ -28,7 +29,7 @@ public class MokkiItem implements Parcelable{
 
     public MokkiItem(String MokkiImage, String otsikko, String hinta, String osoite, String huoneMaara,
                      String nelioMaara, String lammitys, String vesi, String sauna, String kuvaus, String otsikkoID,
-                     String vuokraaja /*, String omistaja*/)
+                     String vuokraaja, String vuokraajaID)
     {
         mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
@@ -42,6 +43,7 @@ public class MokkiItem implements Parcelable{
         mKuvaus = kuvaus;
         mOtsikkoID = otsikkoID;
         mVuokraaja = vuokraaja;
+        mVuokraajaID = vuokraajaID;
         //mOmistaja = omistaja;
     }
 
@@ -58,6 +60,7 @@ public class MokkiItem implements Parcelable{
         mKuvaus = in.readString();
         mOtsikkoID = in.readString();
         mVuokraaja = in.readString();
+        mVuokraajaID = in.readString();
         //mOmistaja = in.readString();
     }
 
@@ -85,6 +88,7 @@ public class MokkiItem implements Parcelable{
     public String getKuvaus() { return mKuvaus; }
     public String getOtsikkoID() { return mOtsikkoID; }
     public String getVuokraaja() { return mVuokraaja; }
+    public String getVuokraajaID() { return mVuokraajaID; }
     //public String getOmistaja() { return mOmistaja; }
 
 
@@ -100,6 +104,7 @@ public class MokkiItem implements Parcelable{
     public void setKuvaus(String kuvaus ) { this.mKuvaus = kuvaus; }
     public void setOtsikkoID(String otsikkoID ) { this.mOtsikkoID = otsikkoID; }
     public void setVuokraaja(String vuokraaja ) { this.mVuokraaja = vuokraaja; }
+    public void setVuokraajaID(String vuokraajaID) { this.mVuokraajaID = vuokraajaID; }
 
     @Override
     public int describeContents() {
@@ -120,6 +125,7 @@ public class MokkiItem implements Parcelable{
         dest.writeString(mKuvaus);
         dest.writeString(mOtsikkoID);
         dest.writeString(mVuokraaja);
+        dest.writeString(mVuokraajaID);
         //dest.writeString(mOmistaja);
     }
 

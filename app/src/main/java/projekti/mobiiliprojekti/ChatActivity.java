@@ -3,6 +3,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +31,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -43,21 +48,30 @@ public class ChatActivity extends AppCompatActivity
 
     private TextView userName, userLastSeen;
     private ImageView userImage;
+    private DrawerLayout chatDrawer;
 
     private Toolbar ChatToolBar;
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference strRef = storage.getReference();
 
     private ImageButton SendMessageButton, SendFilesButton;
     private EditText MessageInputText;
+    private ImageView takaisinBtn;
+    private ImageView lisaaViestejaBtn;
+    private ImageView chatKuva;
 
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
     private RecyclerView userMessagesList;
+    private String id;
+    private String receiverName;
 
 
     private String saveCurrentTime, saveCurrentDate;
+    private String getMessageReceiverImage;
 
 
 
@@ -68,12 +82,20 @@ public class ChatActivity extends AppCompatActivity
         setContentView(R.layout.activity_chat);
         Log.d("Tag","onCreate");
 
+        Intent chatIntent = getIntent();
+        id = chatIntent.getStringExtra("ID");
+        receiverName = chatIntent.getStringExtra("name");
+
         mAuth = FirebaseAuth.getInstance();
         messageSenderID = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
-        messageReceiverID = "5fN3ZduK8vfFYqBQZuA6v5DpNWY2";
+        messageReceiverID = id;
 
+        chatKuva = findViewById(R.id.chatProfiiliKuva);
+        lisaaViestejaBtn = findViewById(R.id.chatLisääViestejä);
+        takaisinBtn = findViewById(R.id.chatTakaisin);
 
+        chatDrawer = findViewById(R.id.drawerChat_layout);
         //messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
        // messageReceiverName = getIntent().getExtras().get("visit_user_name").toString();
         //messageReceiverImage = getIntent().getExtras().get("visit_image").toString();
@@ -94,10 +116,31 @@ public class ChatActivity extends AppCompatActivity
             }
         });
 
+        takaisinBtn.setOnClickListener(view -> {
+            finish();
+        });
+
+        lisaaViestejaBtn.setOnClickListener(view -> {
+
+        });
+
+        strRef.child("ProfilePictures/"+messageReceiverID).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(chatKuva);
+                    getMessageReceiverImage = uri.toString();
+                });
+    }
+
+    private static void openDrawermenu(DrawerLayout drawerLayout) {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
 
-
+    public void closeDrawermenu(View view) {
+        if (chatDrawer.isDrawerOpen(GravityCompat.START)) {
+            chatDrawer.closeDrawer(GravityCompat.START);
+        }
+    }
 
     private void IntializeControllers()
     {
@@ -132,6 +175,9 @@ public class ChatActivity extends AppCompatActivity
     {
         super.onStart();
 
+        if(messageReceiverID == null) {
+            messageReceiverID = "testID";
+        }
         RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -205,6 +251,15 @@ public class ChatActivity extends AppCompatActivity
             Map<String, Object> messageBodyDetails = new HashMap<>();
             messageBodyDetails.put(messageSenderRef + "/" + messagePushID, postValues);
             messageBodyDetails.put( messageReceiverRef + "/" + messagePushID, postValues);
+
+            if(RootRef.child("Contacts").child(mAuth.getCurrentUser().getUid()).child(messageReceiverID) == null) {
+                Log.d("Tag","newCOntact");
+                Contacts newContact = new Contacts(receiverName, getMessageReceiverImage);
+                RootRef.child("Contacts").child(mAuth.getCurrentUser().getUid()).child(messageReceiverID).setValue(newContact);
+            }
+            else {
+                return;
+            }
             Log.d("Tag","map");
             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
 
@@ -224,6 +279,7 @@ public class ChatActivity extends AppCompatActivity
                 }
             });
             Log.d("Tag","updatechildren");
+
         }
     }
 }

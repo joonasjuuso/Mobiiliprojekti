@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawerChat_layout"
+    tools:context=".ChatActivity">
 
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-<RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".ChatActivity">
-
-<include
-    android:id="@+id/chat_toolbar"
-    layout="@layout/msg_toolbar">
-</include>
+    <include
+        android:id="@+id/chat_toolbar"
+        layout="@layout/msg_toolbar">
+    </include>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/private_messages_list_of_users"
@@ -69,3 +72,14 @@ tools:context=".ChatActivity">
 
 </RelativeLayout>
 </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white">
+
+        <include
+            layout="@layout/messages_drawer"/>
+
+    </RelativeLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>

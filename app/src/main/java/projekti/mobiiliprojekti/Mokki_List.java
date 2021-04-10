@@ -47,6 +47,7 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView fbRecyclerView;
 
     private DatabaseReference fbDatabaseRef;
+    private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
     private List<MokkiItem> mMokkiItem;
     private MokkiAdapterV2 mAdapter;
 
@@ -61,6 +62,7 @@ public class Mokki_List extends AppCompatActivity {
     private Button bLaitaVuokralle;
     private  Button bNaytaKaikkienMokit;
     private Button bOmatMokit;
+    private String imageString;
 
     ImageView ImageViewDelete;
 
@@ -82,6 +84,12 @@ public class Mokki_List extends AppCompatActivity {
 
         //mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
         //fbRecyclerView.setAdapter(mAdapter);
+
+        if(userRef.child("Users").child(currentUser.getUid()) == null) {
+            Contacts newContact = new Contacts(currentUser.getUid(),"");
+            userRef.child("Users").child(currentUser.getUid()).setValue(newContact);
+
+        }
 
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
@@ -114,6 +122,10 @@ public class Mokki_List extends AppCompatActivity {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
                     .addOnSuccessListener(uri -> {
                         Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
+                        imageString = uri.toString();
+                        Contacts newContact = new Contacts(currentUser.getUid(),imageString);
+                        userRef.child("Users").child(currentUser.getUid()).removeValue();
+                        userRef.child("Users").child(currentUser.getUid()).setValue(newContact);
                     })
                     .addOnFailureListener(e -> {
                         profiiliKuva.setImageResource(R.mipmap.ic_launcher);

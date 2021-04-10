@@ -61,6 +61,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String eOtsikkoID;
     private String eVuokraaja;
     private String MokkiKuva;
+    private String eID;
     //private String eOmistaja;
 
     private Uri mImageUri;
@@ -142,12 +143,13 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private void addMokki()
     {
         eVuokraaja = currentUser.getDisplayName();
+        eID = currentUser.getUid();
         eOtsikkoID = eVuokraaja + eOtsikko;
 
         eOtsikkoID = dbMokki.push().getKey();
 
         MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
-                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja/*, eOmistaja*/);
+                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
     }

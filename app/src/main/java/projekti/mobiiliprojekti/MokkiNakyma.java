@@ -17,6 +17,7 @@ public class MokkiNakyma extends AppCompatActivity {
 
     Button bTakaisinMokkilistaan;
     Button bVuokraa;
+    Button bChat;
     private Context mContext;
 
     @Override
@@ -39,6 +40,7 @@ public class MokkiNakyma extends AppCompatActivity {
         String MokkiKuvaus = mokkiItem.getKuvaus();
         String OtsikkoID = mokkiItem.getOtsikkoID();
         String Vuokraaja = mokkiItem.getVuokraaja();
+        String VuokraajaID = mokkiItem.getVuokraajaID();
         //String Mokkiomistaja = mokkiItem.getOmistaja();
 
         ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
@@ -74,12 +76,20 @@ public class MokkiNakyma extends AppCompatActivity {
 
 
 
+
         bTakaisinMokkilistaan = findViewById(R.id.bTakaisinMokkiListaan);
         bVuokraa = findViewById(R.id.bVuokraa);
+        bChat = findViewById(R.id.chatBtn);
 
         bTakaisinMokkilistaan.setOnClickListener(View ->{
             Intent mokkiIntent = new Intent(this,Mokki_List.class);
             startActivity(mokkiIntent);
+        });
+        bChat.setOnClickListener(View -> {
+            Intent chatIntent = new Intent(this,ChatActivity.class);
+            chatIntent.putExtra("ID",VuokraajaID);
+            chatIntent.putExtra("name",Vuokraaja);
+            startActivity(chatIntent);
         });
 
     }
