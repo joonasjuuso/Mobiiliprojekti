@@ -5,13 +5,13 @@ pipeline {
        steps {
                     sh "pwd"
                     sh 'ls -al'
-                    sh './gradlew clean'
+                    sh 'chmod +x ./gradlew clean'
                 }   
         }
         
         stage('Build release ') {
           steps {
-                sh './gradlew assembleRelease'
+                sh 'chmod +x ./gradlew assembleRelease'
             }
         }
   }
