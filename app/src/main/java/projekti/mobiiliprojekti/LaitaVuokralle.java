@@ -136,9 +136,9 @@ public class LaitaVuokralle extends AppCompatActivity {
         varmistaIntent.putExtra("eUID", UID);
 
         if(mOtsikko.matches("")&& eHinta.matches("") && eOsoite.matches("")
-                && eHuoneet.matches("") && eNeliot.matches("") && eLammitys.matches("")
+                 && eNeliot.matches("") && eLammitys.matches("")
                 && eKuvaus.matches("")) {
-            Toast.makeText(this, "Lisää tiedot mökistäsi", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Lisää vaadittavat tiedot mökistäsi", Toast.LENGTH_LONG).show();
             filled = false;
             filled = true;
         }else if(filled == true){
@@ -177,8 +177,6 @@ public class LaitaVuokralle extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
                 }
-                Log.e("TAg", String.valueOf(imageWidth));
-                Log.e("Tag", String.valueOf(imageHeight));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -213,7 +211,7 @@ public class LaitaVuokralle extends AppCompatActivity {
                         }, 5000);
                         mokkiRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
-                                    Glide.with(getApplicationContext()).load(uri.toString()).into(ImageViewUpload);;
+                                   Picasso.get().load(uri).into(ImageViewUpload);
                                 });
                         Toast.makeText(getApplicationContext(), "Kuva lisätty", Toast.LENGTH_LONG).show();
                     }
