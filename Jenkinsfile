@@ -5,7 +5,7 @@ pipeline {
        steps {
                     sh "pwd"
                     sh 'ls -al'
-                    sh 'chmod +x ./gradlew clean'
+                    sh 'chmod +x ./gradlew'
                 }   
         }
         
