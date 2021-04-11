@@ -138,6 +138,7 @@ public class LaitaVuokralle extends AppCompatActivity {
         if(mOtsikko.matches("")&& eHinta.matches("") && eOsoite.matches("")
                 && eHuoneet.matches("") && eNeliot.matches("") && eLammitys.matches("")
                 && eKuvaus.matches("")) {
+            Toast.makeText(this, "Lisää tiedot mökistäsi", Toast.LENGTH_LONG).show();
             filled = false;
             filled = true;
         }else if(filled == true){
