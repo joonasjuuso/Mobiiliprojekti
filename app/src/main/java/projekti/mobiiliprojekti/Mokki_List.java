@@ -9,19 +9,29 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.renderscript.Sampler;
 import android.view.LayoutInflater;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -64,6 +74,7 @@ public class Mokki_List extends AppCompatActivity {
     private Button bLaitaVuokralle;
     private  Button bNaytaKaikkienMokit;
     private Button bOmatMokit;
+    private EditText editSearch;
     private String imageString;
 
     ImageView ImageViewDelete;
@@ -138,21 +149,42 @@ public class Mokki_List extends AppCompatActivity {
             startActivity(vuokraaIntent);
         });
 
-        bOmatMokit = findViewById(R.id.bOmatMökit);
-        if( currentUser.getDisplayName() != null) {
-            bOmatMokit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    naytaOmatMokit();
 
-                }
-            });
-        }
+        editSearch = findViewById(R.id.editTextSearch);
+        editSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
+
+
+
+
+        //mokkien nayttoa vaihtavat napit
+        bOmatMokit = findViewById(R.id.bOmatMökit);
+        bOmatMokit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                naytaOmatMokit();
+            }
+        });
 
         bNaytaKaikkienMokit = findViewById(R.id.bNaytaKaikkienMokit);
         bNaytaKaikkienMokit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 naytaKaikkiMokit();
             }
         });
@@ -177,54 +209,76 @@ public class Mokki_List extends AppCompatActivity {
         } else if(currentUser==null) {
             profiiliKuva.setImageResource(R.mipmap.ic_launcher);
         }
-
         naytaKaikkiMokit();
+    }
 
+    private void filter(String text)
+    {
+        ArrayList<MokkiItem> filteredList = new ArrayList<>();
+
+        for(MokkiItem mokki : mMokkiItem)
+        {
+            if(mokki.getOtsikko().toLowerCase().contains(text.toLowerCase()))
+            {
+                filteredList.add(mokki);
+            }
+        }
+
+        mAdapter.filteredList(filteredList);
     }
 
     private void naytaOmatMokit()
     {
-        mMokkiItem.clear();
+        if( currentUser != null) {
+            mMokkiItem.clear();
 
-        Intent intent = new Intent(this, MokkiNakyma.class);
+            Intent intent = new Intent(this, MokkiNakyma.class);
 
-        Query query = fbDatabaseRef.orderByChild("vuokraaja").equalTo(currentUser.getDisplayName());
+            Query query = fbDatabaseRef.orderByChild("vuokraaja").equalTo(currentUser.getDisplayName());
 
-        fbDbListener = query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot postSnapshot : snapshot.getChildren()){
-                    MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
-                    mokkiItem.setKey(postSnapshot.getKey());
-                    mMokkiItem.add(mokkiItem);
+            fbDbListener = query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                        mokkiItem.setKey(postSnapshot.getKey());
+                        mMokkiItem.add(mokkiItem);
+                    }
+
+
+                    mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
+
+                    fbRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+
+                    mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position) {
+                            mMokkiItem.get(position);
+                            intent.putExtra("Mokki", mMokkiItem.get(position));
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onDeleteClick(int position) {
+                            deleteMokki(position);
+                        }
+                    });
                 }
 
-
-                mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
-
-                fbRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-
-                mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        mMokkiItem.get(position);
-                        intent.putExtra("Mokki", mMokkiItem.get(position));
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onDeleteClick(int position) {
-                        deleteMokki(position);
-                    }
-                });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            if(currentUser.getDisplayName() == null)
+            {
+                Toast.makeText(this, "Kirjaudu sisään nähdäksesi ilmoittamasi mökit", Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        }else if(currentUser == null)
+        {
+            naytaKaikkiMokit();
+        }
     }
 
     private void naytaKaikkiMokit()
@@ -279,7 +333,7 @@ public class Mokki_List extends AppCompatActivity {
         //fbDatabaseRef.child(selectedKey).removeValue();
         //mAdapter.notifyItemRemoved(position);
 
-        StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
+        /*StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -290,7 +344,24 @@ public class Mokki_List extends AppCompatActivity {
                 mAdapter.notifyItemRemoved(position);
                 naytaOmatMokit();
             }
-        });
+        });*/
+        //StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
+        //imageRef.delete();
+        fbDatabaseRef.child(selectedKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(Mokki_List.this, "Mökki poistettu", Toast.LENGTH_SHORT).show();
+                //
+                StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
+                imageRef.delete();
+                naytaOmatMokit();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Mokki_List.this, "Ei onnistunut", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     //Vasemman vetolaatikon metoodeja
