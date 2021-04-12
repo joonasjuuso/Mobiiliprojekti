@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -44,8 +46,6 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private final FirebaseAuth mauth = FirebaseAuth.getInstance();
     private final FirebaseUser currentUser = mauth.getCurrentUser();
 
-    private DatabaseReference mDataBaseref;
-
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef =  storage.getReference();
 
@@ -62,16 +62,13 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String eVuokraaja;
     private String MokkiKuva;
     private String eID;
-    //private String eOmistaja;
+    private String UID;
 
-    private Uri mImageUri;
 
-    File file = new File (String.valueOf(mImageUri));
 
     private ImageView sImageUpload;
 
     DatabaseReference dbMokki;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +91,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eVesi = varmistaIntent.getStringExtra("eVesi");
         eSauna = varmistaIntent.getStringExtra("eSauna");
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
+        UID = varmistaIntent.getStringExtra("eUID");
 
 
         TextView sOtsikko = findViewById(R.id.sOtsikko);
@@ -117,8 +115,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sSauna.setText(eSauna);
         sKuvaus.setText(eKuvaus);
 
-        if(currentUser!=null) {
-            storageRef.child("Mökkien kuvia/" + currentUser.getUid()).getDownloadUrl()
+        /*if(currentUser!=null) {
+            fileRef.child("Mökkien kuvia/").getDownloadUrl()
                     .addOnSuccessListener(uri -> {
                         Glide.with(getApplicationContext()).load(uri.toString()).into(sImageUpload);
                         MokkiKuva = uri.toString();
@@ -126,7 +124,16 @@ public class IlmoitusVarmistus extends AppCompatActivity {
                     .addOnFailureListener(e -> sImageUpload.setImageResource(R.mipmap.ic_launcher));
         } else if(currentUser==null) {
             sImageUpload.setImageResource(R.mipmap.ic_launcher);
-        }
+        }*/
+
+        storageRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Glide.with(getApplicationContext()).load(uri.toString()).into(sImageUpload);
+                    MokkiKuva =uri.toString();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getApplicationContext(),"Ei lisättyä kuvaa",Toast.LENGTH_LONG).show();
+                });
 
 
         bTakaisinIlmoitukseen.setOnClickListener(view -> {
@@ -134,9 +141,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
             startActivity(takaisinIlmoitukseen);
         });
 
-
         bAsetaVuokralle.setOnClickListener(v -> addMokki());
-        //getUrlAsync();
 
     }
 
@@ -152,21 +157,12 @@ public class IlmoitusVarmistus extends AppCompatActivity {
                 eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
+
+        Toast.makeText(this, "Mökki lisätty vuokralle", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, Mokki_List.class);
+        startActivity(intent);
     }
 
-    private void getUrlAsync(String date)
-    {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference dateRef = storageRef.child("Mökkien kuvia/" + currentUser.getDisplayName());
-        dateRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri downloadUri) {
-                MokkiKuva = String.valueOf(downloadUri);
-
-                Glide.with(getApplicationContext()).load(downloadUri.toString()).into(sImageUpload);
-                //return date;
-            }
-        });
-    }
 
 }

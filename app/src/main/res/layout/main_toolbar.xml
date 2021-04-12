@@ -29,14 +29,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick_Usermenu"
-            android:id="@+id/profiiliKuva"
-            android:src="@drawable/ic_account_box"/>
-
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/profiiliKuva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick_Usermenu"
+        android:src="@drawable/ic_account_box" />
 
 </LinearLayout>

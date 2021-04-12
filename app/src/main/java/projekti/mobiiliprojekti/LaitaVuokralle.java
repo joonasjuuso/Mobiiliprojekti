@@ -1,50 +1,42 @@
 package projekti.mobiiliprojekti;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 public class LaitaVuokralle extends AppCompatActivity {
 
@@ -52,15 +44,24 @@ public class LaitaVuokralle extends AppCompatActivity {
 
     private final FirebaseAuth mauth = FirebaseAuth.getInstance();
     private final FirebaseUser currentUser = mauth.getCurrentUser();
-    //private FirebaseStorage storage = FirebaseStorage.getInstance();
+
 
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef =  storage.getReference();
-    private final StorageReference mokkiRef = storageRef.child("Mökkien kuvia");
+    private final StorageReference mokkiRef = storageRef.child("Mökkien kuvia/");
 
     private ImageView ImageViewUpload;
+    private Button bUploadImage;
+    private Button bChooseimage;
 
     private Uri mImageUri;
+    private ProgressBar uploadImageProgressBar;
+
+    private EditText editOtsikko;
+    private String mOtsikko;
+    private String UID ;
+
+    boolean filled = true;
 
 
     @Override
@@ -72,10 +73,12 @@ public class LaitaVuokralle extends AppCompatActivity {
         Button bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 
 
-        Button bChooseimage = findViewById(R.id.bChooseImage);
-        Button bUploadImage = findViewById(R.id.bUpload);
+        bChooseimage = findViewById(R.id.bChooseImage);
+        bUploadImage = findViewById(R.id.bUpload);
         ImageViewUpload = findViewById(R.id.ImageViewUpload);
-        ProgressBar uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
+        uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
+
+        bUploadImage.setVisibility(View.GONE);
 
 
         bChooseimage.setOnClickListener(v -> OpenImageChooser());
@@ -88,15 +91,14 @@ public class LaitaVuokralle extends AppCompatActivity {
         });
 
         bAsetaVuokralle.setOnClickListener(view -> AsetaVuokralle());
-
     }
 
     private void AsetaVuokralle()
     {
         Intent varmistaIntent = new Intent(this, IlmoitusVarmistus.class);
 
-        EditText editOtsikko = findViewById(R.id.EditOtsikko);
-        String mOtsikko = editOtsikko.getText().toString();
+        editOtsikko = findViewById(R.id.EditOtsikko);
+        mOtsikko = editOtsikko.getText().toString();
 
         EditText editHinta = findViewById(R.id.EditHinta);
         String eHinta = editHinta.getText().toString();
@@ -131,8 +133,17 @@ public class LaitaVuokralle extends AppCompatActivity {
         varmistaIntent.putExtra("eVesi", eVesi);
         varmistaIntent.putExtra("eSauna", eSauna);
         varmistaIntent.putExtra("eKuvaus", eKuvaus);
+        varmistaIntent.putExtra("eUID", UID);
 
-        startActivity(varmistaIntent);
+        if(mOtsikko.matches("")&& eHinta.matches("") && eOsoite.matches("")
+                && eHuoneet.matches("") && eNeliot.matches("") && eLammitys.matches("")
+                && eKuvaus.matches("")) {
+            filled = false;
+            filled = true;
+        }else if(filled == true){
+            startActivity(varmistaIntent);
+            filled = true;
+        }
     }
 
     private void OpenImageChooser()
@@ -150,33 +161,80 @@ public class LaitaVuokralle extends AppCompatActivity {
             mImageUri = data.getData();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            try
-            {
+            try {
                 BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri), null, options);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
-                ImageViewUpload.setImageBitmap(bitmap);
-            }
-            catch (IOException e) {
+                int imageWidth = options.outWidth;
+                int imageHeight = options.outHeight;
+                if (imageHeight >= 1) {
+                    if (imageWidth >= 1) {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+                        ImageViewUpload.setImageBitmap(bitmap);
+                        bUploadImage.setVisibility(View.VISIBLE);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
+                }
+                Log.e("TAg", String.valueOf(imageWidth));
+                Log.e("Tag", String.valueOf(imageHeight));
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void uploadImage() {
-        if (mImageUri != null) {
-
-            mokkiRef.child("/" + currentUser.getUid()).putFile(mImageUri).addOnSuccessListener(taskSnapshot -> {
-                Toast.makeText(getApplicationContext(),"Kuva Lisätty!",Toast.LENGTH_LONG).show();
-                storageRef.child("Mökkien kuvia/"+currentUser.getUid()).getDownloadUrl()
-                        .addOnSuccessListener(uri -> {
-                            Glide.with(getApplicationContext()).load(uri.toString()).into(ImageViewUpload);
-                        });
-            })
-                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"Virhe kuvan päivityksessä",Toast.LENGTH_LONG).show())
-                    .addOnProgressListener(snapshot -> {
-                        double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    });
-        }
+    private String getfileExtension(Uri uri)
+    {
+        String extension;
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        extension= mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        return extension;
     }
 
+    private void uploadImage() {
+        if (getfileExtension(mImageUri).equals("jpg") || getfileExtension(mImageUri).equals("png") || getfileExtension(mImageUri).equals("jpeg")) {
+            Log.e("Tag", getfileExtension(mImageUri));
+            if (mImageUri != null) {
+
+                UID = UUID.randomUUID().toString();
+
+                mokkiRef.child("/" + currentUser.getUid() + UID).putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                uploadImageProgressBar.setProgress(0);
+                            }
+                        }, 5000);
+                        mokkiRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    Glide.with(getApplicationContext()).load(uri.toString()).into(ImageViewUpload);;
+                                });
+                        Toast.makeText(getApplicationContext(), "Kuva lisätty", Toast.LENGTH_LONG).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Virhe kuvan latauksessa", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                                double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                                uploadImageProgressBar.setProgress((int)progress);
+                                bUploadImage.setVisibility(View.GONE);
+                            }
+                        });
+            }
+        }
+        else {
+            Toast.makeText(getApplicationContext(),"Virheellinen tiedostomuoto",Toast.LENGTH_SHORT).show();
+        }
+    }
 }

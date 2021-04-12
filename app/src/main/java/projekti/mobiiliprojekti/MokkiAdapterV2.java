@@ -2,11 +2,16 @@ package projekti.mobiiliprojekti;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +21,9 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
@@ -42,7 +49,6 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
     {
         mContext = context;
         mMokkiList = mokkiItems;
-
     }
 
     @Override
@@ -50,7 +56,8 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         MokkiItem mokkiItemCurrent = mMokkiList.get(position);
         holder.textViewOtsikko.setText(mokkiItemCurrent.getOtsikko());
         holder.textViewHinta.setText(mokkiItemCurrent.getHinta());
-        Picasso.get().load(mokkiItemCurrent.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(holder.imageViewKuva);
+        Picasso.get().load(mokkiItemCurrent.getMokkiImage()).placeholder(R.mipmap.ic_launcher)
+                .fit().centerCrop().into(holder.imageViewKuva);
     }
 
     @Override
@@ -66,7 +73,6 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         ImageView imageViewDelete;
         public Button bOmatMokit;
 
-
         public MokkiviewHolderV2(View itemView, OnItemClickListener listener)
         {
             super(itemView);
@@ -77,7 +83,6 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
             imageViewDelete = itemView.findViewById(R.id.ImageViewDelete);
 
             bOmatMokit = itemView.findViewById(R.id.bOmatMökit);
-
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +107,6 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
                     }
                 }
             });
-
         }
     }
 
@@ -113,4 +117,11 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         MokkiviewHolderV2 mvh = new MokkiviewHolderV2(v, mOnItemClickListener);
         return mvh;
     }
+
+    public void filteredList(ArrayList<MokkiItem> filteredList)
+    {
+        mMokkiList = filteredList;
+        notifyDataSetChanged();
+    }
+
 }
