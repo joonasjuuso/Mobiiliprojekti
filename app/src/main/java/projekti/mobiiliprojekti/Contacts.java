@@ -2,7 +2,7 @@ package projekti.mobiiliprojekti;
 
 
 public class Contacts {
-    public String name, status, image;
+    public String name, image;
 
     public Contacts()
     {
