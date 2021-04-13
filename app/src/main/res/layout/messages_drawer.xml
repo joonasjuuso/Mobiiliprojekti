@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/backButton"
         android:src="@drawable/ic_arrow_back"
-        android:onClick="closeChatDrawer"
         android:layout_gravity="end"
         android:padding="2dp"
         android:layout_marginEnd="10dp"

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -120,6 +121,7 @@ public class ChatActivity extends AppCompatActivity
     private ImageView takaisinBtn;
     private ImageView lisaaViestejaBtn;
     private ImageView chatKuva;
+    private ImageView backKuva;
 
     private final List<Messages> messagesList = new ArrayList<>();
     private final List<Contacts> contactsList = new ArrayList<>();
@@ -132,7 +134,11 @@ public class ChatActivity extends AppCompatActivity
     private String fromChatId;
     private String receiverName;
     private RelativeLayout chatLayout;
-
+    private Handler handler = new Handler();
+    private Runnable runnable;
+    private int count = 0;
+    private SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+    private SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
 
     private String saveCurrentTime, saveCurrentDate;
     private String getMessageReceiverImage;
@@ -174,6 +180,7 @@ public class ChatActivity extends AppCompatActivity
         takaisinBtn = findViewById(R.id.chatTakaisin);
         chatLayout = findViewById(R.id.chat_linear_layout);
         chatDrawer = findViewById(R.id.drawerChat_layout);
+        backKuva = findViewById(R.id.backButton);
 
 
         IntializeControllers();
@@ -210,7 +217,10 @@ public class ChatActivity extends AppCompatActivity
         });
 
         lisaaViestejaBtn.setOnClickListener(view -> {
-
+            openDrawermenu(chatDrawer);
+        });
+        backKuva.setOnClickListener(view -> {
+            closeDrawermenu(chatDrawer);
         });
 
         getMessageReceiverImage = "no image";
@@ -227,22 +237,27 @@ public class ChatActivity extends AppCompatActivity
                     Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(chatKuva);
                 });
 
+        content();
     }
+
 
     public void onClick_menu(View view) {
         PopupMenu popup = new PopupMenu(this, chatKuva);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.user:
+                    handler.removeCallbacks(runnable);
                     Intent userIntent = new Intent(this,ProfiiliActivity.class);
                     startActivity(userIntent);
                     finish();
                     break;
                 case R.id.chat:
+                    handler.removeCallbacks(runnable);
                     finish();
                     startActivity(getIntent());
                     break;
                 case R.id.logout:
+                    handler.removeCallbacks(runnable);
                     mAuth.signOut();
                     Intent signOutIntent = new Intent(this, LoginActivity.class);
                     startActivity(signOutIntent);
@@ -261,19 +276,18 @@ public class ChatActivity extends AppCompatActivity
             popup.show();
         }
         else if(mAuth.getCurrentUser() == null) {
+            handler.removeCallbacks(runnable);
             Intent kirjauduIntent = new Intent(this, LoginActivity.class);
             startActivity(kirjauduIntent);
             finish();
         }
     }
 
-    /*private static void openDrawermenu(DrawerLayout drawerLayout) {
+    //TODO: tiedostojen lisäys
+
+    private static void openDrawermenu(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
-
-    public void onClick_drawermenu(View view) {
-        openDrawermenu(chatDrawer);
-    }*/
 
     public void closeDrawermenu(View view) {
         if (chatDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -307,6 +321,24 @@ public class ChatActivity extends AppCompatActivity
 
         SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
         saveCurrentTime = currentTime.format(calendar.getTime());
+    }
+
+    public void content() {
+        Calendar calendar = Calendar.getInstance();
+        saveCurrentDate = currentDate.format(calendar.getTime());
+        saveCurrentTime = currentTime.format(calendar.getTime());
+        refresh(5000);
+    }
+
+    private void refresh(int milliseconds) {
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                content();
+            }
+        };
+        handler.postDelayed(runnable, milliseconds);
     }
 
 
@@ -386,6 +418,7 @@ public class ChatActivity extends AppCompatActivity
                                         @Override
                                         public void onClick(View view)
                                         {
+                                            handler.removeCallbacks(runnable);
                                             Intent fromChatIntent = new Intent(getApplicationContext(), ChatActivity.class);
                                             fromChatIntent.putExtra("visit_user_id", usersIDs);
                                             fromChatIntent.putExtra("visit_user_name", retName);
