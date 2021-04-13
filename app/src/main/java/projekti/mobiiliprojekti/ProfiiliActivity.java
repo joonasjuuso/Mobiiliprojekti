@@ -309,8 +309,8 @@ public class ProfiiliActivity extends AppCompatActivity {
                     startActivity(getIntent());
                     break;
                 case R.id.chat:
-                    //Intent chatIntent = new Intent(this,ChatActivity.class);
-                    //startActivity(chatIntent);
+                    Intent chatIntent = new Intent(this,ChatActivity.class);
+                    startActivity(chatIntent);
                     finish();
                     break;
                 case R.id.logout:

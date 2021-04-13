@@ -126,7 +126,6 @@ public class ChatActivity extends AppCompatActivity
     private LinearLayoutManager linearLayoutManager;
     private LinearLayoutManager linearLayoutManager2;
     private MessageAdapter messageAdapter;
-    private ContactsAdapter contactsAdapter;
     private RecyclerView userMessagesList;
     private RecyclerView userContactsList;
     private String id;
@@ -155,6 +154,15 @@ public class ChatActivity extends AppCompatActivity
         fromChatId = chatIntent.getStringExtra("visit_user_id");
         receiverName = chatIntent.getStringExtra("name");
 
+        if(receiverName == null) {
+            receiverName = chatIntent.getStringExtra("visit_user_name");
+            if(receiverName == null) {
+                receiverName = "";
+            }
+        }
+
+        Log.d("Tag",receiverName);
+
         mAuth = FirebaseAuth.getInstance();
         messageSenderID = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
@@ -170,6 +178,20 @@ public class ChatActivity extends AppCompatActivity
 
         IntializeControllers();
 
+        if(id == null) {
+            Log.d("Tag", "id null");
+            if(fromChatId == null) {
+                Log.d("Tag","chatid null");
+                messageReceiverID = "testID";
+                chatLayout.setVisibility(View.GONE);
+            }
+            else {
+                messageReceiverID = fromChatId;
+            }
+        }
+        else {
+            messageReceiverID = id;
+        }
 
         userName.setText(messageReceiverName);
         //Picasso.get().load(messageReceiverImage).placeholder(R.drawable.ic_account_box).into(userImage);
@@ -195,15 +217,63 @@ public class ChatActivity extends AppCompatActivity
 
         strRef.child("ProfilePictures/"+messageReceiverID).getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(chatKuva);
+                    Log.d("Tag","picture");
                     getMessageReceiverImage = uri.toString();
                 });
+
+        strRef.child("ProfilePictures/"+messageSenderID).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Log.d("Tag","ownPicture");
+                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(chatKuva);
+                });
+
     }
 
-    private static void openDrawermenu(DrawerLayout drawerLayout) {
+    public void onClick_menu(View view) {
+        PopupMenu popup = new PopupMenu(this, chatKuva);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.user:
+                    Intent userIntent = new Intent(this,ProfiiliActivity.class);
+                    startActivity(userIntent);
+                    finish();
+                    break;
+                case R.id.chat:
+                    finish();
+                    startActivity(getIntent());
+                    break;
+                case R.id.logout:
+                    mAuth.signOut();
+                    Intent signOutIntent = new Intent(this, LoginActivity.class);
+                    startActivity(signOutIntent);
+                    finish();
+                    break;
+            }
+            return false;
+        });
+        if(mAuth.getCurrentUser() != null) {
+            popup.inflate(R.menu.menu_list);
+            if (mAuth.getCurrentUser().getDisplayName() != null) {
+                popup.getMenu().findItem(R.id.user).setTitle(mAuth.getCurrentUser().getDisplayName());
+            } else {
+                popup.getMenu().findItem(R.id.user).setTitle(mAuth.getCurrentUser().getEmail());
+            }
+            popup.show();
+        }
+        else if(mAuth.getCurrentUser() == null) {
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
+            startActivity(kirjauduIntent);
+            finish();
+        }
+    }
+
+    /*private static void openDrawermenu(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    public void onClick_drawermenu(View view) {
+        openDrawermenu(chatDrawer);
+    }*/
 
     public void closeDrawermenu(View view) {
         if (chatDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -222,7 +292,6 @@ public class ChatActivity extends AppCompatActivity
         MessageInputText = (EditText) findViewById(R.id.input_message);
 
         messageAdapter = new MessageAdapter(messagesList);
-        contactsAdapter = new ContactsAdapter(contactsList);
         userMessagesList = (RecyclerView) findViewById(R.id.private_messages_list_of_users);
         userContactsList = (RecyclerView) findViewById(R.id.chats_list);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -230,8 +299,6 @@ public class ChatActivity extends AppCompatActivity
         userMessagesList.setLayoutManager(linearLayoutManager);
         userContactsList.setLayoutManager(linearLayoutManager2);
         userMessagesList.setAdapter(messageAdapter);
-        userContactsList.setAdapter(contactsAdapter);
-
 
         Calendar calendar = Calendar.getInstance();
 
@@ -249,20 +316,6 @@ public class ChatActivity extends AppCompatActivity
     {
         super.onStart();
 
-        if(id == null) {
-            Log.d("Tag", "id null");
-            if(fromChatId == null) {
-                Log.d("Tag","chatid null");
-                messageReceiverID = "testID";
-                chatLayout.setVisibility(View.GONE);
-            }
-            else {
-                messageReceiverID = fromChatId;
-            }
-        }
-        else {
-            messageReceiverID = id;
-        }
         RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -407,7 +460,7 @@ public class ChatActivity extends AppCompatActivity
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(!snapshot.exists()) {
                         Log.d("Tag", "newCOntact");
-                        Contacts newContact = new Contacts(messageReceiverID, getMessageReceiverImage);
+                        Contacts newContact = new Contacts(receiverName, getMessageReceiverImage);
                         Log.d("Tag", messageReceiverID);
                         Log.d("tag",getMessageReceiverImage);
                         ContactRef.child(mAuth.getCurrentUser().getUid()).child(messageReceiverID).setValue(newContact);
