@@ -14,14 +14,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +33,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -50,6 +56,8 @@ public class LaitaVuokralle extends AppCompatActivity {
     private final StorageReference storageRef =  storage.getReference();
     private final StorageReference mokkiRef = storageRef.child("Mökkien kuvia/");
 
+    private DatabaseReference dbVarmistamatonMokki;
+
     private ImageView ImageViewUpload;
     private Button bUploadImage;
     private Button bChooseimage;
@@ -58,20 +66,42 @@ public class LaitaVuokralle extends AppCompatActivity {
     private ProgressBar uploadImageProgressBar;
 
     private EditText editOtsikko;
-    private String mOtsikko;
-    private String UID ;
+    private EditText editHinta;
+    private EditText editOsoite;
+    private Spinner editHuoneet;
+    private EditText editNeliot;
+    private EditText editLammitys;
+    private Spinner editVesi;
+    private Spinner editSauna;
+    private  EditText editKuvaus;
 
-    boolean filled = true;
+    private Button bAsetaVuokralle;
 
+    private String eOtsikko;
+    private String eHinta;
+    private String eOsoite;
+    private String eHuoneet;
+    private String eNeliot;
+    private String eLammitys;
+    private String eVesi;
+    private String eSauna;
+    private String eKuvaus;
+    private String UID;
+    private String eID;
+    private String eVuokraaja;
+    private String eOtsikkoID;
+    private String MokkiKuva;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laita_vuokralle);
 
-        Button bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
-        Button bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
+        dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
+
+        Button bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
+        bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 
         bChooseimage = findViewById(R.id.bChooseImage);
         bUploadImage = findViewById(R.id.bUpload);
@@ -79,52 +109,84 @@ public class LaitaVuokralle extends AppCompatActivity {
         uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
 
         bUploadImage.setVisibility(View.GONE);
+        bAsetaVuokralle.setVisibility(View.GONE);
+
+        //bChooseimage.setVisibility(View.GONE);
 
 
+        bAsetaVuokralle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
+                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
+                    Toast.makeText(LaitaVuokralle.this, "Ei", Toast.LENGTH_SHORT).show();
+                }else{
+                    uploadImage();
+                }
+            }
+        });
         bChooseimage.setOnClickListener(v -> OpenImageChooser());
 
+        bAsetaVuokralle.setVisibility(View.GONE);
+
         bUploadImage.setOnClickListener(v -> uploadImage());
+        //bUploadImage.setOnClickListener(v -> uploadImage());
 
         bTakaisinMokkiListaan.setOnClickListener(View -> {
             Intent takaisinMokkiListaan = new Intent(this, Mokki_List.class);
             startActivity(takaisinMokkiListaan);
         });
 
-        bAsetaVuokralle.setOnClickListener(view -> AsetaVuokralle());
+        Intent takaisinIlmoitukseen = getIntent();
+        editOtsikko = findViewById(R.id.EditOtsikko);
+        eOtsikko = editOtsikko.getText().toString();
+        eOtsikko = takaisinIlmoitukseen.getStringExtra("eOtsikko");
+        editOtsikko.setText(eOtsikko);
+
+        editHinta = findViewById(R.id.EditHinta);
+        eHinta = editHinta.getText().toString();
+        eHinta = takaisinIlmoitukseen.getStringExtra("eHinta");
+        editHinta.setText(eHinta);
+
+        editOsoite = findViewById(R.id.EditOsoite);
+        eOsoite = editOsoite.getText().toString();
+        eOsoite = takaisinIlmoitukseen.getStringExtra("eOsoite");
+        editOsoite.setText(eOsoite);
+
+        editHuoneet = findViewById(R.id.HuoneMaaraSpinner);
+        eHuoneet = editHuoneet.getSelectedItem().toString();
+
+        editNeliot = findViewById(R.id.EditNelioMaara);
+        eNeliot = editNeliot.getText().toString();
+        eNeliot = takaisinIlmoitukseen.getStringExtra("eNeliot");
+        editNeliot.setText(eNeliot);
+
+        editLammitys = findViewById(R.id.EditLammitys);
+        eLammitys = editLammitys.getText().toString();
+        eLammitys = takaisinIlmoitukseen.getStringExtra("eLammitys");
+        editLammitys.setText(eLammitys);
+
+        editVesi = findViewById(R.id.VesiSpinner);
+        eVesi = editVesi.getSelectedItem().toString();
+
+        editSauna = findViewById(R.id.SaunaSpinner);
+        eSauna = editSauna.getSelectedItem().toString();
+
+        editKuvaus = findViewById(R.id.EditKuvaus);
+        eKuvaus = editKuvaus.getText().toString();
+        eKuvaus = takaisinIlmoitukseen.getStringExtra("eKuvaus");
+        editKuvaus.setText(eKuvaus);
+
+        checkText();
     }
 
     private void AsetaVuokralle()
     {
         Intent varmistaIntent = new Intent(this, IlmoitusVarmistus.class);
 
-        editOtsikko = findViewById(R.id.EditOtsikko);
-        mOtsikko = editOtsikko.getText().toString();
+        //Toast.makeText(this, "Mökki lisätty vuokralle", Toast.LENGTH_LONG).show();
 
-        EditText editHinta = findViewById(R.id.EditHinta);
-        String eHinta = editHinta.getText().toString();
-
-        EditText editOsoite = findViewById(R.id.EditOsoite);
-        String eOsoite = editOsoite.getText().toString();
-
-        Spinner editHuoneet = findViewById(R.id.HuoneMaaraSpinner);
-        String eHuoneet = editHuoneet.getSelectedItem().toString();
-
-        EditText editNeliot = findViewById(R.id.EditNelioMaara);
-        String eNeliot = editNeliot.getText().toString();
-
-        EditText editLammitys = findViewById(R.id.EditLammitys);
-        String eLammitys = editLammitys.getText().toString();
-
-        Spinner editVesi = findViewById(R.id.VesiSpinner);
-        String eVesi = editVesi.getSelectedItem().toString();
-
-        Spinner editSauna = findViewById(R.id.SaunaSpinner);
-        String eSauna = editSauna.getSelectedItem().toString();
-
-        EditText editKuvaus = findViewById(R.id.EditKuvaus);
-        String eKuvaus = editKuvaus.getText().toString();
-
-        varmistaIntent.putExtra("eOtsikko", mOtsikko);
+        varmistaIntent.putExtra("eOtsikko", eOtsikko);
         varmistaIntent.putExtra("eHinta", eHinta);
         varmistaIntent.putExtra("eOsoite", eOsoite);
         varmistaIntent.putExtra("eHuoneet", eHuoneet);
@@ -135,16 +197,24 @@ public class LaitaVuokralle extends AppCompatActivity {
         varmistaIntent.putExtra("eKuvaus", eKuvaus);
         varmistaIntent.putExtra("eUID", UID);
 
-        if(mOtsikko.matches("")&& eHinta.matches("") && eOsoite.matches("")
-                 && eNeliot.matches("") && eLammitys.matches("")
-                && eKuvaus.matches("")) {
-            Toast.makeText(this, "Lisää vaadittavat tiedot mökistäsi", Toast.LENGTH_LONG).show();
-            filled = false;
-            filled = true;
-        }else if(filled == true){
-            startActivity(varmistaIntent);
-            filled = true;
-        }
+        startActivity(varmistaIntent);
+    }
+
+    private void asetaMokki()
+    {
+        eVuokraaja = currentUser.getDisplayName();
+        eID = currentUser.getUid();
+        eOtsikkoID = UID;
+        MokkiKuva = mImageUri.toString();
+
+        eOtsikkoID = dbVarmistamatonMokki.push().getKey();
+
+        MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
+                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID);
+
+        dbVarmistamatonMokki.child(eOtsikkoID).setValue(mokki);
+        Log.d("naytaaa",eOtsikko);
+        AsetaVuokralle();
     }
 
     private void OpenImageChooser()
@@ -167,11 +237,12 @@ public class LaitaVuokralle extends AppCompatActivity {
                 int imageWidth = options.outWidth;
                 int imageHeight = options.outHeight;
                 if (imageHeight >= 1) {
-                    if (imageWidth >= 1) {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
-                        ImageViewUpload.setImageBitmap(bitmap);
-                        bUploadImage.setVisibility(View.VISIBLE);
-                    } else {
+                        bAsetaVuokralle.setVisibility(View.VISIBLE);
+                        if (imageWidth >= 1) {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+                            ImageViewUpload.setImageBitmap(bitmap);
+                        }
+                     else {
                         Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -196,6 +267,7 @@ public class LaitaVuokralle extends AppCompatActivity {
         if (getfileExtension(mImageUri).equals("jpg") || getfileExtension(mImageUri).equals("png") || getfileExtension(mImageUri).equals("jpeg")) {
             Log.e("Tag", getfileExtension(mImageUri));
             if (mImageUri != null) {
+                Log.d("osoiteString",eOtsikko);
 
                 UID = UUID.randomUUID().toString();
 
@@ -211,7 +283,7 @@ public class LaitaVuokralle extends AppCompatActivity {
                         }, 5000);
                         mokkiRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
-                                   Picasso.get().load(uri).into(ImageViewUpload);
+                                   Picasso.get().load(uri).fit().centerCrop().into(ImageViewUpload);
                                 });
                         Toast.makeText(getApplicationContext(), "Kuva lisätty", Toast.LENGTH_LONG).show();
                     }
@@ -227,7 +299,10 @@ public class LaitaVuokralle extends AppCompatActivity {
                             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                                 double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                                 uploadImageProgressBar.setProgress((int)progress);
-                                bUploadImage.setVisibility(View.GONE);
+                                if(progress == 100){
+                                    //AsetaVuokralle();
+                                    asetaMokki();
+                                }
                             }
                         });
             }
@@ -235,5 +310,172 @@ public class LaitaVuokralle extends AppCompatActivity {
         else {
             Toast.makeText(getApplicationContext(),"Virheellinen tiedostomuoto",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void checkText() {
+        editOtsikko.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                eOtsikko = editOtsikko.getText().toString();
+            }
+        });
+
+        editHinta.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                eHinta = editHinta.getText().toString();
+            }
+        });
+
+        editOsoite.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                eOsoite = editOsoite.getText().toString();
+            }
+        });
+
+        editHuoneet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    eHuoneet = editHuoneet.getSelectedItem().toString();
+                }else if(position == 1){
+                    eHuoneet = editHuoneet.getSelectedItem().toString();
+                }
+                else if(position == 2){
+                    eHuoneet = editHuoneet.getSelectedItem().toString();
+                }
+                else if(position == 3){
+                    eHuoneet = editHuoneet.getSelectedItem().toString();
+                }
+                else if(position == 4){
+                    eHuoneet = editHuoneet.getSelectedItem().toString();
+                }
+                else if(position == 5){
+                    eHuoneet = editHuoneet.getSelectedItem().toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        editNeliot.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                eNeliot = editNeliot.getText().toString();
+            }
+        });
+
+        editLammitys.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                eLammitys = editLammitys.getText().toString();
+            }
+        });
+
+        editVesi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    eVesi = editVesi.getSelectedItem().toString();
+                }else if(position == 1){
+                    eVesi = editVesi.getSelectedItem().toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        editSauna.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0){
+                    eSauna = editSauna.getSelectedItem().toString();
+                }else if(position == 1){
+                    eSauna = editSauna.getSelectedItem().toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        editKuvaus.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                eKuvaus = editKuvaus.getText().toString();
+            }
+        });
+
     }
 }

@@ -1,29 +1,49 @@
 package projekti.mobiiliprojekti;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 public class MokkiNakyma extends AppCompatActivity {
 
     Button bTakaisinMokkilistaan;
-    Button bVuokraa;
+    private Button bVuokraa;
+    private Button bMuokkaa;
+    private ImageView ImageViewDelete;
     Button bChat;
     private Context mContext;
+
+    private String setVisibility = "";
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef =  storage.getReference();
+    private DatabaseReference fbDatabaseRef;
+    private String deleteKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki_nakyma);
+
+        fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
 
         Intent intent = getIntent();
         MokkiItem mokkiItem = intent.getParcelableExtra("Mokki");
@@ -73,12 +93,55 @@ public class MokkiNakyma extends AppCompatActivity {
         TextView textViewKuvaus = findViewById(R.id.KuvausMokkiNakyma);
         textViewKuvaus.setText(MokkiKuvaus);
 
+        bVuokraa = findViewById(R.id.bVuokraa);
+        bMuokkaa = findViewById(R.id.bMuokkaa);
+        ImageViewDelete = findViewById(R.id.ImageViewDelete);
 
+        //bVuokraa.setVisibility(View.GONE);
+        bMuokkaa.setVisibility(View.GONE);
+        ImageViewDelete.setVisibility(View.GONE);
+
+
+        setVisibility = intent.getStringExtra("setVisibility");
+        if(setVisibility.matches("omatMokit")){
+            bVuokraa.setVisibility(View.GONE);
+            bMuokkaa.setVisibility(View.VISIBLE);
+            ImageViewDelete.setVisibility(View.VISIBLE);
+        }else if(setVisibility.matches("kaikkiMokit")){
+            bVuokraa.setVisibility(View.VISIBLE);
+            bMuokkaa.setVisibility(View.GONE);
+            //ImageViewDelete.setVisibility(View.GONE);
+        }
+        Log.d("Tag",setVisibility);
+
+
+        deleteKey = intent.getStringExtra("deleteKey");
+        ImageViewDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbDatabaseRef.child(deleteKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(MokkiNakyma.this, "Mokki poistettu", Toast.LENGTH_LONG).show();
+                        StorageReference imageRef = storage.getReferenceFromUrl(MokkiImage);
+                        imageRef.delete();
+                        ImageViewDelete.setVisibility(View.GONE);
+                        bMuokkaa.setVisibility(View.GONE);
+                        bChat.setVisibility(View.GONE);
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MokkiNakyma.this, "Ei onnistunut", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
 
 
 
         bTakaisinMokkilistaan = findViewById(R.id.bTakaisinMokkiListaan);
-        bVuokraa = findViewById(R.id.bVuokraa);
         bChat = findViewById(R.id.chatBtn);
 
         bTakaisinMokkilistaan.setOnClickListener(View ->{
@@ -98,4 +161,5 @@ public class MokkiNakyma extends AppCompatActivity {
         Intent i = new Intent(this, Mokki_List.class);
         startActivity(i);
     }
+
 }

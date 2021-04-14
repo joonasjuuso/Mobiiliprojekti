@@ -68,6 +68,8 @@ public class Mokki_List extends AppCompatActivity {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef =  storage.getReference();
 
+    private DatabaseReference dbVarmistamatonMokki;
+
     private ValueEventListener fbDbListener;
 
     ImageView profiiliKuva;
@@ -77,12 +79,17 @@ public class Mokki_List extends AppCompatActivity {
     private EditText editSearch;
     private String imageString;
 
-    ImageView ImageViewDelete;
+    //ImageView ImageViewDelete;
+
+    private String omatMokit = "omatMokit";
+    private String kaikkiMokit = "KaikkiMokit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki__list);
+
+        dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
@@ -95,8 +102,8 @@ public class Mokki_List extends AppCompatActivity {
 
         mMokkiItem = new ArrayList<>();
 
-        //mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
-        //fbRecyclerView.setAdapter(mAdapter);
+        mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
+        fbRecyclerView.setAdapter(mAdapter);
 
         userRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -145,11 +152,14 @@ public class Mokki_List extends AppCompatActivity {
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
         bLaitaVuokralle.setOnClickListener(view -> {
-            Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
-            startActivity(vuokraaIntent);
+            if(currentUser.getUid() != null){
+                Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
+                startActivity(vuokraaIntent);
+                dbVarmistamatonMokki.removeValue();
+            }
         });
 
-
+        //Search funtkio
         editSearch = findViewById(R.id.editTextSearch);
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -212,6 +222,7 @@ public class Mokki_List extends AppCompatActivity {
         naytaKaikkiMokit();
     }
 
+    //Search funtkio
     private void filter(String text)
     {
         ArrayList<MokkiItem> filteredList = new ArrayList<>();
@@ -255,7 +266,11 @@ public class Mokki_List extends AppCompatActivity {
                         @Override
                         public void onItemClick(int position) {
                             mMokkiItem.get(position);
+                            MokkiItem selectedItem = mMokkiItem.get(position);
+                            String selectedKey = selectedItem.getKey();
                             intent.putExtra("Mokki", mMokkiItem.get(position));
+                            intent.putExtra("setVisibility", omatMokit);
+                            intent.putExtra("deleteKey", selectedKey);
                             startActivity(intent);
                         }
 
@@ -308,6 +323,7 @@ public class Mokki_List extends AppCompatActivity {
                     public void onItemClick(int position) {
                         mMokkiItem.get(position);
                         intent.putExtra("Mokki", mMokkiItem.get(position));
+                        intent.putExtra("setVisibility", kaikkiMokit);
                         startActivity(intent);
                     }
 

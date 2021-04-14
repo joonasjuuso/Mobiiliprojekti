@@ -80,7 +80,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
             textViewOtsikko = itemView.findViewById(R.id.TextViewOtsikko);
             textViewHinta = itemView.findViewById(R.id.TextViewHinta);
             imageViewKuva = itemView.findViewById(R.id.imageViewMokkiKuva);
-            imageViewDelete = itemView.findViewById(R.id.ImageViewDelete);
+            //imageViewDelete = itemView.findViewById(R.id.ImageViewDelete);
 
             bOmatMokit = itemView.findViewById(R.id.bOmatMökit);
 
@@ -96,7 +96,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
                 }
             });
 
-            imageViewDelete.setOnClickListener(new View.OnClickListener() {
+            /*imageViewDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
@@ -106,7 +106,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
                         }
                     }
                 }
-            });
+            });*/
         }
     }
 

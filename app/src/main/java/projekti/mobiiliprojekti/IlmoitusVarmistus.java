@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -64,18 +66,62 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String eID;
     private String UID;
 
-
+    private boolean asd;
 
     private ImageView sImageUpload;
 
-    DatabaseReference dbMokki;
+    private DatabaseReference dbMokki;
+    private DatabaseReference dbVarmistamatonMokki;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ilmoitus_varmistus);
 
+        asd = false;
+        registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(@NonNull Activity activity) {
+
+                //Intent intent = new Intent(IlmoitusVarmistus.this, Mokki_List.class);
+                //startActivity(intent);
+            }
+
+            @Override
+            public void onActivityPaused(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(@NonNull Activity activity) {
+                if(asd != true){
+                    deleteMokkiKuva();
+                }
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(@NonNull Activity activity) {
+
+            }
+        });
+
         dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
+        dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
         Button bTakaisinIlmoitukseen = findViewById(R.id.bTakaisinIlmoitukseen);
         Button bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
@@ -115,21 +161,11 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sSauna.setText(eSauna);
         sKuvaus.setText(eKuvaus);
 
-        /*if(currentUser!=null) {
-            fileRef.child("Mökkien kuvia/").getDownloadUrl()
-                    .addOnSuccessListener(uri -> {
-                        Glide.with(getApplicationContext()).load(uri.toString()).into(sImageUpload);
-                        MokkiKuva = uri.toString();
-                    })
-                    .addOnFailureListener(e -> sImageUpload.setImageResource(R.mipmap.ic_launcher));
-        } else if(currentUser==null) {
-            sImageUpload.setImageResource(R.mipmap.ic_launcher);
-        }*/
 
         storageRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    Glide.with(getApplicationContext()).load(uri.toString()).into(sImageUpload);
-                    MokkiKuva =uri.toString();
+                    Picasso.get().load(uri).fit().centerCrop().into(sImageUpload);
+                    MokkiKuva = uri.toString();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getApplicationContext(),"Ei lisättyä kuvaa",Toast.LENGTH_LONG).show();
@@ -138,6 +174,19 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
         bTakaisinIlmoitukseen.setOnClickListener(view -> {
             Intent takaisinIlmoitukseen = new Intent(this, LaitaVuokralle.class);
+
+            takaisinIlmoitukseen.putExtra("eOtsikko",eOtsikko);
+            takaisinIlmoitukseen.putExtra("eHinta", eHinta);
+            takaisinIlmoitukseen.putExtra("eOsoite", eOsoite);
+            takaisinIlmoitukseen.putExtra("eHuoneet",eHuoneet);
+            takaisinIlmoitukseen.putExtra("eNeliot",eNeliot);
+            takaisinIlmoitukseen.putExtra("eLammitys",eLammitys);
+            takaisinIlmoitukseen.putExtra("eVesi",eVesi);
+            takaisinIlmoitukseen.putExtra("eSauna",eSauna);
+            takaisinIlmoitukseen.putExtra("eKuvaus",eKuvaus);
+
+            deleteMokkiKuva();
+
             startActivity(takaisinIlmoitukseen);
         });
 
@@ -145,11 +194,17 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
     }
 
+    private void deleteMokkiKuva()
+    {
+        storageRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).delete();
+    }
+
     private void addMokki()
     {
+        asd = true;
         eVuokraaja = currentUser.getDisplayName();
         eID = currentUser.getUid();
-        eOtsikkoID = eVuokraaja + eOtsikko;
+        eOtsikkoID = UID;
 
         eOtsikkoID = dbMokki.push().getKey();
 
@@ -157,6 +212,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
                 eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
+
+        dbVarmistamatonMokki.removeValue();
 
         Toast.makeText(this, "Mökki lisätty vuokralle", Toast.LENGTH_LONG).show();
 

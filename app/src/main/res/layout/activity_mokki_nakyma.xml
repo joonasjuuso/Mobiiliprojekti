@@ -7,21 +7,26 @@
     android:orientation="vertical"
     tools:context=".MokkiNakyma">
 
+
     <ScrollView
         android:id="@+id/ScrollViewKuvaus"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bTakaisinMokkiListaan">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
+
             <ImageView
                 android:id="@+id/ImageMokkiNakyma"
                 android:layout_width="match_parent"
                 android:layout_height="250dp" />
+
 
 
             <TextView
@@ -152,8 +157,17 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                 />
+            <ImageView
+                android:id="@+id/ImageViewDelete"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_delete"
+                android:layout_gravity="right">
+
+            </ImageView>
         </LinearLayout>
+
     </ScrollView>
 
     <Button
@@ -179,6 +193,15 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:text="Vuokraa"
+        />
+
+    <Button
+        android:id="@+id/bMuokkaa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="Muokkaa"
         />
 
 
