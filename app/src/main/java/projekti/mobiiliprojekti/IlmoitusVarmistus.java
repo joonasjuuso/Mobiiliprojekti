@@ -79,46 +79,6 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         setContentView(R.layout.activity_ilmoitus_varmistus);
 
         asd = false;
-        registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-
-            }
-
-            @Override
-            public void onActivityStarted(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(@NonNull Activity activity) {
-
-                //Intent intent = new Intent(IlmoitusVarmistus.this, Mokki_List.class);
-                //startActivity(intent);
-            }
-
-            @Override
-            public void onActivityPaused(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(@NonNull Activity activity) {
-                if(asd != true){
-                    deleteMokkiKuva();
-                }
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(@NonNull Activity activity) {
-
-            }
-        });
 
         dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
         dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
@@ -197,6 +157,15 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private void deleteMokkiKuva()
     {
         storageRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).delete();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(asd != true){
+            deleteMokkiKuva();
+        }
     }
 
     private void addMokki()
