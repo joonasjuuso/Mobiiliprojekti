@@ -41,7 +41,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class IlmoitusVarmistus extends AppCompatActivity {
 
@@ -65,6 +69,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String MokkiKuva;
     private String eID;
     private String UID;
+    private List<String> varausDates;
+    private String dates;
 
     private boolean asd;
 
@@ -77,6 +83,9 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ilmoitus_varmistus);
+
+        //ArrayList<String> varausDates = (ArrayList<String>)getIntent().getSerializableExtra(va)
+        varausDates = new ArrayList<>();
 
         asd = false;
 
@@ -98,6 +107,15 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eSauna = varmistaIntent.getStringExtra("eSauna");
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
         UID = varmistaIntent.getStringExtra("eUID");
+        //varausDates = Arrays.asList(varmistaIntent.getStringArrayExtra("dates"));
+        varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
+        Log.d("listat", String.valueOf(varausDates));
+
+        StringBuilder builder = new StringBuilder();
+        for(String s : varausDates){
+            builder.append(s).append(" ");
+        }
+        //sDates.setText(builder.toString());
 
 
         TextView sOtsikko = findViewById(R.id.sOtsikko);
@@ -108,6 +126,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         TextView sLammitys = findViewById(R.id.sLammitys);
         TextView sVesi = findViewById(R.id.sVesi);
         TextView sSauna = findViewById(R.id.sSauna);
+        TextView sDates = findViewById(R.id.textViewDates);
         TextView sKuvaus = findViewById(R.id.sKuvaus);
         sImageUpload = findViewById(R.id.ImageViewUpload);
 
@@ -119,7 +138,10 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sLammitys.setText(eLammitys);
         sVesi.setText(eVesi);
         sSauna.setText(eSauna);
+        sDates.setText(builder.toString());
         sKuvaus.setText(eKuvaus);
+
+        dates = varausDates.toString();
 
 
         storageRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
@@ -144,6 +166,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
             takaisinIlmoitukseen.putExtra("eVesi",eVesi);
             takaisinIlmoitukseen.putExtra("eSauna",eSauna);
             takaisinIlmoitukseen.putExtra("eKuvaus",eKuvaus);
+            //takaisinIlmoitukseen.putExtra("dates", String.valueOf(varausDates));
 
             deleteMokkiKuva();
 
@@ -178,7 +201,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eOtsikkoID = dbMokki.push().getKey();
 
         MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
-                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID);
+                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
 

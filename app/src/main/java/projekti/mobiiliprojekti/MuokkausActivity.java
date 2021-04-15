@@ -18,12 +18,10 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,29 +37,22 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.UUID;
 
-public class LaitaVuokralle extends AppCompatActivity {
+public class MuokkausActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private final FirebaseAuth mauth = FirebaseAuth.getInstance();
     private final FirebaseUser currentUser = mauth.getCurrentUser();
 
-
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef =  storage.getReference();
     private final StorageReference mokkiRef = storageRef.child("Mökkien kuvia/");
 
-    private DatabaseReference dbVarmistamatonMokki;
-
-
-    private Uri mImageUri;
-    private ProgressBar uploadImageProgressBar;
+    private DatabaseReference dbMokki;
 
     private EditText editOtsikko;
     private EditText editHinta;
@@ -72,14 +63,16 @@ public class LaitaVuokralle extends AppCompatActivity {
     private Spinner editVesi;
     private Spinner editSauna;
     private  EditText editKuvaus;
-    private CalendarView setDateDalendar;
-    private TextView textViewDates;
 
     private ImageView ImageViewUpload;
-    private Button bUploadImage;
+    //private Button bUploadImage;
     private Button bChooseimage;
+    private Button bTakaisinMokkiListaan;
 
-    private Button bAsetaVuokralle;
+    private Button bHyvaksy;
+
+    private Uri mImageUri;
+    private ProgressBar uploadImageProgressBar;
 
     private String eOtsikko;
     private String eHinta;
@@ -95,73 +88,38 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String eVuokraaja;
     private String eOtsikkoID;
     private String MokkiKuva;
+    private String muokkaaKey;
 
-    ArrayList<String> dateList;
-    private String selectedYear;
-    private String selectedMonth;
-    private String selectedDay;
-    private String selectedDate;
-    private String dates;
+    private String muokkausKuva;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_laita_vuokralle);
+        setContentView(R.layout.activity_muokkaus);
 
-        dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
+        dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
 
-        Button bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
-        bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 
-        bChooseimage = findViewById(R.id.bChooseImage);
-        bUploadImage = findViewById(R.id.bUpload);
-        ImageViewUpload = findViewById(R.id.ImageViewUpload);
+        bHyvaksy = findViewById(R.id.bHyväksy);
+        //bHyvaksy.setVisibility(View.GONE);
         uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
-        setDateDalendar = findViewById(R.id.date_pick_calendar);
-        textViewDates = findViewById(R.id.textViewDates);
 
-        bUploadImage.setVisibility(View.GONE);
-        bAsetaVuokralle.setVisibility(View.GONE);
-
-        //bChooseimage.setVisibility(View.GONE);
-
-
-        bAsetaVuokralle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
-                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("") || dateList.isEmpty()){
-                    Toast.makeText(LaitaVuokralle.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
-                }else{
-                    uploadImage();
-                }
-            }
-        });
-        bChooseimage.setOnClickListener(v -> OpenImageChooser());
-
-        bAsetaVuokralle.setVisibility(View.GONE);
-
-        bUploadImage.setOnClickListener(v -> uploadImage());
-
-        bTakaisinMokkiListaan.setOnClickListener(View -> {
-            Intent takaisinMokkiListaan = new Intent(this, Mokki_List.class);
-            startActivity(takaisinMokkiListaan);
-        });
-
-        Intent takaisinIlmoitukseen = getIntent();
         editOtsikko = findViewById(R.id.EditOtsikko);
         eOtsikko = editOtsikko.getText().toString();
-        eOtsikko = takaisinIlmoitukseen.getStringExtra("eOtsikko");
+        //eOtsikko = takaisinIlmoitukseen.getStringExtra("eOtsikko");
         editOtsikko.setText(eOtsikko);
+
+        ImageViewUpload = findViewById(R.id.ImageViewUpload);
+        Picasso.get().load(MokkiKuva).into(ImageViewUpload);
 
         editHinta = findViewById(R.id.EditHinta);
         eHinta = editHinta.getText().toString();
-        eHinta = takaisinIlmoitukseen.getStringExtra("eHinta");
+        //eHinta = takaisinIlmoitukseen.getStringExtra("eHinta");
         editHinta.setText(eHinta);
 
         editOsoite = findViewById(R.id.EditOsoite);
         eOsoite = editOsoite.getText().toString();
-        eOsoite = takaisinIlmoitukseen.getStringExtra("eOsoite");
+        //eOsoite = takaisinIlmoitukseen.getStringExtra("eOsoite");
         editOsoite.setText(eOsoite);
 
         editHuoneet = findViewById(R.id.HuoneMaaraSpinner);
@@ -169,12 +127,12 @@ public class LaitaVuokralle extends AppCompatActivity {
 
         editNeliot = findViewById(R.id.EditNelioMaara);
         eNeliot = editNeliot.getText().toString();
-        eNeliot = takaisinIlmoitukseen.getStringExtra("eNeliot");
+        //eNeliot = takaisinIlmoitukseen.getStringExtra("eNeliot");
         editNeliot.setText(eNeliot);
 
         editLammitys = findViewById(R.id.EditLammitys);
         eLammitys = editLammitys.getText().toString();
-        eLammitys = takaisinIlmoitukseen.getStringExtra("eLammitys");
+        //eLammitys = takaisinIlmoitukseen.getStringExtra("eLammitys");
         editLammitys.setText(eLammitys);
 
         editVesi = findViewById(R.id.VesiSpinner);
@@ -185,54 +143,83 @@ public class LaitaVuokralle extends AppCompatActivity {
 
         editKuvaus = findViewById(R.id.EditKuvaus);
         eKuvaus = editKuvaus.getText().toString();
-        eKuvaus = takaisinIlmoitukseen.getStringExtra("eKuvaus");
+        //eKuvaus = takaisinIlmoitukseen.getStringExtra("eKuvaus");
         editKuvaus.setText(eKuvaus);
 
+        Intent muokkausIntent = getIntent();
+        eOtsikko = muokkausIntent.getStringExtra("eOtsikko");
+        MokkiKuva = muokkausIntent.getStringExtra("eKuva");
+        eHinta = muokkausIntent.getStringExtra("eHinta");
+        eOsoite = muokkausIntent.getStringExtra("eOsoite");
+        eHuoneet = muokkausIntent.getStringExtra("eHuoneet");
+        eNeliot = muokkausIntent.getStringExtra("eNeliot");
+        eLammitys = muokkausIntent.getStringExtra("eLammitys");
+        eVesi = muokkausIntent.getStringExtra("eVesi");
+        eSauna = muokkausIntent.getStringExtra("eSauna");
+        eKuvaus = muokkausIntent.getStringExtra("eKuvaus");
+        muokkaaKey = muokkausIntent.getStringExtra("muokkaaKey");
+
+
+        editOtsikko.setText(eOtsikko);
+        editHinta.setText(eHinta);
+        editOsoite.setText(eOsoite);
+        editNeliot.setText(eNeliot);
+        editLammitys.setText(eLammitys);
+        editKuvaus.setText(eKuvaus);
+        Picasso.get().load(MokkiKuva).fit().centerCrop().into(ImageViewUpload);
+
+        bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
+        bTakaisinMokkiListaan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MuokkausActivity.this, Mokki_List.class);
+                startActivity(intent);
+            }
+        });
+
+        bChooseimage = findViewById(R.id.bChooseImage);
+        bChooseimage.setVisibility(View.GONE);
+
+        bChooseimage.setOnClickListener(v -> OpenImageChooser());
+        bHyvaksy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //uploadImage();
+                updateMokki();
+            }
+        });
 
         checkText();
-        setDates();
     }
 
-    private void AsetaVuokralle()
+    private void updateMokki()
     {
-        Intent varmistaIntent = new Intent(this, IlmoitusVarmistus.class);
+        HashMap hashmap = new HashMap();
+        hashmap.put("otsikko", eOtsikko);
+        hashmap.put("hinta", eHinta);
+        hashmap.put("huoneMaara", eHuoneet);
+        hashmap.put("osoite", eOsoite);
+        hashmap.put("lammitys", eLammitys);
+        hashmap.put("sauna", eSauna);
+        hashmap.put("vesi", eVesi);
+        hashmap.put("kuvaus", eKuvaus);
+        hashmap.put("nelioMaara", eNeliot);
+        //hashmap.put("mokkiImage", muokkausKuva);
 
-        //Toast.makeText(this, "Mökki lisätty vuokralle", Toast.LENGTH_LONG).show();
-
-        varmistaIntent.putExtra("eOtsikko", eOtsikko);
-        varmistaIntent.putExtra("eHinta", eHinta);
-        varmistaIntent.putExtra("eOsoite", eOsoite);
-        varmistaIntent.putExtra("eHuoneet", eHuoneet);
-        varmistaIntent.putExtra("eNeliot", eNeliot);
-        varmistaIntent.putExtra("eLammitys", eLammitys);
-        varmistaIntent.putExtra("eVesi", eVesi);
-        varmistaIntent.putExtra("eSauna", eSauna);
-        varmistaIntent.putExtra("eKuvaus", eKuvaus);
-        varmistaIntent.putExtra("eUID", UID);
-        varmistaIntent.putExtra("dates", dateList);
-
-        startActivity(varmistaIntent);
-    }
-
-    private void asetaMokki()
-    {
-        /*eVuokraaja = currentUser.getDisplayName();
-        eID = currentUser.getUid();
-        eOtsikkoID = UID;
-        MokkiKuva = mImageUri.toString();
-
-        eOtsikkoID = dbVarmistamatonMokki.push().getKey();
-
-        MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
-                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
-
-        dbVarmistamatonMokki.child(eOtsikkoID).setValue(mokki);
-        Log.d("naytaaa",eOtsikko);*/
-        AsetaVuokralle();
+        dbMokki.child(muokkaaKey).updateChildren(hashmap).addOnSuccessListener(new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+                Toast.makeText(MuokkausActivity.this, "JEE", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MuokkausActivity.this, Mokki_List.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void OpenImageChooser()
     {
+        StorageReference imageRef = storage.getReferenceFromUrl(MokkiKuva);
+
         Intent chooseImageIntent = new Intent();
         chooseImageIntent.setType("image/*");
         chooseImageIntent.setAction(chooseImageIntent.ACTION_GET_CONTENT);
@@ -251,12 +238,12 @@ public class LaitaVuokralle extends AppCompatActivity {
                 int imageWidth = options.outWidth;
                 int imageHeight = options.outHeight;
                 if (imageHeight >= 1) {
-                        bAsetaVuokralle.setVisibility(View.VISIBLE);
-                        if (imageWidth >= 1) {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
-                            ImageViewUpload.setImageBitmap(bitmap);
-                        }
-                     else {
+                    //bHyvaksy.setVisibility(View.VISIBLE);
+                    if (imageWidth >= 1) {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+                        ImageViewUpload.setImageBitmap(bitmap);
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), "Virhe kuvan kanssa, syötä toinen kuva", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -297,7 +284,7 @@ public class LaitaVuokralle extends AppCompatActivity {
                         }, 5000);
                         mokkiRef.child("Mökkien kuvia/"  + currentUser.getUid() + UID).getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
-                                   Picasso.get().load(uri).fit().centerCrop().into(ImageViewUpload);
+                                    Picasso.get().load(uri).fit().centerCrop().into(ImageViewUpload);
                                 });
                         Toast.makeText(getApplicationContext(), "Kuva lisätty", Toast.LENGTH_LONG).show();
                     }
@@ -315,7 +302,8 @@ public class LaitaVuokralle extends AppCompatActivity {
                                 uploadImageProgressBar.setProgress((int)progress);
                                 if(progress == 100){
                                     //AsetaVuokralle();
-                                    asetaMokki();
+                                    //asetaMokki();
+                                    updateMokki();
                                 }
                             }
                         });
@@ -324,45 +312,6 @@ public class LaitaVuokralle extends AppCompatActivity {
         else {
             Toast.makeText(getApplicationContext(),"Virheellinen tiedostomuoto",Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void setDates()
-    {
-
-        dateList = new ArrayList<String>();
-
-        setDateDalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                selectedYear = String.valueOf(year);
-                selectedMonth = String.valueOf(month);
-                selectedDay = String.valueOf(dayOfMonth);
-                //selectedDate = Long.valueOf(selectedYear + selectedMonth + selectedDay);
-                //setDateDalendar.getDate();
-                selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
-                //dateList.add(selectedDate);
-                /*try {
-                    completeDate = format.parse(selectedDate);
-                    dateList.add(completeDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }*/
-                if(!dateList.contains(selectedDate)){
-                    dateList.add(selectedDate);
-                }else if(dateList.contains(selectedDate)){
-                    dateList.remove(selectedDate);
-                }
-
-                StringBuilder builder = new StringBuilder();
-                for(String s : dateList){
-                    builder.append(s).append(" ");
-                }
-                textViewDates.setText(builder.toString());
-
-                Log.d("asd", String.valueOf(dateList));
-            }
-        });
-        dates = dateList.toString();
     }
 
     private void checkText() {

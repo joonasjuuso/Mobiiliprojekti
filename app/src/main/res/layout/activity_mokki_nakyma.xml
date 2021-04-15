@@ -148,6 +148,32 @@
                 android:textStyle="bold" />
 
             <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Vapaana olevat päivät:">
+            </TextView>
+            <TextView
+                android:id="@+id/textViewDates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+            <CalendarView
+                android:id="@+id/date_pick_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+            </CalendarView>
+            <TextView
+                android:id="@+id/textViewSelectedDates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+
+            <TextView
                 android:id="@+id/KuvausMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
