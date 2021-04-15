@@ -41,7 +41,7 @@
         android:layout_height="42dp"
         android:layout_marginStart="66dp"
         android:layout_marginEnd="66dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="108dp"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/button_signup"
@@ -81,7 +81,7 @@
         android:layout_height="55dp"
         android:layout_marginStart="66dp"
         android:layout_marginEnd="66dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="88dp"
         android:onClick="clickSignUp"
         android:text="Luo KäyttäjäTunnus"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -114,5 +114,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.574" />
+
+    <CheckBox
+        android:id="@+id/checkBoxSuoja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/button_signup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword"
+        app:layout_constraintVertical_bias="0.475" />
+
+    <TextView
+        android:id="@+id/tietosuojaText"
+        android:layout_width="230dp"
+        android:layout_height="48dp"
+        android:contextClickable="true"
+        android:paddingVertical="5dp"
+        android:text="@string/tietosuojalauseke"
+        android:textSize="15dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/button_signup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.014"
+        app:layout_constraintStart_toEndOf="@+id/checkBoxSuoja"
+        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword"
+        app:layout_constraintVertical_bias="0.475" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

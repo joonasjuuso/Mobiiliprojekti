@@ -1,13 +1,20 @@
 package projekti.mobiiliprojekti;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +29,10 @@ public class LuoTunnus extends AppCompatActivity {
     protected FirebaseAuth mAuth;
     protected FirebaseUser currentUser;
     private EditText editEmail, editPassword, editConfirmPassword;
+    private TextView tietosuojaText;
+    private String tietosuojaString;
+    private CheckBox chkSuoja;
+    private boolean IS_SUOJA_READ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +46,45 @@ public class LuoTunnus extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser  = mAuth.getCurrentUser();
+        IS_SUOJA_READ = false;
+
+        chkSuoja = findViewById(R.id.checkBoxSuoja);
+        tietosuojaText = findViewById(R.id.tietosuojaText);
+        tietosuojaString = getString(R.string.tietosuojaContext);
+
+        tietosuojaText.setOnClickListener(view -> {
+            tietosuojaStart();
+        });
+
+        chkSuoja.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(IS_SUOJA_READ == false) {
+                    chkSuoja.setChecked(false);
+                    tietosuojaText.setTextColor(Color.RED);
+                }
+            }
+        });
     }
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    private void tietosuojaStart() {
+        LayoutInflater inflater= LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.tietosuoja_layout, null);
+
+        TextView textview=(TextView)view.findViewById(R.id.textmsg);
+        textview.setText(tietosuojaString);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Tietosuojalauseke");
+        alertDialog.setMessage(tietosuojaString);
+        alertDialog.setView(view);
+        AlertDialog alert = alertDialog.create();
+        alert.show();
+        IS_SUOJA_READ = true;
+        tietosuojaText.setTextColor(Color.GRAY);
     }
 
     public void clickSignUp(View view) {
