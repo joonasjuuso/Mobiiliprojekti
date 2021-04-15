@@ -8,6 +8,7 @@
     tools:context=".LuoTunnus">
 
     <EditText
+        android:fontFamily="@font/candara"
         android:id="@+id/editTextEmail"
         android:layout_width="279dp"
         android:layout_height="42dp"
@@ -22,6 +23,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
+        android:fontFamily="@font/candara"
         android:id="@+id/editTextPassword"
         android:layout_width="279dp"
         android:layout_height="42dp"
@@ -36,6 +38,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
+        android:fontFamily="@font/candara"
         android:id="@+id/editTextConfirmPassword"
         android:layout_width="279dp"
         android:layout_height="42dp"
@@ -50,6 +53,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:fontFamily="@font/candara"
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,6 +67,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:fontFamily="@font/candara"
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,6 +81,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/button_signup"
         android:layout_width="279dp"
         android:layout_height="55dp"
@@ -90,6 +96,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:fontFamily="@font/candara"
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -103,6 +110,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:fontFamily="@font/candara"
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -128,6 +136,7 @@
         app:layout_constraintVertical_bias="0.475" />
 
     <TextView
+        android:fontFamily="@font/candara"
         android:id="@+id/tietosuojaText"
         android:layout_width="230dp"
         android:layout_height="48dp"

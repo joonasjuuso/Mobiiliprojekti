@@ -21,12 +21,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
+                android:fontFamily="@font/candara"
                 android:id="@+id/bNaytaKaikkienMokit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kaikki Mökit">
             </Button>
             <Button
+                android:fontFamily="@font/candara"
                 android:id="@+id/bOmatMökit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,6 +36,7 @@
                 android:layout_toEndOf="@+id/bNaytaKaikkienMokit">
             </Button>
             <Button
+                android:fontFamily="@font/candara"
                 android:id="@+id/bVuokratut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

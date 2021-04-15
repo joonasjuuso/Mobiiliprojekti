@@ -30,12 +30,12 @@
 
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:id="@+id/OtsikkoMokkiNakyma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textSize="30sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,11 +43,11 @@
                 android:visibility="gone"/>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Hinta €/pvä:"/>
             <TextView
                 android:id="@+id/HintaMokkiNakyma"
@@ -58,11 +58,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Osoite:"/>
             <TextView
                 android:id="@+id/OsoiteMokkiNakyma"
@@ -73,11 +73,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Huoneiden lukumäärä:"/>
             <TextView
                 android:id="@+id/HuoneetMokkiNakyma"
@@ -88,11 +88,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Kohteen pinta-ala:"/>
             <TextView
                 android:id="@+id/NeliotMokkiNakyma"
@@ -103,11 +103,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Kohteen lämmitys:"/>
             <TextView
                 android:id="@+id/LammitysMokkiNakyma"
@@ -118,11 +118,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Onko kohteessa juokseva vesi:"/>
             <TextView
                 android:id="@+id/VesiMokkiNakyma"
@@ -133,11 +133,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Onko kohteessa sauna:"/>
             <TextView
                 android:id="@+id/SaunaMokkiNakyma"
@@ -148,12 +148,11 @@
                 android:textStyle="bold" />
 
             <TextView
-
+                android:fontFamily="@font/candara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="Vapaana olevat päivät:">
             </TextView>
             <TextView
@@ -197,6 +196,7 @@
     </ScrollView>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bTakaisinMokkiListaan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -205,6 +205,7 @@
         android:onClick="onClick_Takaisin"/>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/chatBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -213,6 +214,7 @@
         android:text="Lähetä viesti"/>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bVuokraa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -222,6 +224,7 @@
         />
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bMuokkaa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

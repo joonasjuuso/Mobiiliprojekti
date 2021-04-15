@@ -17,10 +17,10 @@
             android:orientation="vertical">
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Otsikko:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -39,10 +39,10 @@
             </ImageView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hinta €/pvä:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp" />
             <TextView
@@ -53,10 +53,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen osoite:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -68,10 +68,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Huonemäärä:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -83,10 +83,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen neliömäärä:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -98,10 +98,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen lämmitys:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -113,10 +113,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Onko kohteessa juokseva vesi?"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -128,10 +128,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Onko kohteessa saunaa?"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -143,10 +143,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Valitsemasi vuokraus päivät:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -157,10 +157,10 @@
             </TextView>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kuvaus:"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -175,6 +175,7 @@
     </ScrollView>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bTakaisinIlmoitukseen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -182,6 +183,7 @@
         android:text="Takaisin"/>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bAsetaVuokralle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

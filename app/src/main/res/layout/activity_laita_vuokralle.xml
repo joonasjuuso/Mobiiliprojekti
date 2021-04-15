@@ -18,13 +18,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextOtsikko"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Otsikko:"/>
             <EditText
+                android:fontFamily="@font/candara"
                 android:id="@+id/EditOtsikko"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,13 +34,14 @@
 
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextHinta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Hinta €/pvä:"/>
             <EditText
+                android:fontFamily="@font/candara"
                 android:id="@+id/EditHinta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,6 +49,7 @@
                 android:inputType="numberDecimal"/>
 
             <TextView
+                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Syötä vuokrattavat päivät"
@@ -55,26 +58,28 @@
 
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextOsoite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Mökin osoite:"/>
             <EditText
+                android:fontFamily="@font/candara"
                 android:id="@+id/EditOsoite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Mökin osoite:"/>
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextHuoneMaara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Huoneiden lukumäärä:"/>
             <Spinner
+                android:fontFamily="@font/candara"
                 android:id="@+id/HuoneMaaraSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,13 +87,14 @@
             </Spinner>
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextNelioMaara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Kohteen pinta-ala:"/>
             <EditText
+                android:fontFamily="@font/candara"
                 android:id="@+id/EditNelioMaara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,26 +102,28 @@
                 android:inputType="numberDecimal"/>
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextLammitys"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Kohteen Lämmitys:"/>
             <EditText
+                android:fontFamily="@font/candara"
                 android:id="@+id/EditLammitys"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Kohteen lämmitys" />
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextVesi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Onko mökillä juokseva vesi?"/>
             <Spinner
+                android:fontFamily="@font/candara"
                 android:id="@+id/VesiSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,13 +131,14 @@
             </Spinner>
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextSauna"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Onko kohteessa saunaa?"/>
             <Spinner
+                android:fontFamily="@font/candara"
                 android:id="@+id/SaunaSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,13 +146,14 @@
 
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/TextKuvaus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="Kuvaus:"/>
             <EditText
+                android:fontFamily="@font/candara"
                 android:id="@+id/EditKuvaus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,16 +166,18 @@
                 android:layout_gravity="center">
             </CalendarView>
             <TextView
+                android:fontFamily="@font/candara"
                 android:id="@+id/textViewDates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TextView>
 
             <Button
+                android:fontFamily="@font/candara"
                 android:id="@+id/bChooseImage"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Choose File">
+                android:text="Valitse kuva">
             </Button>
             <ImageView
                 android:id="@+id/ImageViewUpload"
@@ -181,6 +193,7 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal">
             </ProgressBar>
             <Button
+                android:fontFamily="@font/candara"
                 android:id="@+id/bUpload"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -192,6 +205,7 @@
     </ScrollView>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bTakaisinMokkiListaan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -199,6 +213,7 @@
         android:text="Takaisin"/>
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/bAsetaVuokralle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

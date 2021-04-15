@@ -7,6 +7,7 @@
     tools:context=".varmistusActivity">
 
     <TextView
+        android:fontFamily="@font/candara"
         android:id="@+id/textView"
         android:layout_width="304dp"
         android:layout_height="103dp"
@@ -21,10 +22,11 @@
         app:layout_constraintVertical_bias="0.305" />
 
     <Button
+        android:fontFamily="@font/candara"
         android:id="@+id/checkBtn"
         android:layout_width="239dp"
         android:layout_height="60dp"
-        android:text="Takaisin Kirjaudu sisään näkymään"
+        android:text="ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
