@@ -59,14 +59,14 @@ public class Mokki_List extends AppCompatActivity {
     private RecyclerView fbRecyclerView;
 
     private DatabaseReference fbDatabaseRef;
-    private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
+    private final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private List<MokkiItem> mMokkiItem;
     private MokkiAdapterV2 mAdapter;
 
-    private FirebaseAuth mauth = FirebaseAuth.getInstance();
-    private FirebaseUser currentUser = mauth.getCurrentUser();
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference storageRef =  storage.getReference();
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
 
     private DatabaseReference dbVarmistamatonMokki;
 
@@ -81,8 +81,8 @@ public class Mokki_List extends AppCompatActivity {
 
     //ImageView ImageViewDelete;
 
-    private String omatMokit = "omatMokit";
-    private String kaikkiMokit = "KaikkiMokit";
+    private final String omatMokit = "omatMokit";
+    private final String kaikkiMokit = "KaikkiMokit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

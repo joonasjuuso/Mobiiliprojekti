@@ -30,11 +30,11 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>
 {
-    private List<Messages> userMessagesList;
+    private final List<Messages> userMessagesList;
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference storageRef = storage.getReference();
+    private final StorageReference storageRef = storage.getReference();
 
 
     public MessageAdapter (List<Messages> userMessagesList)
@@ -55,9 +55,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         {
             super(itemView);
 
-            senderMessageText = (TextView) itemView.findViewById(R.id.sender_messsage_text);
-            receiverMessageText = (TextView) itemView.findViewById(R.id.receiver_message_text);
-            receiverProfileImage = (ImageView) itemView.findViewById(R.id.message_profile_image);
+            senderMessageText = itemView.findViewById(R.id.sender_messsage_text);
+            receiverMessageText = itemView.findViewById(R.id.receiver_message_text);
+            receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
         }
@@ -88,15 +88,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         String fromUserID = messages.getFrom();
         String fromMessageType = messages.getType();
-
-        /*storageRef.child("Users/"+fromUserID).getDownloadUrl().addOnSuccessListener(uri -> {
-            Picasso.get().load(uri.toString()).placeholder(R.drawable.ic_account_box).into(messageViewHolder.receiverProfileImage);
-            })
-            .addOnFailureListener(e -> {
-
-            });*/
-
-
 
         messageViewHolder.receiverMessageText.setVisibility(View.GONE);
         messageViewHolder.receiverProfileImage.setVisibility(View.GONE);

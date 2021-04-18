@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 
 public class MokkiAdapter extends RecyclerView.Adapter<MokkiAdapter.MokkiViewHolder> {
-    private ArrayList<MokkiItem> mMokki_scroll_list;
+    private final ArrayList<MokkiItem> mMokki_scroll_list;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener

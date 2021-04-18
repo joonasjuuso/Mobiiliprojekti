@@ -235,7 +235,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     {
         Intent chooseImageIntent = new Intent();
         chooseImageIntent.setType("image/*");
-        chooseImageIntent.setAction(chooseImageIntent.ACTION_GET_CONTENT);
+        chooseImageIntent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
     }
 

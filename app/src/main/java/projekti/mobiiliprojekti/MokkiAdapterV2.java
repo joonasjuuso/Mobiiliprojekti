@@ -29,7 +29,7 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.MokkiviewHolderV2>
 {
-    private Context mContext;
+    private final Context mContext;
     private List<MokkiItem> mMokkiList;
     private OnItemClickListener mOnItemClickListener;
 
