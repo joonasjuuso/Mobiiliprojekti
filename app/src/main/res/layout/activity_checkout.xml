@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <include
-        android:layout="@layout/profiili_toolbar"
+        layout="@layout/profiili_toolbar"
         android:id="@+id/checkoutToolbar"/>
 
     <TextView
@@ -39,16 +39,32 @@
     <TextView
         android:layout_width="130dp"
         android:layout_height="wrap_content"
+        android:id="@+id/textViewOsoite"
+        android:text="Osoite:"
+
+        android:layout_below="@id/textViewVuokraaja"
+        android:padding="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewOsoiteMaarat"
+        android:layout_toRightOf="@id/textViewOsoite"
+        android:layout_below="@id/textViewVuokraaja"
+        android:text="yes"
+        android:padding="20dp"/>
+    <TextView
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
         android:id="@+id/textViewPaivat"
         android:text="Valitut päivät:"
-        android:layout_below="@id/textViewVuokraaja"
+        android:layout_below="@id/textViewOsoite"
         android:padding="20dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewPaivaMaarat"
         android:layout_toRightOf="@id/textViewPaivat"
-        android:layout_below="@id/textViewVuokraaja"
+        android:layout_below="@id/textViewOsoite"
         android:text="yes"
         android:padding="20dp"/>
     <TextView

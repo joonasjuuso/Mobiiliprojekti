@@ -103,7 +103,7 @@ class ChatsFragment extends Fragment {
 
 public class ChatActivity extends AppCompatActivity
 {
-    private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
+    private String messageReceiverID, messageReceiverImage, messageSenderID;
 
     private TextView userName;
     private DrawerLayout chatDrawer;
@@ -130,6 +130,7 @@ public class ChatActivity extends AppCompatActivity
     private String id;
     private String fromChatId;
     private String receiverName;
+    private TextView receiver;
     private RelativeLayout chatLayout;
     private final Handler handler = new Handler();
     private Runnable runnable;
@@ -177,7 +178,9 @@ public class ChatActivity extends AppCompatActivity
         chatLayout = findViewById(R.id.chat_linear_layout);
         chatDrawer = findViewById(R.id.drawerChat_layout);
         backKuva = findViewById(R.id.backButton);
+        receiver = findViewById(R.id.receiverNameBar);
 
+        receiver.setText(receiverName);
 
         IntializeControllers();
 
@@ -195,8 +198,6 @@ public class ChatActivity extends AppCompatActivity
         else {
             messageReceiverID = id;
         }
-
-        userName.setText(messageReceiverName);
         //Picasso.get().load(messageReceiverImage).placeholder(R.drawable.ic_account_box).into(userImage);
 
 
@@ -294,8 +295,6 @@ public class ChatActivity extends AppCompatActivity
     private void IntializeControllers()
     {
 
-
-        userName = findViewById(R.id.receiverName);
 
         SendMessageButton = findViewById(R.id.send_message_btn);
         SendFilesButton = findViewById(R.id.send_files_btn);

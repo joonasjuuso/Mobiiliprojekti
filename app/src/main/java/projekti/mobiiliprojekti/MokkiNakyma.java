@@ -215,6 +215,16 @@ public class MokkiNakyma extends AppCompatActivity {
             startActivity(chatIntent);
         });
 
+            bVuokraa.setOnClickListener(v -> {
+                Intent vuokraIntent = new Intent(this, CheckoutActivity.class);
+                vuokraIntent.putExtra("name", Vuokraaja);
+                vuokraIntent.putExtra("hinta",MokkiHinta);
+                vuokraIntent.putExtra("otsikko",MokkiOtsikko);
+                vuokraIntent.putExtra("osoite",MokkiOsoite);
+                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) dateList);
+                startActivity(vuokraIntent);
+        });
+
         bMuokkaa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
