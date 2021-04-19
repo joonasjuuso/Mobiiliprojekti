@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class MokkiItem implements Parcelable{
     private String mVuokraajaID;
     private String mKey;
     private String mDates;
+    private List<String> mDatesList = new ArrayList<>();
     //private String mOmistaja;
 
     public MokkiItem()
@@ -33,7 +35,7 @@ public class MokkiItem implements Parcelable{
 
     public MokkiItem(String MokkiImage, String otsikko, String hinta, String osoite, String huoneMaara,
                      String nelioMaara, String lammitys, String vesi, String sauna, String kuvaus, String otsikkoID,
-                     String vuokraaja, String vuokraajaID, String dates)
+                     String vuokraaja, String vuokraajaID, String dates/*, List<String> datesList*/)
     {
         mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
@@ -49,6 +51,7 @@ public class MokkiItem implements Parcelable{
         mVuokraaja = vuokraaja;
         mVuokraajaID = vuokraajaID;
         mDates = dates;
+        //mDatesList = datesList;
         //mOmistaja = omistaja;
     }
 
@@ -67,6 +70,7 @@ public class MokkiItem implements Parcelable{
         mVuokraaja = in.readString();
         mVuokraajaID = in.readString();
         mDates = in.readString();
+        //in.readList(mDatesList, String.class.getClassLoader());
         //mOmistaja = in.readString();
     }
 
@@ -96,6 +100,7 @@ public class MokkiItem implements Parcelable{
     public String getVuokraaja() { return mVuokraaja; }
     public String getVuokraajaID() { return mVuokraajaID; }
     public String getmDates() { return mDates; }
+    //public List<String> getmDatesList() { return mDatesList; }
     //public String getOmistaja() { return mOmistaja; }
 
 
@@ -113,6 +118,7 @@ public class MokkiItem implements Parcelable{
     public void setVuokraaja(String vuokraaja ) { this.mVuokraaja = vuokraaja; }
     public void setVuokraajaID(String vuokraajaID) { this.mVuokraajaID = vuokraajaID; }
     public void setDates(String dates) { this.mDates = dates; }
+    public void setmDatesList(List<String> datesList) { this.mDatesList = datesList; }
 
     @Override
     public int describeContents() {
@@ -135,6 +141,7 @@ public class MokkiItem implements Parcelable{
         dest.writeString(mVuokraaja);
         dest.writeString(mVuokraajaID);
         dest.writeString(mDates);
+        dest.writeList(mDatesList);
         //dest.writeString(mOmistaja);
     }
 

@@ -15,7 +15,6 @@
         android:src="@drawable/ic_arrow_back"/>
 
     <TextView
-        android:fontFamily="@font/candara"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

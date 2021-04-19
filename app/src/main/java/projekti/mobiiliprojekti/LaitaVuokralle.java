@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -37,12 +38,15 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.squareup.timessquare.CalendarPickerView;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class LaitaVuokralle extends AppCompatActivity {
@@ -74,6 +78,8 @@ public class LaitaVuokralle extends AppCompatActivity {
     private  EditText editKuvaus;
     private CalendarView setDateDalendar;
     private TextView textViewDates;
+    private TextView textViewVuokrattavissa;
+    private TextView textViewVuokraAika;
 
     private ImageView ImageViewUpload;
     private Button bUploadImage;
@@ -103,6 +109,11 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String selectedDate;
     private String dates;
 
+    //KALENTERIPASKAA
+    List<Date> listDates;
+    ArrayList<String> stringDates;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,8 +128,10 @@ public class LaitaVuokralle extends AppCompatActivity {
         bUploadImage = findViewById(R.id.bUpload);
         ImageViewUpload = findViewById(R.id.ImageViewUpload);
         uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
-        setDateDalendar = findViewById(R.id.date_pick_calendar);
+        //setDateDalendar = findViewById(R.id.date_pick_calendar);
         textViewDates = findViewById(R.id.textViewDates);
+        textViewVuokrattavissa = findViewById(R.id.textViewVuokrattavissa);
+        textViewVuokraAika = findViewById(R.id.textViewVuokraAika);
 
         bUploadImage.setVisibility(View.GONE);
         bAsetaVuokralle.setVisibility(View.GONE);
@@ -130,7 +143,7 @@ public class LaitaVuokralle extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
-                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("") || dateList.isEmpty()){
+                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
                     Toast.makeText(LaitaVuokralle.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
                 }else{
                     uploadImage();
@@ -191,6 +204,8 @@ public class LaitaVuokralle extends AppCompatActivity {
 
         checkText();
         setDates();
+
+
     }
 
     private void AsetaVuokralle()
@@ -209,7 +224,7 @@ public class LaitaVuokralle extends AppCompatActivity {
         varmistaIntent.putExtra("eSauna", eSauna);
         varmistaIntent.putExtra("eKuvaus", eKuvaus);
         varmistaIntent.putExtra("eUID", UID);
-        varmistaIntent.putExtra("dates", dateList);
+        varmistaIntent.putExtra("dates", stringDates);
 
         startActivity(varmistaIntent);
     }
@@ -328,7 +343,46 @@ public class LaitaVuokralle extends AppCompatActivity {
 
     private void setDates()
     {
+        //KALENTERI
+        stringDates = new ArrayList<>();
+        listDates = new ArrayList<>();
+        Date today = new Date();
+        Calendar nextMonth = Calendar.getInstance();
+        nextMonth.add(Calendar.MONTH, 2);
 
+        CalendarPickerView datePicker = findViewById(R.id.kalenteri);
+        datePicker.init(today, nextMonth.getTime())
+                .inMode(CalendarPickerView.SelectionMode.RANGE);
+
+        datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+
+                listDates = datePicker.getSelectedDates();
+                Log.d("TAG", "stringDates = " + stringDates);
+                stringDates.clear();
+                Log.d("TAG", "stringDates after clear = " + stringDates);
+
+                for(Date i : listDates) {
+
+                    SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+                    String str = fmt.format(i);
+                    stringDates.add(str);
+                }
+                Log.d("TAG", "stringDates = " + stringDates);
+                textViewVuokrattavissa.setText("Vuokrattavissa alkaen:");
+                textViewVuokraAika.setText(stringDates.get(0) + " - "
+                                              + stringDates.get(stringDates.size() - 1));
+                listDates.clear();
+            }
+            @Override
+            public void onDateUnselected(Date date) {
+
+            }
+        });
+
+
+/*
         dateList = new ArrayList<String>();
 
         setDateDalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -346,7 +400,7 @@ public class LaitaVuokralle extends AppCompatActivity {
                     dateList.add(completeDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }*/
+                }
                 if(!dateList.contains(selectedDate)){
                     dateList.add(selectedDate);
                 }else if(dateList.contains(selectedDate)){
@@ -363,6 +417,7 @@ public class LaitaVuokralle extends AppCompatActivity {
             }
         });
         dates = dateList.toString();
+        */
     }
 
     private void checkText() {

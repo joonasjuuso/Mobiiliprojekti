@@ -17,7 +17,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Otsikko:"
@@ -39,7 +38,6 @@
             </ImageView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hinta €/pvä:"
@@ -53,7 +51,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen osoite:"
@@ -68,7 +65,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Huonemäärä:"
@@ -83,7 +79,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen neliömäärä:"
@@ -98,7 +93,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen lämmitys:"
@@ -113,7 +107,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Onko kohteessa juokseva vesi?"
@@ -128,7 +121,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Onko kohteessa saunaa?"
@@ -143,10 +135,9 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Valitsemasi vuokraus päivät:"
+                android:text="Vuokrattavissa alkaen:"
                 android:textColor="@color/black"
                 android:textSize="20dp">
             </TextView>
@@ -157,7 +148,6 @@
             </TextView>
 
             <TextView
-                android:fontFamily="@font/candara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kuvaus:"
@@ -175,7 +165,6 @@
     </ScrollView>
 
     <Button
-        android:fontFamily="@font/candara"
         android:id="@+id/bTakaisinIlmoitukseen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -183,7 +172,6 @@
         android:text="Takaisin"/>
 
     <Button
-        android:fontFamily="@font/candara"
         android:id="@+id/bAsetaVuokralle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

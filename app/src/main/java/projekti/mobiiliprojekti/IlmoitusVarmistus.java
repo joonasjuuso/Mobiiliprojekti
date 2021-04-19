@@ -41,9 +41,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -111,13 +113,6 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
         Log.d("listat", String.valueOf(varausDates));
 
-        StringBuilder builder = new StringBuilder();
-        for(String s : varausDates){
-            builder.append(s).append(" ");
-        }
-        //sDates.setText(builder.toString());
-
-
         TextView sOtsikko = findViewById(R.id.sOtsikko);
         TextView sHinta = findViewById(R.id.sHinta);
         TextView sOsoite = findViewById(R.id.sOsoite);
@@ -138,7 +133,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sLammitys.setText(eLammitys);
         sVesi.setText(eVesi);
         sSauna.setText(eSauna);
-        sDates.setText(builder.toString());
+        sDates.setText(varausDates.get(0) + " - "
+                        + varausDates.get(varausDates.size() - 1));
         sKuvaus.setText(eKuvaus);
 
         dates = varausDates.toString();

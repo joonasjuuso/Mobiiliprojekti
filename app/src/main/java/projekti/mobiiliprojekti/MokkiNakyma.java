@@ -23,11 +23,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+import com.squareup.timessquare.CalendarPickerView;
 
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MokkiNakyma extends AppCompatActivity {
 
@@ -71,6 +77,10 @@ public class MokkiNakyma extends AppCompatActivity {
     private TextView textViewSelectedDates;
 
     private CalendarView calendarDates;
+
+    //KALENTERIPASKAA
+    List<Date> listDates;
+    ArrayList<String> stringDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +150,7 @@ public class MokkiNakyma extends AppCompatActivity {
 
         //Log.d("split", Arrays.toString(new List[]{splitDates}));
 
-        calendarDates = findViewById(R.id.date_pick_calendar);
+        //calendarDates = findViewById(R.id.date_pick_calendar);
         textViewSelectedDates = findViewById(R.id.textViewSelectedDates);
 
         TextView textViewKuvaus = findViewById(R.id.KuvausMokkiNakyma);
@@ -220,10 +230,34 @@ public class MokkiNakyma extends AppCompatActivity {
             }
         });
 
-        setDates();
+        //setDates();
 
+        //KALENTERI
+        stringDates = new ArrayList<>();
+        listDates = new ArrayList<>();
+        Date today = new Date();
+
+        Calendar nextMonth = Calendar.getInstance();
+        nextMonth.add(Calendar.MONTH, 2);
+
+        CalendarPickerView datePicker = findViewById(R.id.kalenteri);
+        datePicker.init(today, nextMonth.getTime())
+                .inMode(CalendarPickerView.SelectionMode.MULTIPLE);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+
+        for (String s : splitDates) {
+            ParsePosition pos = new ParsePosition(0);
+            Log.d("TAG", "s = " + s);
+            Date date = sdf.parse(s, pos);
+            listDates.add(date);
+            datePicker.selectDate(date);
+        }
+        Log.d("TAG", "date = " + listDates);
+        textViewDates.setText(splitDates.get(0) + " - "
+                + splitDates.get(splitDates.size() - 1));
     }
-
+/*
     private void setDates()
     {
 
@@ -257,6 +291,8 @@ public class MokkiNakyma extends AppCompatActivity {
             }
         });
     }
+
+ */
 
     public void onClick_Takaisin(View view) {
         Intent i = new Intent(this, Mokki_List.class);

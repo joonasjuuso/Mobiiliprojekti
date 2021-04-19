@@ -7,7 +7,6 @@
     tools:context=".MaksuActivity">
 
     <Button
-        android:fontFamily="@font/candara"
         android:id="@+id/buttonPaypal"
         android:layout_width="259dp"
         android:layout_height="82dp"
@@ -20,7 +19,6 @@
         app:layout_constraintVertical_bias="0.597" />
 
     <Button
-        android:fontFamily="@font/candara"
         android:id="@+id/buttonMobilepay"
         android:layout_width="259dp"
         android:layout_height="82dp"
@@ -33,7 +31,6 @@
         app:layout_constraintVertical_bias="0.781" />
 
     <Button
-        android:fontFamily="@font/candara"
         android:id="@+id/buttonKorttimaksu"
         android:layout_width="259dp"
         android:layout_height="82dp"

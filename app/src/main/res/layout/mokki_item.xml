@@ -22,7 +22,6 @@
 
 
         <TextView
-            android:fontFamily="@font/candara"
             android:id="@+id/TextViewOtsikko"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +31,6 @@
             android:textSize="20sp" />
 
         <TextView
-            android:fontFamily="@font/candara"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -44,7 +42,6 @@
             android:id="@+id/TextViewHinta"/>
 
         <TextView
-            android:fontFamily="@font/candara"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
