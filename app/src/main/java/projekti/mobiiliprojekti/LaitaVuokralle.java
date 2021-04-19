@@ -39,6 +39,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -335,7 +336,7 @@ public class LaitaVuokralle extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 selectedYear = String.valueOf(year);
-                selectedMonth = String.valueOf(month);
+                selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
                 selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;

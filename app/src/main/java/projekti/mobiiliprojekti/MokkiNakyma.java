@@ -245,7 +245,7 @@ public class MokkiNakyma extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 selectedYear = String.valueOf(year);
-                selectedMonth = String.valueOf(month);
+                selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
                 selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;

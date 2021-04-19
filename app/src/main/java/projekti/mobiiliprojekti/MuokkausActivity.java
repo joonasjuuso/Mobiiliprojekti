@@ -238,7 +238,7 @@ public class MuokkausActivity extends AppCompatActivity {
         hashmap.put("sauna", eSauna);
         hashmap.put("vesi", eVesi);
         hashmap.put("kuvaus", eKuvaus);
-        if(dateList != null){
+        if(getDates != null){
             hashmap.put("mDates", dateList.toString());
         }
         //hashmap.put("mDates", dateList.toString());
@@ -267,7 +267,7 @@ public class MuokkausActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 selectedYear = String.valueOf(year);
-                selectedMonth = String.valueOf(month);
+                selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
                 selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
