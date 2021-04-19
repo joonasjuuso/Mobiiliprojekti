@@ -96,7 +96,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String eOtsikkoID;
     private String MokkiKuva;
 
-    ArrayList<String> dateList;
+    private  ArrayList<String> dateList;
     private String selectedYear;
     private String selectedMonth;
     private String selectedDay;
@@ -214,9 +214,9 @@ public class LaitaVuokralle extends AppCompatActivity {
         startActivity(varmistaIntent);
     }
 
-    private void asetaMokki()
+    /*private void asetaMokki()
     {
-        /*eVuokraaja = currentUser.getDisplayName();
+        eVuokraaja = currentUser.getDisplayName();
         eID = currentUser.getUid();
         eOtsikkoID = UID;
         MokkiKuva = mImageUri.toString();
@@ -227,9 +227,9 @@ public class LaitaVuokralle extends AppCompatActivity {
                 eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
 
         dbVarmistamatonMokki.child(eOtsikkoID).setValue(mokki);
-        Log.d("naytaaa",eOtsikko);*/
+        Log.d("naytaaa",eOtsikko);
         AsetaVuokralle();
-    }
+    }*/
 
     private void OpenImageChooser()
     {
@@ -314,8 +314,8 @@ public class LaitaVuokralle extends AppCompatActivity {
                                 double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                                 uploadImageProgressBar.setProgress((int)progress);
                                 if(progress == 100){
-                                    //AsetaVuokralle();
-                                    asetaMokki();
+                                    AsetaVuokralle();
+                                    //asetaMokki();
                                 }
                             }
                         });
@@ -337,16 +337,9 @@ public class LaitaVuokralle extends AppCompatActivity {
                 selectedYear = String.valueOf(year);
                 selectedMonth = String.valueOf(month);
                 selectedDay = String.valueOf(dayOfMonth);
-                //selectedDate = Long.valueOf(selectedYear + selectedMonth + selectedDay);
-                //setDateDalendar.getDate();
+
                 selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
-                //dateList.add(selectedDate);
-                /*try {
-                    completeDate = format.parse(selectedDate);
-                    dateList.add(completeDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }*/
+
                 if(!dateList.contains(selectedDate)){
                     dateList.add(selectedDate);
                 }else if(dateList.contains(selectedDate)){

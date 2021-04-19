@@ -31,7 +31,7 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         mobilepayBtn = findViewById(R.id.toggleMobilepay);
-        korttiBtn = findViewById(R.id.toggleKortti);
+        //korttiBtn = findViewById(R.id.toggleKortti);
 
         mobilepayBtn.setOnClickListener(v -> {
             Intent mobilepayIntent = new Intent(this,MaksuActivity.class);
@@ -44,8 +44,8 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
-    private String getName() {
+    /*private String getName() {
        
         return
-    }
+    }*/
 }

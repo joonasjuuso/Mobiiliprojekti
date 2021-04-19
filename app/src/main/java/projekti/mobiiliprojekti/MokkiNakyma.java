@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +68,7 @@ public class MokkiNakyma extends AppCompatActivity {
     private String selectedMonth;
     private String selectedDay;
     private String selectedDate;
+    private String replace;
 
     private TextView textViewSelectedDates;
 
@@ -127,18 +129,18 @@ public class MokkiNakyma extends AppCompatActivity {
         textViewSauna.setText(MokkiSauna);
 
         TextView textViewDates = findViewById(R.id.textViewDates);
-        String replace = mDates.replaceAll("\\[", "").replaceAll("\\(", "")
-                                            .replaceAll("\\]", "").replaceAll("\\)", "")
-                                            .replaceAll(" ", "");
-        textViewDates.setText(replace);
-        Log.d("dfg", mDates);
-        Log.e("asd", replace);
+        if(mDates != null){
+            replace = mDates.replaceAll("\\[", "").replaceAll("\\(", "")
+                    .replaceAll("\\]", "").replaceAll("\\)", "")
+                    .replaceAll(" ", "");
+            textViewDates.setText(replace);
+            Log.d("dfg", mDates);
+            Log.e("asd", replace);
+            splitDates = Arrays.asList(replace.split(",", -1));
+        }
+        //Log.d("dfg", mDates);
+        //Log.e("asd", replace);
 
-        //splitDates =new ArrayList<>();
-        splitDates = Arrays.asList(replace.split(",", -1));
-        //splitDates.add(String.valueOf(splitString));
-
-        //Log.d("split", Arrays.toString(new List[]{splitDates}));
 
         calendarDates = findViewById(R.id.date_pick_calendar);
         textViewSelectedDates = findViewById(R.id.textViewSelectedDates);
@@ -280,6 +282,7 @@ public class MokkiNakyma extends AppCompatActivity {
         muokkaaIntent.putExtra("eSauna", MokkiSauna);
         muokkaaIntent.putExtra("eKuvaus", MokkiKuvaus);
         muokkaaIntent.putExtra("muokkaaKey", deleteKey);
+        muokkaaIntent.putExtra("dates", String.valueOf(splitDates));
         //muokkaaIntent.putExtra("eUID", UID);
 
 

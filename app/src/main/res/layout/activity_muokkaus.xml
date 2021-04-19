@@ -147,6 +147,19 @@
                 android:layout_height="wrap_content"
                 android:hint="anna kuvaus mökistäsi:"/>
 
+            <CalendarView
+                android:id="@+id/date_pick_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+            </CalendarView>
+            <TextView
+                android:fontFamily="@font/candara"
+                android:id="@+id/textViewDates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+
             <Button
                 android:fontFamily="@font/candara"
                 android:id="@+id/bChooseImage"

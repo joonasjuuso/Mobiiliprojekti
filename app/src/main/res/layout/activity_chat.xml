@@ -48,39 +48,38 @@
         android:backgroundTint="@android:color/white"
         />
 
+        <EditText
+            android:fontFamily="@font/candara"
+            android:id="@+id/input_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="type message here..."
+            android:padding="15dp"
+            android:maxLines="5"
+            android:layout_toEndOf="@+id/send_files_btn"
+            android:layout_toStartOf="@+id/send_message_btn"
+            />
 
-    <EditText
-        android:fontFamily="@font/candara"
-        android:id="@+id/input_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="type message here..."
-        android:padding="15dp"
-        android:maxLines="5"
-        android:layout_toEndOf="@+id/send_files_btn"
-        android:layout_toStartOf="@+id/send_message_btn"
-        />
 
-
-    <ImageButton
-        android:id="@+id/send_message_btn"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_send"
-        android:layout_alignParentEnd="true"
-        android:backgroundTint="@android:color/white"
-        />
-
-</RelativeLayout>
-</RelativeLayout>
-    <RelativeLayout
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/white">
-
-        <include
-            layout="@layout/messages_drawer"/>
+        <ImageButton
+            android:id="@+id/send_message_btn"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_send"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@android:color/white"
+            />
 
     </RelativeLayout>
-    </androidx.drawerlayout.widget.DrawerLayout>
+    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/white">
+
+            <include
+                layout="@layout/messages_drawer"/>
+
+        </RelativeLayout>
+        </androidx.drawerlayout.widget.DrawerLayout>
