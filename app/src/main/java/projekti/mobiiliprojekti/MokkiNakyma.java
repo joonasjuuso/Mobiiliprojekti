@@ -40,8 +40,8 @@ public class MokkiNakyma extends AppCompatActivity {
 
     private String setVisibility = "";
 
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference storageRef =  storage.getReference();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
     private DatabaseReference fbDatabaseRef;
     private String deleteKey;
 

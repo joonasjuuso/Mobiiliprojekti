@@ -75,7 +75,7 @@ public class LuoTunnus extends AppCompatActivity {
         LayoutInflater inflater= LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.tietosuoja_layout, null);
 
-        TextView textview=(TextView)view.findViewById(R.id.textmsg);
+        TextView textview= view.findViewById(R.id.textmsg);
         textview.setText(tietosuojaString);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Tietosuojalauseke");

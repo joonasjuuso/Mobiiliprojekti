@@ -14,11 +14,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class varmistusActivity extends AppCompatActivity  {
-    private FirebaseAuth mauth = FirebaseAuth.getInstance();
-    private FirebaseUser currentUser = mauth.getCurrentUser();
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
     Button checkBtn;
     private int count = 0;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable runnable;
 
 
@@ -26,8 +26,7 @@ public class varmistusActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_varmistus);
-        Intent i = new Intent(this, LoginActivity.class);
-        checkBtn = (Button) findViewById(R.id.checkBtn);
+        checkBtn = findViewById(R.id.checkBtn);
         Log.e("Tag","oncreate");
         checkBtn.setOnClickListener(View -> {
             backtoLogin();
@@ -63,12 +62,7 @@ public class varmistusActivity extends AppCompatActivity  {
     }
     private void refresh(int milliseconds) {
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                content();
-            }
-        };
+        runnable = () -> content();
         handler.postDelayed(runnable, milliseconds);
         if(checkVerificationStatus()) {
             handler.removeCallbacks(runnable);
