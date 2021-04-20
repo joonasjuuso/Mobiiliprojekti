@@ -111,8 +111,8 @@ public class Mokki_List extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()) {
-                    Contacts newContact = new Contacts(currentUser.getUid(),"");
-                    userRef.child(currentUser.getUid()).setValue(newContact);
+                    Users newUser = new Users(currentUser.getUid(),"", "", currentUser.getEmail());
+                    userRef.child(currentUser.getUid()).setValue(newUser);
                     Log.d("Tag","new user");
                 }
             }
@@ -141,6 +141,38 @@ public class Mokki_List extends AppCompatActivity {
                                     return;
                                 }
                             });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        userRef.child(currentUser.getUid()).child("numero").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()) {
+                    userRef.child(currentUser.getUid()).child("numero").setValue("123");
+                    //TODO: Lisää tähän puhelinnumero builderi, kuten myös profiiliin
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        userRef.child(currentUser.getUid()).child("sahkoposti").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()) {
+                    userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getUid());
+                }
+                if(!snapshot.getValue().equals(currentUser.getEmail())) {
+                    userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getEmail());
                 }
             }
 
