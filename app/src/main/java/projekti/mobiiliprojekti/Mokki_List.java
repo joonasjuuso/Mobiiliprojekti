@@ -84,12 +84,14 @@ public class Mokki_List extends AppCompatActivity {
     private final String omatMokit = "omatMokit";
     private final String kaikkiMokit = "KaikkiMokit";
 
+    private String dates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki__list);
 
-        dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
+        //dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
@@ -307,6 +309,7 @@ public class Mokki_List extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    Log.d("mDates", mokkiItem.getmDates());
                     mokkiItem.setKey(postSnapshot.getKey());
                     mMokkiItem.add(mokkiItem);
                 }

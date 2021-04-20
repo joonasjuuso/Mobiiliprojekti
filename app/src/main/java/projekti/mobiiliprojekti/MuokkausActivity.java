@@ -177,8 +177,7 @@ public class MuokkausActivity extends AppCompatActivity {
         Log.d("listat", String.valueOf(getDates));
 
         String replace = getDates.replaceAll("\\[", "").replaceAll("\\(", "")
-                .replaceAll("\\]", "").replaceAll("\\)", "")
-                .replaceAll(" ", "");
+                .replaceAll("\\]", "").replaceAll("\\)", "");
 
         dateList = Collections.singletonList(replace);
         Log.d("listat", String.valueOf(dateList));
@@ -218,8 +217,13 @@ public class MuokkausActivity extends AppCompatActivity {
         bHyvaksy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //uploadImage();
-                updateMokki();
+                if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
+                        || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("") || dateList.isEmpty()){
+                    Toast.makeText(MuokkausActivity.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
+                }else{
+                    //uploadImage();
+                    updateMokki();
+                }
             }
         });
 
@@ -238,8 +242,8 @@ public class MuokkausActivity extends AppCompatActivity {
         hashmap.put("sauna", eSauna);
         hashmap.put("vesi", eVesi);
         hashmap.put("kuvaus", eKuvaus);
-        if(getDates != null){
-            hashmap.put("mDates", dateList.toString());
+        if(!dateList.isEmpty()){
+            hashmap.put("mDates", dates);
         }
         //hashmap.put("mDates", dateList.toString());
         hashmap.put("nelioMaara", eNeliot);
@@ -284,10 +288,14 @@ public class MuokkausActivity extends AppCompatActivity {
                 }
                 textViewDates.setText(builder.toString());
 
+                dates = dateList.toString().replaceAll("\\[", "").replaceAll("\\(", "")
+                        .replaceAll("\\]", "").replaceAll("\\)", "");
+
                 Log.d("datelist", String.valueOf(dateList));
+                Log.d("datelist", String.valueOf(dates));
             }
         });
-        dates = dateList.toString();
+        //dates = dateList.toString();
     }
 
     private void OpenImageChooser()

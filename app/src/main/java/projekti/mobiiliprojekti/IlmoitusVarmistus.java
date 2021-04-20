@@ -49,7 +49,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String MokkiKuva;
     private String eID;
     private String UID;
-    private List<String> varausDates;
+    //private List<String> varausDates;
+    private String varausDates;
     private String dates;
 
     private boolean asd;
@@ -64,7 +65,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ilmoitus_varmistus);
 
-        varausDates = new ArrayList<>();
+        //varausDates = new ArrayList<>();
 
         asd = false;
 
@@ -86,14 +87,14 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eSauna = varmistaIntent.getStringExtra("eSauna");
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
         UID = varmistaIntent.getStringExtra("eUID");
-        //varausDates = Arrays.asList(varmistaIntent.getStringArrayExtra("dates"));
-        varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
+        varausDates = varmistaIntent.getStringExtra("dates");
+        //varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
         Log.d("listat", String.valueOf(varausDates));
 
-        StringBuilder builder = new StringBuilder();
-        for(String s : varausDates){
-            builder.append(s).append(" ");
-        }
+        //StringBuilder builder = new StringBuilder();
+        //for(String s : varausDates){
+        //    builder.append(s).append(" ");
+        //}
         //sDates.setText(builder.toString());
 
 
@@ -117,7 +118,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sLammitys.setText(eLammitys);
         sVesi.setText(eVesi);
         sSauna.setText(eSauna);
-        sDates.setText(builder.toString());
+        sDates.setText(varausDates);
         sKuvaus.setText(eKuvaus);
 
         dates = varausDates.toString();
@@ -180,7 +181,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eOtsikkoID = dbMokki.push().getKey();
 
         MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
-                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
+                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, varausDates);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
 

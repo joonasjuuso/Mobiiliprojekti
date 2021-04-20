@@ -210,7 +210,7 @@ public class LaitaVuokralle extends AppCompatActivity {
         varmistaIntent.putExtra("eSauna", eSauna);
         varmistaIntent.putExtra("eKuvaus", eKuvaus);
         varmistaIntent.putExtra("eUID", UID);
-        varmistaIntent.putExtra("dates", dateList);
+        varmistaIntent.putExtra("dates", dates);
 
         startActivity(varmistaIntent);
     }
@@ -354,9 +354,13 @@ public class LaitaVuokralle extends AppCompatActivity {
                 textViewDates.setText(builder.toString());
 
                 Log.d("asd", String.valueOf(dateList));
+                Log.d("dates", String.valueOf(dates));
+                dates = dateList.toString().replaceAll("\\[", "").replaceAll("\\(", "")
+                        .replaceAll("\\]", "").replaceAll("\\)", "");
             }
         });
-        dates = dateList.toString();
+        //dates = dateList.toString().replaceAll("\\[", "").replaceAll("\\(", "")
+         //   .replaceAll("\\]", "").replaceAll("\\)", "");
     }
 
     private void checkText() {
