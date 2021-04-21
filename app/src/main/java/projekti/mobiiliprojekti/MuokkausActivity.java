@@ -18,10 +18,12 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,8 +39,12 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class MuokkausActivity extends AppCompatActivity {
@@ -89,6 +95,16 @@ public class MuokkausActivity extends AppCompatActivity {
     private String eOtsikkoID;
     private String MokkiKuva;
     private String muokkaaKey;
+    private List<String> dateList;
+    private String dates;
+    private String selectedYear;
+    private String selectedMonth;
+    private String selectedDay;
+    private String selectedDate;
+    private String getDates;
+
+    private CalendarView setDateDalendar;
+    private TextView textViewDates;
 
     private String muokkausKuva;
 
@@ -99,14 +115,14 @@ public class MuokkausActivity extends AppCompatActivity {
 
         dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
 
+        //varausDates = new ArrayList<>();
+
 
         bHyvaksy = findViewById(R.id.bHyväksy);
-        //bHyvaksy.setVisibility(View.GONE);
         uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
 
         editOtsikko = findViewById(R.id.EditOtsikko);
         eOtsikko = editOtsikko.getText().toString();
-        //eOtsikko = takaisinIlmoitukseen.getStringExtra("eOtsikko");
         editOtsikko.setText(eOtsikko);
 
         ImageViewUpload = findViewById(R.id.ImageViewUpload);
@@ -114,12 +130,10 @@ public class MuokkausActivity extends AppCompatActivity {
 
         editHinta = findViewById(R.id.EditHinta);
         eHinta = editHinta.getText().toString();
-        //eHinta = takaisinIlmoitukseen.getStringExtra("eHinta");
         editHinta.setText(eHinta);
 
         editOsoite = findViewById(R.id.EditOsoite);
         eOsoite = editOsoite.getText().toString();
-        //eOsoite = takaisinIlmoitukseen.getStringExtra("eOsoite");
         editOsoite.setText(eOsoite);
 
         editHuoneet = findViewById(R.id.HuoneMaaraSpinner);
@@ -127,12 +141,10 @@ public class MuokkausActivity extends AppCompatActivity {
 
         editNeliot = findViewById(R.id.EditNelioMaara);
         eNeliot = editNeliot.getText().toString();
-        //eNeliot = takaisinIlmoitukseen.getStringExtra("eNeliot");
         editNeliot.setText(eNeliot);
 
         editLammitys = findViewById(R.id.EditLammitys);
         eLammitys = editLammitys.getText().toString();
-        //eLammitys = takaisinIlmoitukseen.getStringExtra("eLammitys");
         editLammitys.setText(eLammitys);
 
         editVesi = findViewById(R.id.VesiSpinner);
@@ -141,9 +153,10 @@ public class MuokkausActivity extends AppCompatActivity {
         editSauna = findViewById(R.id.SaunaSpinner);
         eSauna = editSauna.getSelectedItem().toString();
 
+        textViewDates = findViewById(R.id.textViewDates);
+
         editKuvaus = findViewById(R.id.EditKuvaus);
         eKuvaus = editKuvaus.getText().toString();
-        //eKuvaus = takaisinIlmoitukseen.getStringExtra("eKuvaus");
         editKuvaus.setText(eKuvaus);
 
         Intent muokkausIntent = getIntent();
@@ -158,6 +171,24 @@ public class MuokkausActivity extends AppCompatActivity {
         eSauna = muokkausIntent.getStringExtra("eSauna");
         eKuvaus = muokkausIntent.getStringExtra("eKuvaus");
         muokkaaKey = muokkausIntent.getStringExtra("muokkaaKey");
+        getDates = muokkausIntent.getStringExtra("dates");
+        //dateList = (ArrayList<String>)getIntent().getSerializableExtra("dates");
+        //dateList = muokkausIntent.getStringExtra("dates");
+        Log.d("listat", String.valueOf(getDates));
+
+        String replace = getDates.replaceAll("\\[", "").replaceAll("\\(", "")
+                .replaceAll("\\]", "").replaceAll("\\)", "")
+                .replaceAll(" ", "");
+
+        dateList = Collections.singletonList(replace);
+        Log.d("listat", String.valueOf(dateList));
+
+        StringBuilder builder = new StringBuilder();
+        for(String s : dateList){
+            builder.append(s).append(" ");
+        }
+
+        setDateDalendar = findViewById(R.id.date_pick_calendar);
 
 
         editOtsikko.setText(eOtsikko);
@@ -165,8 +196,11 @@ public class MuokkausActivity extends AppCompatActivity {
         editOsoite.setText(eOsoite);
         editNeliot.setText(eNeliot);
         editLammitys.setText(eLammitys);
+        textViewDates.setText(builder.toString());
         editKuvaus.setText(eKuvaus);
         Picasso.get().load(MokkiKuva).fit().centerCrop().into(ImageViewUpload);
+
+
 
         bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
         bTakaisinMokkiListaan.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +224,7 @@ public class MuokkausActivity extends AppCompatActivity {
         });
 
         checkText();
+        setDates();
     }
 
     private void updateMokki()
@@ -203,8 +238,15 @@ public class MuokkausActivity extends AppCompatActivity {
         hashmap.put("sauna", eSauna);
         hashmap.put("vesi", eVesi);
         hashmap.put("kuvaus", eKuvaus);
+        if(getDates != null){
+            hashmap.put("mDates", dateList.toString());
+        }
+        //hashmap.put("mDates", dateList.toString());
         hashmap.put("nelioMaara", eNeliot);
-        //hashmap.put("mokkiImage", muokkausKuva);
+        //if(mImageUri != null){
+        //    hashmap.put("mokkiImage", );
+        //}
+        //hashmap.put("mokkiImage", mImageUri.toString());
 
         dbMokki.child(muokkaaKey).updateChildren(hashmap).addOnSuccessListener(new OnSuccessListener() {
             @Override
@@ -216,9 +258,41 @@ public class MuokkausActivity extends AppCompatActivity {
         });
     }
 
+    private void setDates()
+    {
+
+        dateList = new ArrayList<String>();
+
+        setDateDalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                selectedYear = String.valueOf(year);
+                selectedMonth = String.valueOf(month + 1);
+                selectedDay = String.valueOf(dayOfMonth);
+
+                selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
+
+                if(!dateList.contains(selectedDate)){
+                    dateList.add(selectedDate);
+                }else if(dateList.contains(selectedDate)){
+                    dateList.remove(selectedDate);
+                }
+
+                StringBuilder builder = new StringBuilder();
+                for(String s : dateList){
+                    builder.append(s).append(" ");
+                }
+                textViewDates.setText(builder.toString());
+
+                Log.d("datelist", String.valueOf(dateList));
+            }
+        });
+        dates = dateList.toString();
+    }
+
     private void OpenImageChooser()
     {
-        StorageReference imageRef = storage.getReferenceFromUrl(MokkiKuva);
+        //StorageReference mokkiRef = storage.getReferenceFromUrl(MokkiKuva);
 
         Intent chooseImageIntent = new Intent();
         chooseImageIntent.setType("image/*");

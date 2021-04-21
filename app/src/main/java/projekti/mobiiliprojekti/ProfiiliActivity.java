@@ -303,13 +303,10 @@ public class ProfiiliActivity extends AppCompatActivity {
             }
         });
 
-        currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Tili poistettu.", Toast.LENGTH_SHORT).show();
-                    update();
-                }
+        currentUser.delete().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                Toast.makeText(getApplicationContext(), "Tili poistettu.", Toast.LENGTH_SHORT).show();
+                update();
             }
         });
     }

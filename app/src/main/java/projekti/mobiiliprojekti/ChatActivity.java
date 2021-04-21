@@ -78,7 +78,7 @@ class ChatsFragment extends Fragment {
         ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        chatsList = (RecyclerView) PrivateChatsView.findViewById(R.id.chats_list);
+        chatsList = PrivateChatsView.findViewById(R.id.chats_list);
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
@@ -103,17 +103,14 @@ class ChatsFragment extends Fragment {
 
 public class ChatActivity extends AppCompatActivity
 {
-    private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
+    private String messageReceiverID, messageReceiverImage, messageSenderID;
 
-    private TextView userName, userLastSeen;
-    private ImageView userImage;
+    private TextView userName;
     private DrawerLayout chatDrawer;
-
-    private Toolbar ChatToolBar;
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef, ContactRef;
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference strRef = storage.getReference();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference strRef = storage.getReference();
     private DatabaseReference UsersRef;
 
     private ImageButton SendMessageButton, SendFilesButton;
@@ -133,12 +130,13 @@ public class ChatActivity extends AppCompatActivity
     private String id;
     private String fromChatId;
     private String receiverName;
+    private TextView receiver;
     private RelativeLayout chatLayout;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable runnable;
-    private int count = 0;
-    private SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-    private SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
+    private final int count = 0;
+    private final SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+    private final SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
 
     private String saveCurrentTime, saveCurrentDate;
     private String getMessageReceiverImage;
@@ -153,7 +151,6 @@ public class ChatActivity extends AppCompatActivity
         Log.d("Tag","onCreate");
 
         Intent chatIntent = getIntent();
-        Intent fromChatIntent = getIntent();
         id = "";
         fromChatId = "";
         id = chatIntent.getStringExtra("ID");
@@ -181,7 +178,9 @@ public class ChatActivity extends AppCompatActivity
         chatLayout = findViewById(R.id.chat_linear_layout);
         chatDrawer = findViewById(R.id.drawerChat_layout);
         backKuva = findViewById(R.id.backButton);
+        receiver = findViewById(R.id.receiverNameBar);
 
+        receiver.setText(receiverName);
 
         IntializeControllers();
 
@@ -199,8 +198,6 @@ public class ChatActivity extends AppCompatActivity
         else {
             messageReceiverID = id;
         }
-
-        userName.setText(messageReceiverName);
         //Picasso.get().load(messageReceiverImage).placeholder(R.drawable.ic_account_box).into(userImage);
 
 
@@ -299,15 +296,13 @@ public class ChatActivity extends AppCompatActivity
     {
 
 
-        userName = (TextView) findViewById(R.id.receiverName);
-
-        SendMessageButton = (ImageButton) findViewById(R.id.send_message_btn);
-        SendFilesButton = (ImageButton) findViewById(R.id.send_files_btn);
-        MessageInputText = (EditText) findViewById(R.id.input_message);
+        SendMessageButton = findViewById(R.id.send_message_btn);
+        SendFilesButton = findViewById(R.id.send_files_btn);
+        MessageInputText = findViewById(R.id.input_message);
 
         messageAdapter = new MessageAdapter(messagesList);
-        userMessagesList = (RecyclerView) findViewById(R.id.private_messages_list_of_users);
-        userContactsList = (RecyclerView) findViewById(R.id.chats_list);
+        userMessagesList = findViewById(R.id.private_messages_list_of_users);
+        userContactsList = findViewById(R.id.chats_list);
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager2 = new LinearLayoutManager(this);
         userMessagesList.setLayoutManager(linearLayoutManager);
@@ -332,12 +327,7 @@ public class ChatActivity extends AppCompatActivity
 
     private void refresh(int milliseconds) {
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                content();
-            }
-        };
+        runnable = () -> content();
         handler.postDelayed(runnable, milliseconds);
     }
 
@@ -414,18 +404,14 @@ public class ChatActivity extends AppCompatActivity
 
                                     holder.userName.setText(retName);
 
-                                    holder.itemView.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view)
-                                        {
-                                            handler.removeCallbacks(runnable);
-                                            Intent fromChatIntent = new Intent(getApplicationContext(), ChatActivity.class);
-                                            fromChatIntent.putExtra("visit_user_id", usersIDs);
-                                            fromChatIntent.putExtra("visit_user_name", retName);
-                                            fromChatIntent.putExtra("visit_image", retImage[0]);
-                                            startActivity(fromChatIntent);
-                                            finish();
-                                        }
+                                    holder.itemView.setOnClickListener(view -> {
+                                        handler.removeCallbacks(runnable);
+                                        Intent fromChatIntent = new Intent(getApplicationContext(), ChatActivity.class);
+                                        fromChatIntent.putExtra("visit_user_id", usersIDs);
+                                        fromChatIntent.putExtra("visit_user_name", retName);
+                                        fromChatIntent.putExtra("visit_image", retImage[0]);
+                                        startActivity(fromChatIntent);
+                                        finish();
                                     });
                                 }
                             }

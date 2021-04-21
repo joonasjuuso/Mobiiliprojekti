@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,7 +37,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,8 +55,10 @@ public class MokkiNakyma extends AppCompatActivity {
 
     private String setVisibility = "";
 
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference storageRef =  storage.getReference();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
     private DatabaseReference fbDatabaseRef;
     private String deleteKey;
 
@@ -73,6 +84,7 @@ public class MokkiNakyma extends AppCompatActivity {
     private String selectedMonth;
     private String selectedDay;
     private String selectedDate;
+    private String replace;
 
     private TextView textViewSelectedDates;
 
@@ -80,7 +92,12 @@ public class MokkiNakyma extends AppCompatActivity {
 
     //KALENTERIPASKAA
     List<Date> listDates;
+    List<Date> tmpDates;
+    List<Date> highlightedDates;
     ArrayList<String> stringDates;
+    ArrayList<String> tmpStringDates;
+    ArrayList<String> tmpStringDates2;
+    ArrayList<String> finalStringDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,18 +154,20 @@ public class MokkiNakyma extends AppCompatActivity {
         textViewSauna.setText(MokkiSauna);
 
         TextView textViewDates = findViewById(R.id.textViewDates);
-        String replace = mDates.replaceAll("\\[", "").replaceAll("\\(", "")
-                                            .replaceAll("\\]", "").replaceAll("\\)", "")
-                                            .replaceAll(" ", "");
-        textViewDates.setText(replace);
-        Log.d("dfg", mDates);
-        Log.e("asd", replace);
 
-        //splitDates =new ArrayList<>();
-        splitDates = Arrays.asList(replace.split(",", -1));
-        //splitDates.add(String.valueOf(splitString));
+        if(mDates != null){
+            replace = mDates.replaceAll("\\[", "").replaceAll("\\(", "")
+                    .replaceAll("\\]", "").replaceAll("\\)", "")
+                    .replaceAll(" ", "");
+            //textViewDates.setText(replace);
+            Log.d("dfg", mDates);
+            Log.e("asd", replace);
+            splitDates = Arrays.asList(replace.split(",", -1));
+        }
 
-        //Log.d("split", Arrays.toString(new List[]{splitDates}));
+        //Log.d("dfg", mDates);
+        //Log.e("asd", replace);
+
 
         //calendarDates = findViewById(R.id.date_pick_calendar);
         textViewSelectedDates = findViewById(R.id.textViewSelectedDates);
@@ -208,8 +227,6 @@ public class MokkiNakyma extends AppCompatActivity {
             }
         });
 
-
-
         bTakaisinMokkilistaan = findViewById(R.id.bTakaisinMokkiListaan);
 
         bTakaisinMokkilistaan.setOnClickListener(View ->{
@@ -223,6 +240,136 @@ public class MokkiNakyma extends AppCompatActivity {
             startActivity(chatIntent);
         });
 
+        //KALENTERI
+        listDates = new ArrayList<>();
+        highlightedDates = new ArrayList<>();
+        tmpDates = new ArrayList<>();
+        stringDates = new ArrayList<>();
+        tmpStringDates = new ArrayList<>();
+        tmpStringDates2 = new ArrayList<>();
+        finalStringDates = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        for (String s : splitDates) {
+            ParsePosition pos = new ParsePosition(0);
+            Log.d("TAG", "s = " + s);
+            Date date = sdf.parse(s, pos);
+            listDates.add(date);
+            if(!s.endsWith(":1")) {
+                highlightedDates.add(date);
+            }
+        }
+        Log.d("TAG", "splitDates = " + splitDates.toString());
+        Log.d("TAG", "highligtatut = " + highlightedDates.toString());
+
+        Collections.sort(listDates);
+        //TEXTVIEWIN JÄRKKÄILY
+        /*
+
+        Log.d("TAG", "sortattu listDates = " + listDates.toString());
+        for(Date d : listDates) {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+            String str = fmt.format(d);
+            stringDates.add(str);
+        }
+        String tmpStr = stringDates.get(0);
+        String tmpStr2 = stringDates.get(stringDates.size() - 1);
+        textViewDates.setText(tmpStr + " - " + tmpStr2);
+
+         */
+
+        CalendarPickerView datePicker = findViewById(R.id.kalenteri);
+        Calendar firstDay = Calendar.getInstance();
+        Date tmpDate = listDates.get(0);
+        firstDay.add(Calendar.DATE, - 1);
+        firstDay.setTime(tmpDate);
+
+        Calendar lastDay = Calendar.getInstance();
+        Date tmpDate2 = listDates.get(listDates.size() - 1);
+        lastDay.setTime(tmpDate2);
+        lastDay.add(Calendar.DATE, + 1);
+
+        datePicker.init(firstDay.getTime(), lastDay.getTime())
+                .inMode(CalendarPickerView.SelectionMode.RANGE);
+
+        datePicker.highlightDates(highlightedDates);
+
+        datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+
+                //VALITAAN DATET
+                tmpDates = datePicker.getSelectedDates();
+                Log.d("TAG", "listDates = " + tmpDates);
+
+                //VALITUT DATET STRINGEIKSI
+                for(Date i : tmpDates) {
+                    SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+                    String str = fmt.format(i);
+                    tmpStringDates.add(str);
+                }
+
+                Log.d("TAG", "tmpStringDates selected dates = " + tmpStringDates.toString());
+
+                //VÄLIAIKASEEN LISTAAN VAPAAT PÄIVÄT
+                for (String s : splitDates) {
+                    String tmpStr = s;
+                    tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
+                    tmpStringDates2.add(tmpStr);
+
+                    //VERRATAAN VARATTUJA PÄIVIÄ(tmpStringDates) VAPAISIIN (tmpStringDates2)
+                    for (String s2 : tmpStringDates) {
+                        if(s2.equals(tmpStr)) {
+                            tmpStringDates2.remove(tmpStr);
+                            tmpStr = tmpStr + ":1";
+                            finalStringDates.add(tmpStr);
+                        }
+                    }
+                }
+                //tmpStringDates.clear();
+                for(String s : tmpStringDates2) {
+                    if (!s.endsWith(":1")) {
+                        String tmpStr = s + ":0";
+                        finalStringDates.add(tmpStr);
+                    }
+                }
+
+                Log.d("TAG", "splitDates  = " + splitDates.toString());
+                Log.d("TAG", "tmpStringDates2  = " + tmpStringDates2.toString());
+                Log.d("TAG", "tmpStringDates  = " + tmpStringDates.toString());
+                Log.d("TAG", "finalStringDates  = " + finalStringDates.toString());
+
+                Log.d("TAG", "otsikkoid = " + OtsikkoID);
+
+                HashMap hashMap = new HashMap();
+                hashMap.put("mDates", finalStringDates.toString());
+                Log.d("TAG", "hashmap = " + hashMap);
+                fbDatabaseRef.child(OtsikkoID).updateChildren(hashMap);
+
+                tmpStringDates.clear();
+                tmpStringDates2.clear();
+                finalStringDates.clear();
+            }
+            @Override
+            public void onDateUnselected(Date date) {
+
+            }
+        });
+
+        Log.d("TAG", "date = " + listDates);
+
+            bVuokraa.setOnClickListener(v -> {
+
+                Intent vuokraIntent = new Intent(this, CheckoutActivity.class);
+                vuokraIntent.putExtra("name", Vuokraaja);
+                vuokraIntent.putExtra("hinta",MokkiHinta);
+                vuokraIntent.putExtra("otsikko",MokkiOtsikko);
+                vuokraIntent.putExtra("osoite",MokkiOsoite);
+                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) stringDates);
+                startActivity(vuokraIntent);
+        });
+
         bMuokkaa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,30 +379,7 @@ public class MokkiNakyma extends AppCompatActivity {
 
         //setDates();
 
-        //KALENTERI
-        stringDates = new ArrayList<>();
-        listDates = new ArrayList<>();
-        Date today = new Date();
 
-        Calendar nextMonth = Calendar.getInstance();
-        nextMonth.add(Calendar.MONTH, 2);
-
-        CalendarPickerView datePicker = findViewById(R.id.kalenteri);
-        datePicker.init(today, nextMonth.getTime())
-                .inMode(CalendarPickerView.SelectionMode.MULTIPLE);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-
-        for (String s : splitDates) {
-            ParsePosition pos = new ParsePosition(0);
-            Log.d("TAG", "s = " + s);
-            Date date = sdf.parse(s, pos);
-            listDates.add(date);
-            datePicker.selectDate(date);
-        }
-        Log.d("TAG", "date = " + listDates);
-        textViewDates.setText(splitDates.get(0) + " - "
-                + splitDates.get(splitDates.size() - 1));
     }
 /*
     private void setDates()
@@ -267,7 +391,7 @@ public class MokkiNakyma extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 selectedYear = String.valueOf(year);
-                selectedMonth = String.valueOf(month);
+                selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
                 selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
@@ -316,6 +440,7 @@ public class MokkiNakyma extends AppCompatActivity {
         muokkaaIntent.putExtra("eSauna", MokkiSauna);
         muokkaaIntent.putExtra("eKuvaus", MokkiKuvaus);
         muokkaaIntent.putExtra("muokkaaKey", deleteKey);
+        muokkaaIntent.putExtra("dates", String.valueOf(splitDates));
         //muokkaaIntent.putExtra("eUID", UID);
 
 

@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,7 +103,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String eOtsikkoID;
     private String MokkiKuva;
 
-    ArrayList<String> dateList;
+    private  ArrayList<String> dateList;
     private String selectedYear;
     private String selectedMonth;
     private String selectedDay;
@@ -229,9 +230,9 @@ public class LaitaVuokralle extends AppCompatActivity {
         startActivity(varmistaIntent);
     }
 
-    private void asetaMokki()
+    /*private void asetaMokki()
     {
-        /*eVuokraaja = currentUser.getDisplayName();
+        eVuokraaja = currentUser.getDisplayName();
         eID = currentUser.getUid();
         eOtsikkoID = UID;
         MokkiKuva = mImageUri.toString();
@@ -242,15 +243,15 @@ public class LaitaVuokralle extends AppCompatActivity {
                 eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
 
         dbVarmistamatonMokki.child(eOtsikkoID).setValue(mokki);
-        Log.d("naytaaa",eOtsikko);*/
+        Log.d("naytaaa",eOtsikko);
         AsetaVuokralle();
-    }
+    }*/
 
     private void OpenImageChooser()
     {
         Intent chooseImageIntent = new Intent();
         chooseImageIntent.setType("image/*");
-        chooseImageIntent.setAction(chooseImageIntent.ACTION_GET_CONTENT);
+        chooseImageIntent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
     }
 
@@ -329,8 +330,8 @@ public class LaitaVuokralle extends AppCompatActivity {
                                 double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                                 uploadImageProgressBar.setProgress((int)progress);
                                 if(progress == 100){
-                                    //AsetaVuokralle();
-                                    asetaMokki();
+                                    AsetaVuokralle();
+                                    //asetaMokki();
                                 }
                             }
                         });
@@ -361,18 +362,25 @@ public class LaitaVuokralle extends AppCompatActivity {
                 listDates = datePicker.getSelectedDates();
                 Log.d("TAG", "stringDates = " + stringDates);
                 stringDates.clear();
-                Log.d("TAG", "stringDates after clear = " + stringDates);
 
                 for(Date i : listDates) {
 
                     SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
                     String str = fmt.format(i);
-                    stringDates.add(str);
+                    stringDates.add(str + ":0");
                 }
                 Log.d("TAG", "stringDates = " + stringDates);
+
+                String tmpStr = stringDates.get(0);
+                tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
+                Log.d("TAG", "tmpStr = " + tmpStr);
+
+                String tmpStr2 = stringDates.get(stringDates.size() - 1);
+                tmpStr2 = tmpStr2.substring(0, tmpStr2.length() - 2);
+                Log.d("TAG", "tmpStr = " + tmpStr2);
+
                 textViewVuokrattavissa.setText("Vuokrattavissa alkaen:");
-                textViewVuokraAika.setText(stringDates.get(0) + " - "
-                                              + stringDates.get(stringDates.size() - 1));
+                textViewVuokraAika.setText(tmpStr + " - " + tmpStr2);
                 listDates.clear();
             }
             @Override
@@ -389,10 +397,9 @@ public class LaitaVuokralle extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 selectedYear = String.valueOf(year);
-                selectedMonth = String.valueOf(month);
+                selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
-                //selectedDate = Long.valueOf(selectedYear + selectedMonth + selectedDay);
-                //setDateDalendar.getDate();
+
                 selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
                 //dateList.add(selectedDate);
                 /*try {

@@ -35,7 +35,7 @@ public class MokkiItem implements Parcelable{
 
     public MokkiItem(String MokkiImage, String otsikko, String hinta, String osoite, String huoneMaara,
                      String nelioMaara, String lammitys, String vesi, String sauna, String kuvaus, String otsikkoID,
-                     String vuokraaja, String vuokraajaID, String dates/*, List<String> datesList*/)
+                     String vuokraaja, String vuokraajaID, String dates)
     {
         mMokkiImage = MokkiImage;
         mOtsikko = otsikko;
