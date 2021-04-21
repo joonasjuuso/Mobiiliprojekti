@@ -17,16 +17,18 @@ public class Invoices {
     private String sahkoposti;
     private String asiakasNro;
     private String asiakasSposti;
+    private String mokkiID;
 
     public Invoices() {
 
     }
 
 
-    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
+    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String mID, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
         this.setOrderID(messagePushID);
         this.setOtsikko(vuokraOtsikko);
         this.setOsoite(vuokraOsoite);
+        this.setMokkiID(mID);
         this.setVuokraaja(uid);
         this.setAsiakasNro(aNro);
         this.setAsiakasSposti(aSposti);
@@ -43,6 +45,7 @@ public class Invoices {
         result.put("orderID", getOrderID());
         result.put("otsikko", getOtsikko());
         result.put("osoite",getOsoite());
+        result.put("mokkiID",getMokkiID());
         result.put("asiakas", getVuokraaja());
         result.put("asiakkaan nro",getAsiakasNro());
         result.put("asiakkaan sposti",getAsiakasSposti());
@@ -53,6 +56,11 @@ public class Invoices {
         result.put("paivamaarat", getPaivamaarat());
         result.put("hinta", getHinta());
         return result;
+    }
+
+    public String getMokkiID() { return mokkiID; }
+    public void setMokkiID(String mID) {
+        this.mokkiID = mID;
     }
     public String getAsiakasNro() { return asiakasNro; }
     public void setAsiakasNro(String aNro) {

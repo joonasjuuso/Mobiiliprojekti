@@ -68,6 +68,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private String vuokraajaPosti;
     private String asiakasNro;
     private String asiakasPosti;
+    private String mokkiID;
 
     private  Map<String, Object> postMap;
     private Map<String, Object> invoiceDetails = new HashMap<>();
@@ -200,38 +201,54 @@ public class CheckoutActivity extends AppCompatActivity {
                             vuokraajaNro = value2;
                             asiakasPosti = value3;
                             asiakasNro = value4;
-                            Log.d("tag",vuokraajaPosti);
-                            Log.d("tag",vuokraajaNro);
-                            Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,currentUser.getUid(),asiakasNro,asiakasPosti,vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
-                            postMap = newInvoice.toMap();
-                            invoiceDetails.put(currentUser.getUid() + "/" + messagePushID, postMap);
-                            invoiceDetails.put(vuokraajaID + "/" + messagePushID, postMap);
-                            rootRef.child("Invoices").updateChildren(invoiceDetails).addOnCompleteListener(new OnCompleteListener() {
-
+                            rootRef.child("Vuokralla olevat mökit").addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onComplete(@NonNull Task task)
-                                {
-                                    if (task.isSuccessful())
-                                    {
-                                        Log.d("tag","tasksuccessfull");
-                                        Toast.makeText(CheckoutActivity.this, "Maksu onnistui!", Toast.LENGTH_SHORT).show();
-                                        Intent onnistuiIntent = new Intent(getApplicationContext(),TilausVahvistusActivity.class);
-                                        onnistuiIntent.putExtra("orderID",messagePushID);
-                                        onnistuiIntent.putExtra("vuokranantaja",vuokraaja);
-                                        onnistuiIntent.putExtra("otsikko",vuokraOtsikko);
-                                        onnistuiIntent.putExtra("osoite",osoite);
-                                        onnistuiIntent.putExtra("vuokraNro",vuokraajaNro);
-                                        onnistuiIntent.putExtra("vuokraPosti",vuokraajaPosti);
-                                        onnistuiIntent.putStringArrayListExtra("paivat",paivat);
-                                        startActivity(onnistuiIntent);
-                                        finish();
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(CheckoutActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for(DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                        if(postSnapshot.child("osoite").getValue().equals(osoite)) {
+                                            mokkiID = postSnapshot.child("otsikkoID").getValue().toString();
+                                            Log.d("tag",vuokraajaPosti);
+                                            Log.d("tag",vuokraajaNro);
+                                            Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,mokkiID,currentUser.getUid(),asiakasNro,asiakasPosti,vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
+                                            postMap = newInvoice.toMap();
+                                            invoiceDetails.put(currentUser.getUid() + "/" + messagePushID, postMap);
+                                            invoiceDetails.put(vuokraajaID + "/" + messagePushID, postMap);
+                                            rootRef.child("Invoices").updateChildren(invoiceDetails).addOnCompleteListener(new OnCompleteListener() {
+
+                                                @Override
+                                                public void onComplete(@NonNull Task task)
+                                                {
+                                                    if (task.isSuccessful())
+                                                    {
+                                                        Log.d("tag","tasksuccessfull");
+                                                        Toast.makeText(CheckoutActivity.this, "Maksu onnistui!", Toast.LENGTH_SHORT).show();
+                                                        Intent onnistuiIntent = new Intent(getApplicationContext(),TilausVahvistusActivity.class);
+                                                        onnistuiIntent.putExtra("orderID",messagePushID);
+                                                        onnistuiIntent.putExtra("vuokranantaja",vuokraaja);
+                                                        onnistuiIntent.putExtra("otsikko",vuokraOtsikko);
+                                                        onnistuiIntent.putExtra("osoite",osoite);
+                                                        onnistuiIntent.putExtra("vuokraNro",vuokraajaNro);
+                                                        onnistuiIntent.putExtra("vuokraPosti",vuokraajaPosti);
+                                                        onnistuiIntent.putStringArrayListExtra("paivat",paivat);
+                                                        startActivity(onnistuiIntent);
+                                                        finish();
+                                                    }
+                                                    else
+                                                    {
+                                                        Toast.makeText(CheckoutActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                        }
                                     }
                                 }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
                             });
+
                         }
                     });
                 }

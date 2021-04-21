@@ -69,6 +69,7 @@ public class Mokki_List extends AppCompatActivity {
     private final StorageReference storageRef =  storage.getReference();
 
     private DatabaseReference dbVarmistamatonMokki;
+    private DatabaseReference fbVuokratutRef;
 
     private ValueEventListener fbDbListener;
 
@@ -76,6 +77,7 @@ public class Mokki_List extends AppCompatActivity {
     private Button bLaitaVuokralle;
     private  Button bNaytaKaikkienMokit;
     private Button bOmatMokit;
+    private Button bVuokratut;
     private EditText editSearch;
     private String imageString;
 
@@ -101,6 +103,7 @@ public class Mokki_List extends AppCompatActivity {
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
+        fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid());
 
         mMokkiItem = new ArrayList<>();
 
@@ -232,6 +235,11 @@ public class Mokki_List extends AppCompatActivity {
             }
         });
 
+        bVuokratut = findViewById(R.id.bVuokratut);
+        bVuokratut.setOnClickListener(v -> {
+
+        });
+
 
         if(currentUser!=null) {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
@@ -269,6 +277,31 @@ public class Mokki_List extends AppCompatActivity {
         }
 
         mAdapter.filteredList(filteredList);
+    }
+
+    private void naytaVuokratutMokit() {
+        if( currentUser != null) {
+            mMokkiItem.clear();
+
+            Intent intent = new Intent(this, MokkiNakyma.class);
+
+            fbVuokratutRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        if(postSnapshot.child("asiakas").equals(currentUser.getUid())) {
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
     }
 
     private void naytaOmatMokit()
