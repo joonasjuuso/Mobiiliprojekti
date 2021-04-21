@@ -367,6 +367,9 @@ public class MokkiNakyma extends AppCompatActivity {
                 vuokraIntent.putExtra("otsikko",MokkiOtsikko);
                 vuokraIntent.putExtra("osoite",MokkiOsoite);
                 vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) stringDates);
+                vuokraIntent.putExtra("id",VuokraajaID);
+                vuokraIntent.putExtra("image",MokkiImage);
+                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) dateList);
                 startActivity(vuokraIntent);
         });
 

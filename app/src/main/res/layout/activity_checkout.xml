@@ -102,11 +102,10 @@
         android:id="@+id/toggleKortti"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewPalvelut"
+        android:layout_below="@+id/textViewMaksutapa"
 
-        android:layout_marginVertical="200dp"
-        android:layout_marginTop="200dp"
-        android:layout_marginRight="43dp"
+        android:layout_marginTop="-120dp"
+        android:layout_marginRight="46dp"
         android:layout_toLeftOf="@id/toggleMobilepay"
         android:padding="20dp"
         android:text="Korttimaksu" />
@@ -115,11 +114,10 @@
         android:id="@+id/toggleMobilepay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewPalvelut"
+        android:layout_below="@+id/textViewMaksutapa"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="-120dp"
         android:layout_marginHorizontal="170dp"
-        android:layout_marginVertical="200dp"
-        android:layout_marginTop="200dp"
         android:layout_marginEnd="54dp"
         android:padding="20dp"
         android:text="Mobilepay" />

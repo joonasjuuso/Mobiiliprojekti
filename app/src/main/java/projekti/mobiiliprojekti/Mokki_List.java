@@ -69,6 +69,7 @@ public class Mokki_List extends AppCompatActivity {
     private final StorageReference storageRef =  storage.getReference();
 
     private DatabaseReference dbVarmistamatonMokki;
+    private DatabaseReference fbVuokratutRef;
 
     private ValueEventListener fbDbListener;
 
@@ -76,6 +77,7 @@ public class Mokki_List extends AppCompatActivity {
     private Button bLaitaVuokralle;
     private  Button bNaytaKaikkienMokit;
     private Button bOmatMokit;
+    private Button bVuokratut;
     private EditText editSearch;
     private String imageString;
 
@@ -84,12 +86,14 @@ public class Mokki_List extends AppCompatActivity {
     private final String omatMokit = "omatMokit";
     private final String kaikkiMokit = "KaikkiMokit";
 
+    private String dates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki__list);
 
-        dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
+        //dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
@@ -99,6 +103,7 @@ public class Mokki_List extends AppCompatActivity {
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
+        fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid());
 
         mMokkiItem = new ArrayList<>();
 
@@ -109,8 +114,8 @@ public class Mokki_List extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()) {
-                    Contacts newContact = new Contacts(currentUser.getUid(),"");
-                    userRef.child(currentUser.getUid()).setValue(newContact);
+                    Users newUser = new Users(currentUser.getUid(),"", "", currentUser.getEmail());
+                    userRef.child(currentUser.getUid()).setValue(newUser);
                     Log.d("Tag","new user");
                 }
             }
@@ -148,6 +153,38 @@ public class Mokki_List extends AppCompatActivity {
             }
         });
 
+        userRef.child(currentUser.getUid()).child("numero").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()) {
+                    userRef.child(currentUser.getUid()).child("numero").setValue("123");
+                    //TODO: Lisää tähän puhelinnumero builderi, kuten myös profiiliin
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        userRef.child(currentUser.getUid()).child("sahkoposti").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()) {
+                    userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getUid());
+                }
+                if(!snapshot.getValue().equals(currentUser.getEmail())) {
+                    userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getEmail());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
@@ -155,7 +192,6 @@ public class Mokki_List extends AppCompatActivity {
             if(currentUser.getUid() != null){
                 Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
                 startActivity(vuokraaIntent);
-                dbVarmistamatonMokki.removeValue();
             }
         });
 
@@ -199,6 +235,11 @@ public class Mokki_List extends AppCompatActivity {
             }
         });
 
+        bVuokratut = findViewById(R.id.bVuokratut);
+        bVuokratut.setOnClickListener(v -> {
+
+        });
+
 
         if(currentUser!=null) {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
@@ -236,6 +277,31 @@ public class Mokki_List extends AppCompatActivity {
         }
 
         mAdapter.filteredList(filteredList);
+    }
+
+    private void naytaVuokratutMokit() {
+        if( currentUser != null) {
+            mMokkiItem.clear();
+
+            Intent intent = new Intent(this, MokkiNakyma.class);
+
+            fbVuokratutRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        if(postSnapshot.child("asiakas").equals(currentUser.getUid())) {
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
     }
 
     private void naytaOmatMokit()
@@ -307,12 +373,10 @@ public class Mokki_List extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    Log.d("mDates", mokkiItem.getmDates());
                     mokkiItem.setKey(postSnapshot.getKey());
                     mMokkiItem.add(mokkiItem);
                 }
-
-
-
                 mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
 
                 fbRecyclerView.setAdapter(mAdapter);
