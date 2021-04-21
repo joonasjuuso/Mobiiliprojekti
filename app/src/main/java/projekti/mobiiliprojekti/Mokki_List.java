@@ -189,7 +189,6 @@ public class Mokki_List extends AppCompatActivity {
             if(currentUser.getUid() != null){
                 Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
                 startActivity(vuokraaIntent);
-                dbVarmistamatonMokki.removeValue();
             }
         });
 

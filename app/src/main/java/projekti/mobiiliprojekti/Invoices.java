@@ -15,17 +15,21 @@ public class Invoices {
     private String vuokraajaID;
     private String numero;
     private String sahkoposti;
+    private String asiakasNro;
+    private String asiakasSposti;
 
     public Invoices() {
 
     }
 
 
-    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String uid, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
+    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
         this.setOrderID(messagePushID);
         this.setOtsikko(vuokraOtsikko);
         this.setOsoite(vuokraOsoite);
         this.setVuokraaja(uid);
+        this.setAsiakasNro(aNro);
+        this.setAsiakasSposti(aSposti);
         this.setVuokranAntaja(vuokraaja);
         this.setVuokraajaID(vuokraID);
         this.setSahkoposti(posti);
@@ -40,13 +44,24 @@ public class Invoices {
         result.put("otsikko", getOtsikko());
         result.put("osoite",getOsoite());
         result.put("asiakas", getVuokraaja());
+        result.put("asiakkaan nro",getAsiakasNro());
+        result.put("asiakkaan sposti",getAsiakasSposti());
         result.put("vuokranantaja", getVuokranAntaja());
         result.put("vuokranantajaID",getVuokraajaID());
+        result.put("vuokranantajan numero",getNumero());
+        result.put("vuokranantajan sposti",getSahkoposti());
         result.put("paivamaarat", getPaivamaarat());
         result.put("hinta", getHinta());
         return result;
     }
-
+    public String getAsiakasNro() { return asiakasNro; }
+    public void setAsiakasNro(String aNro) {
+        this.asiakasNro = aNro;
+    }
+    public String getAsiakasSposti() { return asiakasSposti; }
+    public void setAsiakasSposti(String aPosti) {
+        this.asiakasSposti = aPosti;
+    }
     public String getNumero() {
         return numero;
     }

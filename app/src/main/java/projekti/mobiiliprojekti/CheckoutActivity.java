@@ -24,8 +24,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -61,6 +64,10 @@ public class CheckoutActivity extends AppCompatActivity {
     private ArrayList<String> paivat;
     private String osoite;
     private String image;
+    private String vuokraajaNro;
+    private String vuokraajaPosti;
+    private String asiakasNro;
+    private String asiakasPosti;
 
     private  Map<String, Object> postMap;
     private Map<String, Object> invoiceDetails = new HashMap<>();
@@ -126,7 +133,31 @@ public class CheckoutActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     menuImage.setImageResource(R.mipmap.ic_launcher);
                 });
+
+
     }
+
+    public interface MyCallback {
+        void onCallback(String value1, String value2, String value3, String value4);
+    }
+
+    public void readData(MyCallback myCallback) {
+        vuokraajaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value1 = dataSnapshot.child(vuokraajaID).child("sahkoposti").getValue().toString();
+                String value2 = dataSnapshot.child(vuokraajaID).child("numero").getValue().toString();
+                String value3 = dataSnapshot.child(currentUser.getUid()).child("sahkoposti").getValue().toString();
+                String value4 = dataSnapshot.child(currentUser.getUid()).child("numero").getValue().toString();
+                myCallback.onCallback(value1,value2, value3, value4);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
     /*protected void onStop() {
         super.onStop();
         finish();
@@ -140,7 +171,7 @@ public class CheckoutActivity extends AppCompatActivity {
             Payment payment = new Payment();
             payment.setProductPrice(BigDecimal.valueOf(hinta));
             payment.setOrderId(messagePushID);
-
+            Log.d("tag",vuokraajaID);
             Intent paymentIntent = MobilePay.getInstance().createPaymentIntent(payment);
             startActivityForResult(paymentIntent, MOBILEPAY_PAYMENT_REQUEST_CODE);
 
@@ -162,30 +193,38 @@ public class CheckoutActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(SuccessResult result) {
                     Log.d("tag","onsuccess");
-                    String vuokraajaPosti = vuokraajaRef.child(vuokraajaID).child("sahkoposti").toString();
-                    String vuokraajaNro = vuokraajaRef.child(vuokraajaID).child("numero").toString();
-                    Log.d("tag",vuokraajaPosti);
-                    Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,currentUser.getUid(),vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
-                    postMap = newInvoice.toMap();
-                    invoiceDetails.put(currentUser.getUid() + "/" + messagePushID, postMap);
-                    invoiceDetails.put(vuokraajaID + "/" + messagePushID, postMap);
-                    rootRef.child("Invoices").updateChildren(invoiceDetails).addOnCompleteListener(new OnCompleteListener() {
-
+                    readData(new MyCallback() {
                         @Override
-                        public void onComplete(@NonNull Task task)
-                        {
-                            if (task.isSuccessful())
-                            {
-                                Log.d("tag","tasksuccessfull");
-                                Toast.makeText(CheckoutActivity.this, "Maksu onnistui!", Toast.LENGTH_SHORT).show();
-                                Intent onnistuiIntent = new Intent(getApplicationContext(),Mokki_List.class);
-                                startActivity(onnistuiIntent);
-                                finish();
-                            }
-                            else
-                            {
-                                Toast.makeText(CheckoutActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                            }
+                        public void onCallback(String value1, String value2, String value3, String value4) {
+                            vuokraajaPosti = value1;
+                            vuokraajaNro = value2;
+                            asiakasPosti = value3;
+                            asiakasNro = value4;
+                            Log.d("tag",vuokraajaPosti);
+                            Log.d("tag",vuokraajaNro);
+                            Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,currentUser.getUid(),asiakasNro,asiakasPosti,vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
+                            postMap = newInvoice.toMap();
+                            invoiceDetails.put(currentUser.getUid() + "/" + messagePushID, postMap);
+                            invoiceDetails.put(vuokraajaID + "/" + messagePushID, postMap);
+                            rootRef.child("Invoices").updateChildren(invoiceDetails).addOnCompleteListener(new OnCompleteListener() {
+
+                                @Override
+                                public void onComplete(@NonNull Task task)
+                                {
+                                    if (task.isSuccessful())
+                                    {
+                                        Log.d("tag","tasksuccessfull");
+                                        Toast.makeText(CheckoutActivity.this, "Maksu onnistui!", Toast.LENGTH_SHORT).show();
+                                        Intent onnistuiIntent = new Intent(getApplicationContext(),TilausVahvistusActivity.class);
+                                        startActivity(onnistuiIntent);
+                                        finish();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(CheckoutActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                         }
                     });
                 }
@@ -198,7 +237,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancel(String orderId) {
-                    // The payment was cancelled.
+                    Toast.makeText(getApplicationContext(),"OrderID: " + orderId + " was cancelled",Toast.LENGTH_LONG).show();
                 }
             });
         }
