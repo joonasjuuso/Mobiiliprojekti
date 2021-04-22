@@ -141,9 +141,12 @@ public class TilausVahvistusActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        Log.d("tag",postSnapshot.getValue().toString());
                         String mEmail = postSnapshot.child("sahkoposti").getValue().toString();
+                        Log.d("tag",mEmail);
                         if(mEmail.equals(sposti)) {
-                            chatIntent.putExtra("ID",postSnapshot.getValue().toString());
+                            Log.d("tag","equals");
+                            chatIntent.putExtra("ID",postSnapshot.child("name").getValue().toString());
                             chatIntent.putExtra("name",nimi);
                             startActivity(chatIntent);
                             finish();
@@ -163,9 +166,12 @@ public class TilausVahvistusActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        Log.d("tag",postSnapshot.getValue().toString());
                         String mEmail = postSnapshot.child("sahkoposti").getValue().toString();
+                        Log.d("tag",mEmail);
                         if(mEmail.equals(sposti)) {
-                            chatIntent.putExtra("ID",postSnapshot.getValue().toString());
+                            Log.d("tag","equals");
+                            chatIntent.putExtra("ID",postSnapshot.child("name").getValue().toString());
                             chatIntent.putExtra("name",nimi);
                             startActivity(chatIntent);
                             finish();
