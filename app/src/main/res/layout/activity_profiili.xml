@@ -108,28 +108,28 @@
         app:layout_constraintVertical_bias="0.266" />
 
     <Button
-        android:fontFamily="@font/candara"
-        android:id="@+id/buttonMeneMaksamaan"
-        android:layout_width="238dp"
-        android:layout_height="63dp"
-        android:text="Mene maksamaan"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/testipaska"
-        app:layout_constraintVertical_bias="0.851" />
-
-    <Button
-        android:fontFamily="@font/candara"
         android:id="@+id/buttonPoista"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/candara"
         android:text="Poista tili"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        app:layout_constraintTop_toBottomOf="@+id/textPass"
+        app:layout_constraintVertical_bias="0.702" />
+
+    <Button
+        android:id="@+id/buttonPuhelin"
+        android:layout_width="200dp"
+        android:layout_height="54dp"
+        android:fontFamily="@font/candara"
+        android:text="Lisää puhelinnumero"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPass"
+        app:layout_constraintVertical_bias="0.165" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

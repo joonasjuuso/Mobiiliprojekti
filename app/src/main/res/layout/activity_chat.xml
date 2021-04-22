@@ -39,15 +39,6 @@
     >
 
 
-    <ImageButton
-        android:id="@+id/send_files_btn"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_action_file"
-        android:layout_alignParentStart="true"
-        android:backgroundTint="@android:color/white"
-        />
-
         <EditText
             android:fontFamily="@font/candara"
             android:id="@+id/input_message"

@@ -63,8 +63,9 @@ public class ProfiiliActivity extends AppCompatActivity {
     ImageView imageView;
     Button lataaButton;
     Button poistaTiliBtn;
+    Button btnPuhelin;
+
     ImageView goBack;
-    Button meneMaksamaanButton;
 
     boolean PASSWORD_CHANGE = false;
     boolean EMAIL_CHANGE = false;
@@ -86,7 +87,7 @@ public class ProfiiliActivity extends AppCompatActivity {
         txtEmail.setText(currentUser.getEmail());
         txtNimi.setText(currentUser.getDisplayName());
         goBack = findViewById(R.id.goBack);
-        meneMaksamaanButton = findViewById(R.id.buttonMeneMaksamaan);
+        btnPuhelin = findViewById(R.id.buttonPuhelin);
 
 
         if(currentUser.getDisplayName() != null) {
@@ -125,15 +126,40 @@ public class ProfiiliActivity extends AppCompatActivity {
             uploadImage();
             lataaButton.setVisibility(View.GONE);
         });
-        meneMaksamaanButton.setOnClickListener(v -> {
-            Intent maksuIntent = new Intent(getApplicationContext(),MaksuActivity.class);
-            startActivity(maksuIntent);
-        });
 
         poistaTiliBtn.setOnClickListener(v -> {
             DELETE_ACCOUNT = true;
             reAuthenticate();
         });
+
+        btnPuhelin.setOnClickListener(v -> {
+            syotaNumero();
+        });
+    }
+
+    private void syotaNumero() {
+        AlertDialog alert = new AlertDialog.Builder(this).create();
+        final EditText edittext = new EditText(this);
+        edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
+        alert.setMessage("Syötä numerosi: ");
+        alert.setTitle("Puhelinnumeron muutos");
+
+        alert.setView(edittext);
+        alert.setButton(AlertDialog.BUTTON_POSITIVE, "Lisää numero", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dbRef.child("Users").child(currentUser.getUid()).child("numero").setValue(edittext.getText().toString());
+                Toast.makeText(getApplicationContext(), "Puhelinnumero lisätty!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Palaa takaisin", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alert.dismiss();
+            }
+        });
+        alert.show();
     }
 
     private void selectImage() {

@@ -288,7 +288,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         }
                     });
                 }
-                //TODO: Tilausvahvistus, puhelinnumeron lisäys profiiliin, userien päivitys
+                //TODO: puhelinnumeron lisäys profiiliin
                 @Override
                 public void onFailure(FailureResult result) {
                     // The payment failed - show an appropriate error message to the user. Consult the MobilePay class documentation for possible error codes.
