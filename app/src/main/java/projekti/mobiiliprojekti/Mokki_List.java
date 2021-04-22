@@ -94,6 +94,7 @@ public class Mokki_List extends AppCompatActivity {
 
     private final String omatMokit = "omatMokit";
     private final String kaikkiMokit = "KaikkiMokit";
+    private final String vuokratutMokit = "vuokratutMokit";
 
     private String dates;
 
@@ -235,7 +236,7 @@ public class Mokki_List extends AppCompatActivity {
 
         bVuokratut = findViewById(R.id.bVuokratut);
         bVuokratut.setOnClickListener(v -> {
-
+            naytaVuokratutMokit();
         });
 
 
@@ -361,6 +362,45 @@ public class Mokki_List extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                         if(postSnapshot.child("asiakas").equals(currentUser.getUid())) {
+                            String vKey = postSnapshot.child("mokkiID").getValue().toString();
+                            Query query2 = fbDatabaseRef.equalTo(vKey);
+
+                            query2.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    MokkiItem v_MokkiItem = snapshot.getValue(MokkiItem.class);
+                                    v_MokkiItem.setKey(snapshot.getKey());
+                                    mMokkiItem.add(v_MokkiItem);
+
+                                    mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
+
+                                    fbRecyclerView.setAdapter(mAdapter);
+                                    mAdapter.notifyDataSetChanged();
+
+                                    mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(int position) {
+                                            mMokkiItem.get(position);
+                                            MokkiItem selectedItem = mMokkiItem.get(position);
+                                            String selectedKey = selectedItem.getKey();
+                                            intent.putExtra("Mokki", mMokkiItem.get(position));
+                                            intent.putExtra("setVisibility", omatMokit);
+                                            intent.putExtra("deleteKey", selectedKey);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onDeleteClick(int position) {
+                                            deleteMokki(position);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
 
                         }
                     }
@@ -368,11 +408,17 @@ public class Mokki_List extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-
-        }
+            if(currentUser.getDisplayName() == null)
+            {
+                Toast.makeText(this, "Kirjaudu sisään nähdäksesi ilmoittamasi mökit", Toast.LENGTH_SHORT).show();
+            }
+            }else if(currentUser == null)
+            {
+            naytaKaikkiMokit();
+            }
     }
 
     private void naytaOmatMokit()
