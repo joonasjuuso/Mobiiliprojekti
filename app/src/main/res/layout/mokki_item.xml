@@ -54,7 +54,18 @@
             android:text="€/Pv"
             android:id="@+id/TextViewEuro"/>
 
-
+        <ToggleButton
+            android:id="@+id/favoriteButton"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/favorite_toggle_selector"
+            android:textOff=""
+            android:textOn=""
+            />
 
 
     </RelativeLayout>

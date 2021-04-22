@@ -4,19 +4,24 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -38,6 +43,8 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
     {
         void onItemClick(int position);
         void onDeleteClick(int position);
+        void addFavoriteButtonClick(int position);
+        void removeFavoriteButtonClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener)
@@ -72,6 +79,9 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
         public ImageView imageViewKuva;
         ImageView imageViewDelete;
         public Button bOmatMokit;
+        private FirebaseAuth mauth = FirebaseAuth.getInstance();        //suosikki
+        private FirebaseUser currentUser = mauth.getCurrentUser();
+        ToggleButton favoriteButton;
 
         public MokkiviewHolderV2(View itemView, OnItemClickListener listener)
         {
@@ -81,6 +91,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
             textViewHinta = itemView.findViewById(R.id.TextViewHinta);
             imageViewKuva = itemView.findViewById(R.id.imageViewMokkiKuva);
             //imageViewDelete = itemView.findViewById(R.id.ImageViewDelete);
+            favoriteButton = itemView.findViewById(R.id.favoriteButton);
 
             bOmatMokit = itemView.findViewById(R.id.bOmatMökit);
 
@@ -107,6 +118,41 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
                     }
                 }
             });*/
+            //suosikkinappi toimintaa..
+            favoriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked) {
+                        Log.d("tag", "favoritebutton on chekattu");
+                        favoriteButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(listener != null){
+                                    int position = getAdapterPosition();
+                                    if(position != RecyclerView.NO_POSITION){
+                                        listener.addFavoriteButtonClick(position);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        Log.d("tag", "favoritebutton ei oo chekattu");
+                        favoriteButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(listener != null){
+                                    int position = getAdapterPosition();
+                                    if(position != RecyclerView.NO_POSITION){
+                                        listener.removeFavoriteButtonClick(position);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
         }
     }
 

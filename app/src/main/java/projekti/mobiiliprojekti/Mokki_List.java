@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -98,6 +99,11 @@ public class Mokki_List extends AppCompatActivity {
     private final String vuokratutMokit = "vuokratutMokit";
 
     private String dates;
+
+    //suosikkitoiminnolle
+    private DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference();
+    private ImageButton bSuosikit;
+    private String suosikkiMokit = "suosikkiMokit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,6 +246,13 @@ public class Mokki_List extends AppCompatActivity {
             naytaVuokratutMokit();
         });
 
+        bSuosikit = findViewById(R.id.bSuosikit);
+        bSuosikit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFavorites();
+            }
+        });
 
         if(currentUser!=null) {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
@@ -396,8 +409,11 @@ public class Mokki_List extends AppCompatActivity {
 
                                                 @Override
                                                 public void onDeleteClick(int position) {
-                                                    deleteMokki(position);
-                                                }
+                                                    deleteMokki(position); }
+                                                @Override
+                                                public void addFavoriteButtonClick(int position) { addFavoriteClick(position); }
+                                                @Override
+                                                public void removeFavoriteButtonClick(int position) { removeFavoriteClick(position); }
                                             });
                                         }
                                     }
@@ -467,6 +483,10 @@ public class Mokki_List extends AppCompatActivity {
                         public void onDeleteClick(int position) {
                             deleteMokki(position);
                         }
+                        @Override
+                        public void addFavoriteButtonClick(int position) { addFavoriteClick(position); }
+                        @Override
+                        public void removeFavoriteButtonClick(int position) { removeFavoriteClick(position); }
                     });
                 }
 
@@ -521,6 +541,10 @@ public class Mokki_List extends AppCompatActivity {
                     public void onDeleteClick(int position) {
                         //deleteMokki(position);
                     }
+                    @Override
+                    public void addFavoriteButtonClick(int position) { addFavoriteClick(position); }
+                    @Override
+                    public void removeFavoriteButtonClick(int position) { removeFavoriteClick(position); }
                 });
             }
 
@@ -568,6 +592,88 @@ public class Mokki_List extends AppCompatActivity {
                         Toast.makeText(Mokki_List.this, "Ei onnistunut", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void addFavoriteClick(int position) {
+        MokkiItem selectedItem = mMokkiItem.get(position);
+        String key = selectedItem.getKey();
+        //favoriteRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/" + key + "/suosikki/").child("Lisännyt");
+        favoriteRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/" + key + "/suosikki/").child(currentUser.getDisplayName());
+        favoriteRef.setValue(currentUser.getUid());
+    }
+
+    private void removeFavoriteClick(int position)
+    {
+        MokkiItem selectedItem = mMokkiItem.get(position);
+        String key = selectedItem.getKey();
+        favoriteRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/" + key + "/suosikki/").child(currentUser.getDisplayName());
+        favoriteRef.removeValue();
+    }
+
+    private void checkIfFavorite()
+    {
+        //työn alla
+
+    }
+
+    public void openFavorites() {
+
+        if( currentUser != null) {
+            mMokkiItem.clear();
+
+            Intent intent = new Intent(this, MokkiNakyma.class);
+
+            Query query = fbDatabaseRef.orderByChild("suosikki/" + currentUser.getDisplayName()).equalTo(currentUser.getUid());
+
+            fbDbListener = query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                        mokkiItem.setKey(postSnapshot.getKey());
+                        mMokkiItem.add(mokkiItem);
+                    }
+
+                    mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
+
+                    fbRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+
+                    mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position) {
+                            mMokkiItem.get(position);
+                            MokkiItem selectedItem = mMokkiItem.get(position);
+                            String selectedKey = selectedItem.getKey();
+                            intent.putExtra("Mokki", mMokkiItem.get(position));
+                            intent.putExtra("setVisibility", omatMokit);
+                            intent.putExtra("deleteKey", selectedKey);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onDeleteClick(int position) { deleteMokki(position); }
+                        @Override
+                        public void addFavoriteButtonClick(int position) { addFavoriteClick(position); }
+                        @Override
+                        public void removeFavoriteButtonClick(int position) { removeFavoriteClick(position); }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            if(currentUser.getDisplayName() == null)
+            {
+                Toast.makeText(this, "Kirjaudu sisään nähdäksesi suosikkisi", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(currentUser == null)
+        {
+            naytaKaikkiMokit();
+        }
     }
 
     //Vasemman vetolaatikon metoodeja
