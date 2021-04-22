@@ -365,6 +365,7 @@ public class Mokki_List extends AppCompatActivity {
                         Log.d("tag", postSnapshot.child("asiakas").getValue().toString());
                         if (postSnapshot.child("asiakas").getValue().toString().equals(currentUser.getUid())) {
                             String vKey = postSnapshot.child("mokkiID").getValue().toString();
+                            String vDates = postSnapshot.child("paivamaarat").getValue().toString();
                             Log.d("tag", vKey);
                             fbDatabaseRef.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -387,8 +388,9 @@ public class Mokki_List extends AppCompatActivity {
                                                     MokkiItem selectedItem = mMokkiItem.get(position);
                                                     String selectedKey = selectedItem.getKey();
                                                     intent.putExtra("Mokki", mMokkiItem.get(position));
-                                                    intent.putExtra("setVisibility", omatMokit);
+                                                    intent.putExtra("setVisibility", vuokratutMokit);
                                                     intent.putExtra("deleteKey", selectedKey);
+                                                    intent.putExtra("dates",vDates);
                                                     startActivity(intent);
                                                 }
 

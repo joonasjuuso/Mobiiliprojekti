@@ -61,6 +61,8 @@ public class MokkiNakyma extends AppCompatActivity {
     private String VuokraajaID;
     private String mDates;
 
+    private String gtDates;
+
     private List<String> splitDates;
     private List<String> splitString;
     private List<String> dateList;
@@ -128,6 +130,9 @@ public class MokkiNakyma extends AppCompatActivity {
         TextView textViewSauna = findViewById(R.id.SaunaMokkiNakyma);
         textViewSauna.setText(MokkiSauna);
 
+        TextView textViewPaivat = findViewById(R.id.textViewVapaatPaivat);
+        TextView textViewValitsePaiva = findViewById(R.id.textViewValitsePaivamaara);
+
         TextView textViewDates = findViewById(R.id.textViewDates);
         if(mDates != null){
             replace = mDates.replaceAll("\\[", "").replaceAll("\\(", "")
@@ -157,6 +162,7 @@ public class MokkiNakyma extends AppCompatActivity {
         bMuokkaa.setVisibility(View.GONE);
         ImageViewDelete.setVisibility(View.GONE);
 
+        gtDates = intent.getStringExtra("dates");
 
         setVisibility = intent.getStringExtra("setVisibility");
         if(setVisibility.matches("omatMokit")){
@@ -172,6 +178,15 @@ public class MokkiNakyma extends AppCompatActivity {
             textViewDates.setVisibility(View.VISIBLE);
             calendarDates.setVisibility(View.VISIBLE);
             //ImageViewDelete.setVisibility(View.GONE);
+        }else if(setVisibility.matches("vuokratutMokit")) {
+            bVuokraa.setVisibility(View.GONE);
+            bMuokkaa.setVisibility(View.GONE);
+            ImageViewDelete.setVisibility(View.GONE);
+            bChat.setVisibility(View.VISIBLE);
+            calendarDates.setVisibility(View.GONE);
+            textViewDates.setText(gtDates);
+            textViewPaivat.setText("Valitsemasi paivat: ");
+            textViewValitsePaiva.setVisibility(View.GONE);
         }
         Log.d("Tag",setVisibility);
 

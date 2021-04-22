@@ -120,13 +120,13 @@
         android:layout_width="250dp"
         android:layout_height="70dp"
         android:text="Otathan mökintarjoajan kaikki yhteystiedot talteen. Voitte ottaa suoraan häneen yhteyttä jos tulee kysyttävää."
-        app:layout_constraintBottom_toTopOf="@+id/textViewTilausMyyjä"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
 
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.099"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTilausOsoite"
-        app:layout_constraintVertical_bias="0.478" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTilausPuhNro"
+        app:layout_constraintVertical_bias="0.363" />
 
     <TextView
         android:id="@+id/textViewNaytaNimi"
@@ -138,8 +138,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13"
-        app:layout_constraintVertical_bias="0.724" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTilausPaivat"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textViewNaytaMokki"

@@ -138,6 +138,42 @@ public class CheckoutActivity extends AppCompatActivity {
 
     }
 
+    public void onClick_menu(View view) {
+        PopupMenu popup = new PopupMenu(this, menuImage);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.user:
+                    Intent userIntent = new Intent(this,ProfiiliActivity.class);
+                    startActivity(userIntent);
+                    break;
+                case R.id.chat:
+                    startActivity(getIntent());
+                    break;
+                case R.id.logout:
+                    mauth.signOut();
+                    Intent signOutIntent = new Intent(this, LoginActivity.class);
+                    startActivity(signOutIntent);
+                    finish();
+                    break;
+            }
+            return false;
+        });
+        if(mauth.getCurrentUser() != null) {
+            popup.inflate(R.menu.menu_list);
+            if (mauth.getCurrentUser().getDisplayName() != null) {
+                popup.getMenu().findItem(R.id.user).setTitle(mauth.getCurrentUser().getDisplayName());
+            } else {
+                popup.getMenu().findItem(R.id.user).setTitle(mauth.getCurrentUser().getEmail());
+            }
+            popup.show();
+        }
+        else if(mauth.getCurrentUser() == null) {
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
+            startActivity(kirjauduIntent);
+            finish();
+        }
+    }
+
     public interface MyCallback {
         void onCallback(String value1, String value2, String value3, String value4);
     }
