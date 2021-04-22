@@ -103,7 +103,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String eOtsikkoID;
     private String MokkiKuva;
 
-    private  ArrayList<String> dateList;
+    //private  ArrayList<String> dateList;
     private String selectedYear;
     private String selectedMonth;
     private String selectedDay;
@@ -111,7 +111,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String dates;
 
     //KALENTERIPASKAA
-    List<Date> listDates;
+    List<Date> dateList;
     ArrayList<String> stringDates;
 
 
@@ -144,7 +144,8 @@ public class LaitaVuokralle extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
-                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
+                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches(""))
+                {
                     Toast.makeText(LaitaVuokralle.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
                 }else{
                     uploadImage();
@@ -226,7 +227,7 @@ public class LaitaVuokralle extends AppCompatActivity {
         varmistaIntent.putExtra("eKuvaus", eKuvaus);
         varmistaIntent.putExtra("eUID", UID);
         varmistaIntent.putExtra("dates", stringDates);
-        varmistaIntent.putExtra("dates", dates);
+        //varmistaIntent.putExtra("dates", dates);
 
         startActivity(varmistaIntent);
     }
@@ -347,7 +348,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     {
         //KALENTERI
         stringDates = new ArrayList<>();
-        listDates = new ArrayList<>();
+        dateList = new ArrayList<>();
         Date today = new Date();
         Calendar nextMonth = Calendar.getInstance();
         nextMonth.add(Calendar.MONTH, 2);
@@ -360,11 +361,11 @@ public class LaitaVuokralle extends AppCompatActivity {
             @Override
             public void onDateSelected(Date date) {
 
-                listDates = datePicker.getSelectedDates();
+                dateList = datePicker.getSelectedDates();
                 Log.d("TAG", "stringDates = " + stringDates);
                 stringDates.clear();
 
-                for(Date i : listDates) {
+                for(Date i : dateList) {
 
                     SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
                     String str = fmt.format(i);
@@ -382,7 +383,7 @@ public class LaitaVuokralle extends AppCompatActivity {
 
                 textViewVuokrattavissa.setText("Vuokrattavissa alkaen:");
                 textViewVuokraAika.setText(tmpStr + " - " + tmpStr2);
-                listDates.clear();
+                dateList.clear();
             }
             @Override
             public void onDateUnselected(Date date) {
@@ -428,7 +429,9 @@ public class LaitaVuokralle extends AppCompatActivity {
             }
         });
         dates = dateList.toString();
-        */
+
+ */
+
         //dates = dateList.toString().replaceAll("\\[", "").replaceAll("\\(", "")
          //   .replaceAll("\\]", "").replaceAll("\\)", "");
     }

@@ -46,6 +46,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private final FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
     private final DatabaseReference rootRef = dbRef.getReference();
     private final DatabaseReference vuokraajaRef = FirebaseDatabase.getInstance().getReference().child("Users");
+    private final DatabaseReference datesRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
     private Button korttiBtn;
     private Button mobilepayBtn;
     private TextView nameText;
@@ -62,6 +63,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private String vuokraaja;
     private String vuokraOtsikko;
     private ArrayList<String> paivat;
+    private ArrayList<String> dbpaivat;
     private String osoite;
     private String image;
     private String vuokraajaNro;
@@ -69,6 +71,8 @@ public class CheckoutActivity extends AppCompatActivity {
     private String asiakasNro;
     private String asiakasPosti;
     private String mokkiID;
+    private String otsikkoID;
+    private int summaInt;
 
     private  Map<String, Object> postMap;
     private Map<String, Object> invoiceDetails = new HashMap<>();
@@ -84,7 +88,7 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         mobilepayBtn = findViewById(R.id.toggleMobilepay);
-        //korttiBtn = findViewById(R.id.toggleKortti);
+        korttiBtn = findViewById(R.id.toggleKortti);
 
         hintaText = findViewById(R.id.textViewHintaMaarat);
         nameText = findViewById(R.id.textViewVuokraajaNimi);
@@ -101,13 +105,19 @@ public class CheckoutActivity extends AppCompatActivity {
         vuokraOtsikko = fromMokki.getStringExtra("otsikko");
         osoite = fromMokki.getStringExtra("osoite");
         paivat = fromMokki.getStringArrayListExtra("paivat");
+        dbpaivat = fromMokki.getStringArrayListExtra("dbpaivat");
         image = fromMokki.getStringExtra("image");
-        Log.d("tag", String.valueOf(paivat));
+        otsikkoID = fromMokki.getStringExtra("otsikkoID");
+        Log.d("tag", paivat.toString());
+        Log.d("tag", dbpaivat.toString());
+        Log.d("tag", otsikkoID);
 
-        hintaText.setText(summa);
+
+        summaInt = paivat.size() * Integer.parseInt(summa);
+        hintaText.setText(String.valueOf(summaInt));
         nameText.setText(vuokraaja);
         otsikkoText.setText(vuokraOtsikko);
-        paivaText.setText(String.valueOf(paivat));
+        paivaText.setText(paivat.get(0) + " - " + paivat.get(paivat.size() - 1));
         osoiteText.setText(osoite);
 
         MobilePay.getInstance().init("APPFI0000000000", Country.FINLAND);
@@ -118,9 +128,20 @@ public class CheckoutActivity extends AppCompatActivity {
             payNow();
         });
 
-        //korttiBtn.setOnClickListener(v -> {
+        korttiBtn.setOnClickListener(v -> {
+
+        //TESTIMIELINEN MAKSUHOMMA ETTEI TARVI MOBILEPAYLLA SÄÄTÄÄ
+        HashMap hashMap = new HashMap();
+        hashMap.put("mDates", dbpaivat.toString());
+        Log.d("TAG", "hashmap = " + hashMap);
+        Log.d("TAG", "mokkiID = " + mokkiID);
+        datesRef.child(otsikkoID).updateChildren(hashMap);
+        Intent i = new Intent(this, Mokki_List.class);
+        startActivity(i);
+        finish();
+
           //TODO  Intent korttiIntent = new Intent();
-        //});
+        });
 
         takaisinBtn.setOnClickListener(v -> {
             finish();
@@ -165,12 +186,11 @@ public class CheckoutActivity extends AppCompatActivity {
     }*/
 
     private void payNow() {
-        int hinta = Integer.parseInt(summa);
         messagePushID = rootRef.child("Invoices").child(currentUser.getUid()).child(vuokraajaID).push().getKey();
 
         if (isMobilePayInstalled) {
             Payment payment = new Payment();
-            payment.setProductPrice(BigDecimal.valueOf(hinta));
+            payment.setProductPrice(BigDecimal.valueOf(summaInt));
             payment.setOrderId(messagePushID);
             Log.d("tag",vuokraajaID);
             Intent paymentIntent = MobilePay.getInstance().createPaymentIntent(payment);
@@ -230,6 +250,13 @@ public class CheckoutActivity extends AppCompatActivity {
                                                         onnistuiIntent.putExtra("vuokraNro",vuokraajaNro);
                                                         onnistuiIntent.putExtra("vuokraPosti",vuokraajaPosti);
                                                         onnistuiIntent.putStringArrayListExtra("paivat",paivat);
+
+                                                        HashMap hashMap = new HashMap();
+                                                        hashMap.put("mDates", dbpaivat.toString());
+                                                        Log.d("TAG", "hashmap = " + hashMap);
+
+                                                        datesRef.child(mokkiID).updateChildren(hashMap);
+
                                                         startActivity(onnistuiIntent);
                                                         finish();
                                                     }

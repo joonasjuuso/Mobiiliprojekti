@@ -88,16 +88,17 @@ public class MokkiNakyma extends AppCompatActivity {
 
     private TextView textViewSelectedDates;
 
-    private CalendarView calendarDates;
+    //private CalendarView calendarDates;
 
-    //KALENTERIPASKAA
+    //KALENTERI VARIT
+    private boolean textViewFlag = true;
     List<Date> listDates;
     List<Date> tmpDates;
     List<Date> highlightedDates;
     ArrayList<String> stringDates;
-    ArrayList<String> tmpStringDates;
-    ArrayList<String> tmpStringDates2;
-    ArrayList<String> finalStringDates;
+    ArrayList<String> valitut_sDates;
+    ArrayList<String> vapaat_sDates;
+    ArrayList<String> final_sDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,12 +193,12 @@ public class MokkiNakyma extends AppCompatActivity {
             ImageViewDelete.setVisibility(View.VISIBLE);
             bChat.setVisibility(View.GONE);
             textViewDates.setVisibility(View.GONE);
-            calendarDates.setVisibility(View.GONE);
+            //calendarDates.setVisibility(View.GONE);
         }else if(setVisibility.matches("kaikkiMokit")){
             bVuokraa.setVisibility(View.VISIBLE);
             bMuokkaa.setVisibility(View.GONE);
             textViewDates.setVisibility(View.VISIBLE);
-            calendarDates.setVisibility(View.VISIBLE);
+            //calendarDates.setVisibility(View.VISIBLE);
             //ImageViewDelete.setVisibility(View.GONE);
         }
         Log.d("Tag",setVisibility);
@@ -245,28 +246,23 @@ public class MokkiNakyma extends AppCompatActivity {
         highlightedDates = new ArrayList<>();
         tmpDates = new ArrayList<>();
         stringDates = new ArrayList<>();
-        tmpStringDates = new ArrayList<>();
-        tmpStringDates2 = new ArrayList<>();
-        finalStringDates = new ArrayList<>();
-
+        valitut_sDates = new ArrayList<>();
+        vapaat_sDates = new ArrayList<>();
+        final_sDates = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         for (String s : splitDates) {
             ParsePosition pos = new ParsePosition(0);
-            Log.d("TAG", "s = " + s);
             Date date = sdf.parse(s, pos);
             listDates.add(date);
             if(!s.endsWith(":1")) {
                 highlightedDates.add(date);
             }
         }
-        Log.d("TAG", "splitDates = " + splitDates.toString());
-        Log.d("TAG", "highligtatut = " + highlightedDates.toString());
 
         Collections.sort(listDates);
         //TEXTVIEWIN JÄRKKÄILY
         /*
-
         Log.d("TAG", "sortattu listDates = " + listDates.toString());
         for(Date d : listDates) {
             SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
@@ -295,9 +291,13 @@ public class MokkiNakyma extends AppCompatActivity {
 
         datePicker.highlightDates(highlightedDates);
 
+
         datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date date) {
+                valitut_sDates.clear();
+                vapaat_sDates.clear();
+                final_sDates.clear();
 
                 //VALITAAN DATET
                 tmpDates = datePicker.getSelectedDates();
@@ -307,49 +307,56 @@ public class MokkiNakyma extends AppCompatActivity {
                 for(Date i : tmpDates) {
                     SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
                     String str = fmt.format(i);
-                    tmpStringDates.add(str);
+                    valitut_sDates.add(str);
                 }
 
-                Log.d("TAG", "tmpStringDates selected dates = " + tmpStringDates.toString());
+                if(textViewFlag && valitut_sDates.size() == 1) {
+                    textViewSelectedDates.setText(valitut_sDates.get(0));
+                    if(valitut_sDates.size() == 1) {  textViewFlag = true;  }
+                    else {  textViewFlag = false;  }
+                } else {
+                    textViewSelectedDates.setText(valitut_sDates.get(0) + " - "
+                            + valitut_sDates.get(valitut_sDates.size() - 1));
+                    textViewFlag = true;
+                }
+                Log.d("valitut", "tmpStringDates selected dates = " + valitut_sDates.toString());
 
                 //VÄLIAIKASEEN LISTAAN VAPAAT PÄIVÄT
                 for (String s : splitDates) {
                     String tmpStr = s;
                     tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
-                    tmpStringDates2.add(tmpStr);
+                    vapaat_sDates.add(tmpStr);
 
                     //VERRATAAN VARATTUJA PÄIVIÄ(tmpStringDates) VAPAISIIN (tmpStringDates2)
-                    for (String s2 : tmpStringDates) {
+                    for (String s2 : valitut_sDates) {
                         if(s2.equals(tmpStr)) {
-                            tmpStringDates2.remove(tmpStr);
+                            vapaat_sDates.remove(tmpStr);
                             tmpStr = tmpStr + ":1";
-                            finalStringDates.add(tmpStr);
+                            final_sDates.add(tmpStr);
                         }
                     }
                 }
-                //tmpStringDates.clear();
-                for(String s : tmpStringDates2) {
+                for(String s : vapaat_sDates) {
                     if (!s.endsWith(":1")) {
                         String tmpStr = s + ":0";
-                        finalStringDates.add(tmpStr);
+                        final_sDates.add(tmpStr);
                     }
                 }
 
                 Log.d("TAG", "splitDates  = " + splitDates.toString());
-                Log.d("TAG", "tmpStringDates2  = " + tmpStringDates2.toString());
-                Log.d("TAG", "tmpStringDates  = " + tmpStringDates.toString());
-                Log.d("TAG", "finalStringDates  = " + finalStringDates.toString());
-
+                Log.d("TAG", "tmpStringDates2  = " + vapaat_sDates.toString());
+                Log.d("TAG", "tmpStringDates  = " + valitut_sDates.toString());
+                Log.d("TAG", "finalStringDates  = " + final_sDates.toString());
                 Log.d("TAG", "otsikkoid = " + OtsikkoID);
 
+                /*
                 HashMap hashMap = new HashMap();
-                hashMap.put("mDates", finalStringDates.toString());
+                hashMap.put("mDates", final_sDates.toString());
                 Log.d("TAG", "hashmap = " + hashMap);
                 fbDatabaseRef.child(OtsikkoID).updateChildren(hashMap);
 
-                tmpStringDates.clear();
-                tmpStringDates2.clear();
-                finalStringDates.clear();
+                 */
+
             }
             @Override
             public void onDateUnselected(Date date) {
@@ -366,10 +373,12 @@ public class MokkiNakyma extends AppCompatActivity {
                 vuokraIntent.putExtra("hinta",MokkiHinta);
                 vuokraIntent.putExtra("otsikko",MokkiOtsikko);
                 vuokraIntent.putExtra("osoite",MokkiOsoite);
-                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) stringDates);
+                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) valitut_sDates);
+                vuokraIntent.putStringArrayListExtra("dbpaivat", (ArrayList<String>) final_sDates);
                 vuokraIntent.putExtra("id",VuokraajaID);
                 vuokraIntent.putExtra("image",MokkiImage);
-                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) dateList);
+                vuokraIntent.putExtra("otsikkoID", OtsikkoID);
+                //vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) dateList);
                 startActivity(vuokraIntent);
         });
 
@@ -381,7 +390,6 @@ public class MokkiNakyma extends AppCompatActivity {
         });
 
         //setDates();
-
 
     }
 /*

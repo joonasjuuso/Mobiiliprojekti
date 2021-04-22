@@ -57,8 +57,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String MokkiKuva;
     private String eID;
     private String UID;
-    //private List<String> varausDates;
-    private String varausDates;
+    private List<String> varausDates;
+    //private String varausDates;
     private String dates;
 
     private boolean asd;
@@ -73,7 +73,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ilmoitus_varmistus);
 
-        //varausDates = new ArrayList<>();
+        varausDates = new ArrayList<>();
 
         asd = false;
 
@@ -95,8 +95,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eSauna = varmistaIntent.getStringExtra("eSauna");
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
         UID = varmistaIntent.getStringExtra("eUID");
-        varausDates = varmistaIntent.getStringExtra("dates");
-        //varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
+        //varausDates = varmistaIntent.getStringExtra("dates");
+        varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
         Log.d("listat", String.valueOf(varausDates));
 
         //StringBuilder builder = new StringBuilder();
@@ -126,13 +126,13 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sLammitys.setText(eLammitys);
         sVesi.setText(eVesi);
         sSauna.setText(eSauna);
-/*
-        sDates.setText(varausDates.get(0) + " - "
-                        + varausDates.get(varausDates.size() - 1));
 
+        String tmpStr = varausDates.get(0);
+        tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
+        String tmpStr2 = varausDates.get(varausDates.size() - 1);
+        tmpStr2 = tmpStr2.substring(0, tmpStr2.length() - 2);
+        sDates.setText(tmpStr + " - " + tmpStr2);
 
- */
-        sDates.setText(varausDates);
         sKuvaus.setText(eKuvaus);
 
         dates = varausDates.toString();
@@ -195,7 +195,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eOtsikkoID = dbMokki.push().getKey();
 
         MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
-                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, varausDates);
+                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
 
