@@ -2,17 +2,22 @@ package projekti.mobiiliprojekti;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.renderscript.Sampler;
 import android.view.LayoutInflater;
@@ -47,6 +52,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static projekti.mobiiliprojekti.R.id.ImageViewDelete;
@@ -62,6 +68,8 @@ public class Mokki_List extends AppCompatActivity {
     private final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private List<MokkiItem> mMokkiItem;
     private MokkiAdapterV2 mAdapter;
+    private final Handler handler = new Handler();
+    private Runnable runnable;
 
     private final FirebaseAuth mauth = FirebaseAuth.getInstance();
     private final FirebaseUser currentUser = mauth.getCurrentUser();
@@ -80,11 +88,13 @@ public class Mokki_List extends AppCompatActivity {
     private Button bVuokratut;
     private EditText editSearch;
     private String imageString;
+    private boolean NEW_USER = false;
 
     //ImageView ImageViewDelete;
 
     private final String omatMokit = "omatMokit";
     private final String kaikkiMokit = "KaikkiMokit";
+    private final String vuokratutMokit = "vuokratutMokit";
 
     private String dates;
 
@@ -117,6 +127,7 @@ public class Mokki_List extends AppCompatActivity {
                     Users newUser = new Users(currentUser.getUid(),"", "", currentUser.getEmail());
                     userRef.child(currentUser.getUid()).setValue(newUser);
                     Log.d("Tag","new user");
+                    NEW_USER = true;
                 }
             }
 
@@ -153,20 +164,6 @@ public class Mokki_List extends AppCompatActivity {
             }
         });
 
-        userRef.child(currentUser.getUid()).child("numero").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()) {
-                    userRef.child(currentUser.getUid()).child("numero").setValue("123");
-                    //TODO: Lisää tähän puhelinnumero builderi, kuten myös profiiliin
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         userRef.child(currentUser.getUid()).child("sahkoposti").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -174,8 +171,10 @@ public class Mokki_List extends AppCompatActivity {
                 if(!snapshot.exists()) {
                     userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getUid());
                 }
-                if(!snapshot.getValue().equals(currentUser.getEmail())) {
+                if(snapshot.exists()) {
+                    if(!snapshot.getValue().equals(currentUser.getEmail())) {
                     userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getEmail());
+                    }
                 }
             }
 
@@ -237,7 +236,7 @@ public class Mokki_List extends AppCompatActivity {
 
         bVuokratut = findViewById(R.id.bVuokratut);
         bVuokratut.setOnClickListener(v -> {
-
+            naytaVuokratutMokit();
         });
 
 
@@ -261,6 +260,7 @@ public class Mokki_List extends AppCompatActivity {
             profiiliKuva.setImageResource(R.mipmap.ic_launcher);
         }
         naytaKaikkiMokit();
+        content();
     }
 
     //Search funtkio
@@ -279,6 +279,78 @@ public class Mokki_List extends AppCompatActivity {
         mAdapter.filteredList(filteredList);
     }
 
+    public void content() {
+        refresh(5000);
+        Log.d("tag","content");
+        if(NEW_USER == true) {
+            syotaNumero();
+            handler.removeCallbacks(runnable);
+        }
+    }
+
+    private void refresh(int milliseconds) {
+
+        runnable = () -> content();
+        handler.postDelayed(runnable, milliseconds);
+    }
+
+    public interface MyCallback {
+        void onCallback(String numero);
+    }
+
+    private void readData(MyCallback myCallback) {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String numero = dataSnapshot.child(currentUser.getUid()).child("numero").getValue().toString();
+                myCallback.onCallback(numero);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void syotaNumero() {
+        readData(new MyCallback() {
+            @Override
+            public void onCallback(String numero) {
+                if(numero.equals("")){
+                    NEW_USER = true;
+                }
+            }
+        });
+        if(NEW_USER == true) {
+            Log.d("tag", "alertdialog");
+            AlertDialog alert = new AlertDialog.Builder(this).create();
+            final EditText edittext = new EditText(this);
+            edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
+            alert.setMessage("Hei! Lisääthän puhelinnumerosi profiiliin, jotta sinuun voidaan ottaa yhteyttä" +
+                    "myös sitä kautta");
+            alert.setTitle("Puhelinnumeron lisäys");
+
+            alert.setView(edittext);
+            alert.setButton(AlertDialog.BUTTON_POSITIVE, "Lisää numero", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    userRef.child(currentUser.getUid()).child("numero").setValue(edittext.getText().toString());
+                    Toast.makeText(getApplicationContext(), "Puhelinnumero lisätty!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Palaa takaisin", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    userRef.child(currentUser.getUid()).child("numero").setValue("123");
+                    NEW_USER = false;
+                    alert.dismiss();
+                }
+            });
+            alert.show();
+        }
+        }
+
     private void naytaVuokratutMokit() {
         if( currentUser != null) {
             mMokkiItem.clear();
@@ -290,6 +362,45 @@ public class Mokki_List extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                         if(postSnapshot.child("asiakas").equals(currentUser.getUid())) {
+                            String vKey = postSnapshot.child("mokkiID").getValue().toString();
+                            Query query2 = fbDatabaseRef.equalTo(vKey);
+
+                            query2.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    MokkiItem v_MokkiItem = snapshot.getValue(MokkiItem.class);
+                                    v_MokkiItem.setKey(snapshot.getKey());
+                                    mMokkiItem.add(v_MokkiItem);
+
+                                    mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
+
+                                    fbRecyclerView.setAdapter(mAdapter);
+                                    mAdapter.notifyDataSetChanged();
+
+                                    mAdapter.setOnItemClickListener(new MokkiAdapterV2.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(int position) {
+                                            mMokkiItem.get(position);
+                                            MokkiItem selectedItem = mMokkiItem.get(position);
+                                            String selectedKey = selectedItem.getKey();
+                                            intent.putExtra("Mokki", mMokkiItem.get(position));
+                                            intent.putExtra("setVisibility", omatMokit);
+                                            intent.putExtra("deleteKey", selectedKey);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onDeleteClick(int position) {
+                                            deleteMokki(position);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
 
                         }
                     }
@@ -297,11 +408,17 @@ public class Mokki_List extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-
-        }
+            if(currentUser.getDisplayName() == null)
+            {
+                Toast.makeText(this, "Kirjaudu sisään nähdäksesi ilmoittamasi mökit", Toast.LENGTH_SHORT).show();
+            }
+            }else if(currentUser == null)
+            {
+            naytaKaikkiMokit();
+            }
     }
 
     private void naytaOmatMokit()
@@ -464,6 +581,7 @@ public class Mokki_List extends AppCompatActivity {
         if(currentUser == null){
             Intent kirjauduIntent = new Intent(this, LoginActivity.class);
             startActivity(kirjauduIntent);
+            handler.removeCallbacks(runnable);
             finish();
         }
 
@@ -473,16 +591,19 @@ public class Mokki_List extends AppCompatActivity {
                 case R.id.user:
                     Intent intent = new Intent(this, ProfiiliActivity.class);
                     startActivity(intent);
+                    handler.removeCallbacks(runnable);
                     break;
                 case R.id.msg:
                     Log.d("Tag","Valikko painettu");
                     Intent chatIntent = new Intent(this,ChatActivity.class);
                     startActivity(chatIntent);
+                    handler.removeCallbacks(runnable);
                     break;
                 case R.id.logout:
                     Intent signOutIntent = new Intent(this,LoginActivity.class);
                     mauth.signOut();
                     startActivity(signOutIntent);
+                    handler.removeCallbacks(runnable);
                     finish();
                     break;
             }
@@ -500,6 +621,7 @@ public class Mokki_List extends AppCompatActivity {
         else if(currentUser == null) {
             Intent kirjauduIntent = new Intent(this, LoginActivity.class);
             startActivity(kirjauduIntent);
+            handler.removeCallbacks(runnable);
             finish();
         }
     }
@@ -508,6 +630,7 @@ public class Mokki_List extends AppCompatActivity {
     protected void onDestroy()
     {
         super.onDestroy();
+        handler.removeCallbacks(runnable);
         fbDatabaseRef.removeEventListener(fbDbListener);
     }
 }
