@@ -53,12 +53,13 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
-
-import static projekti.mobiiliprojekti.R.id.ImageViewDelete;
-import static projekti.mobiiliprojekti.R.id.image;
 
 public class Mokki_List extends AppCompatActivity {
 
@@ -92,13 +93,15 @@ public class Mokki_List extends AppCompatActivity {
     private String imageString;
     private boolean NEW_USER = false;
 
-    //ImageView ImageViewDelete;
-
     private final String omatMokit = "omatMokit";
     private final String kaikkiMokit = "KaikkiMokit";
     private final String vuokratutMokit = "vuokratutMokit";
 
     private String dates;
+    private List<String> dateList;
+    private List<Integer> dateListInt;
+    private Date currentDate;
+    private SimpleDateFormat dateFormat;
 
     //suosikkitoiminnolle
     private DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference();
@@ -112,7 +115,9 @@ public class Mokki_List extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki__list);
 
-        //dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
+        //dbDates = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
+        dateList = new ArrayList<>();
+        dateListInt = new ArrayList<>();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
@@ -200,6 +205,7 @@ public class Mokki_List extends AppCompatActivity {
             if(currentUser.getUid() != null){
                 Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
                 startActivity(vuokraaIntent);
+                //dbVarmistamatonMokki.removeValue();
             }
         });
 
@@ -513,14 +519,49 @@ public class Mokki_List extends AppCompatActivity {
 
         Intent intent = new Intent(this, MokkiNakyma.class);
 
+        currentDate = Calendar.getInstance().getTime();
+        dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String formattedDate = dateFormat.format(currentDate);
+        String newDate = null;
+
+        if(formattedDate.charAt(4) == '0') {
+            newDate = formattedDate.substring(0, 4) + formattedDate.substring(2 + 3);
+        }
+
+
+        int currentdateINT = Integer.parseInt(newDate);
+
         fbDbListener = fbDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
-                    Log.d("mDates", mokkiItem.getmDates());
-                    mokkiItem.setKey(postSnapshot.getKey());
-                    mMokkiItem.add(mokkiItem);
+                    dates = mokkiItem.getmDates().toString().replaceAll("\\[", "").replaceAll("\\(", "")
+                            .replaceAll("\\]", "").replaceAll("\\)", "")
+                            .replaceAll("/", "").replaceAll(":", "");
+
+                    Log.d("mDates", dates);
+                    dateList = Arrays.asList(dates.split("\\s*,\\s*"));
+                    for(String s : dateList){
+                        dateListInt.add(Integer.valueOf(s));
+                        Log.d("dateListInt", String.valueOf(dateListInt));
+                    }
+
+                    Log.d("currentDateInt", String.valueOf(currentdateINT));
+
+                    for(int x : dateListInt){
+                        if(x >= currentdateINT){
+                            mokkiItem.setKey(postSnapshot.getKey());
+                            mMokkiItem.add(mokkiItem);
+                            Log.d("x", String.valueOf(x));
+                            break;
+                        }
+                    }
+
+                    Log.d("dateList", String.valueOf(dateList));
+                    Log.d("formattedDate", String.valueOf(formattedDate));
+
+                    dateListInt.clear();
                 }
 
 
@@ -562,23 +603,7 @@ public class Mokki_List extends AppCompatActivity {
     {
         MokkiItem selectedItem = mMokkiItem.get(position);
         String selectedKey = selectedItem.getKey();
-        //fbDatabaseRef.child(selectedKey).removeValue();
-        //mAdapter.notifyItemRemoved(position);
 
-        /*StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
-        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                fbDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(Mokki_List.this, "Mökki poistettu", Toast.LENGTH_SHORT).show();
-                //fbRecyclerView.setAdapter(mAdapter);
-                //mAdapter.notifyDataSetChanged();
-                mAdapter.notifyItemRemoved(position);
-                naytaOmatMokit();
-            }
-        });*/
-        //StorageReference imageRef = storage.getReferenceFromUrl(selectedItem.getMokkiImage());
-        //imageRef.delete();
         fbDatabaseRef.child(selectedKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

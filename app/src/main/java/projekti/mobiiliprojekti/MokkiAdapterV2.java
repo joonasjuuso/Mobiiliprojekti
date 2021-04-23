@@ -1,6 +1,5 @@
 package projekti.mobiiliprojekti;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -13,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -24,13 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipEntry;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+import java.util.List;;
 
 public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.MokkiviewHolderV2>
 {

@@ -24,8 +24,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class IlmoitusVarmistus extends AppCompatActivity {
 
@@ -49,11 +47,10 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String MokkiKuva;
     private String eID;
     private String UID;
-    //private List<String> varausDates;
     private String varausDates;
     private String dates;
 
-    private boolean asd;
+    private boolean deleteImage;
 
     private ImageView sImageUpload;
 
@@ -65,9 +62,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ilmoitus_varmistus);
 
-        //varausDates = new ArrayList<>();
-
-        asd = false;
+        deleteImage = false;
 
         dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
         dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
@@ -88,14 +83,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
         UID = varmistaIntent.getStringExtra("eUID");
         varausDates = varmistaIntent.getStringExtra("dates");
-        //varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
         Log.d("listat", String.valueOf(varausDates));
 
-        //StringBuilder builder = new StringBuilder();
-        //for(String s : varausDates){
-        //    builder.append(s).append(" ");
-        //}
-        //sDates.setText(builder.toString());
 
 
         TextView sOtsikko = findViewById(R.id.sOtsikko);
@@ -166,14 +155,14 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        if(asd != true){
+        if(deleteImage != true){
             deleteMokkiKuva();
         }
     }
 
     private void addMokki()
     {
-        asd = true;
+        deleteImage = true;
         eVuokraaja = currentUser.getDisplayName();
         eID = currentUser.getUid();
         eOtsikkoID = UID;

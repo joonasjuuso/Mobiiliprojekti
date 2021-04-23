@@ -39,11 +39,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class LaitaVuokralle extends AppCompatActivity {
@@ -339,7 +335,7 @@ public class LaitaVuokralle extends AppCompatActivity {
                 selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
-                selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
+                selectedDate = selectedYear + "/" + selectedMonth + "/" + selectedDay;
 
                 if(!dateList.contains(selectedDate)){
                     dateList.add(selectedDate);
@@ -359,8 +355,6 @@ public class LaitaVuokralle extends AppCompatActivity {
                         .replaceAll("\\]", "").replaceAll("\\)", "");
             }
         });
-        //dates = dateList.toString().replaceAll("\\[", "").replaceAll("\\(", "")
-         //   .replaceAll("\\]", "").replaceAll("\\)", "");
     }
 
     private void checkText() {

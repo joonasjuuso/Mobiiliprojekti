@@ -37,7 +37,6 @@ public class MokkiNakyma extends AppCompatActivity {
     private Button bMuokkaa;
     private ImageView ImageViewDelete;
     Button bChat;
-    Button bTilanne;
     private Context mContext;
 
     private String setVisibility = "";
@@ -157,7 +156,6 @@ public class MokkiNakyma extends AppCompatActivity {
         bVuokraa = findViewById(R.id.bVuokraa);
         bMuokkaa = findViewById(R.id.bMuokkaa);
         bChat = findViewById(R.id.chatBtn);
-        bTilanne = findViewById(R.id.varauksetBtn);
         ImageViewDelete = findViewById(R.id.ImageViewDelete);
 
         //bVuokraa.setVisibility(View.GONE);
@@ -174,12 +172,6 @@ public class MokkiNakyma extends AppCompatActivity {
             bChat.setVisibility(View.GONE);
             textViewDates.setVisibility(View.GONE);
             calendarDates.setVisibility(View.GONE);
-            bTilanne.setVisibility(View.VISIBLE);
-
-            bTilanne.setOnClickListener(v -> {
-                Intent varausIntent = new Intent(this,MokkiVaraukset.class);
-                startActivity(varausIntent);
-            });
         }else if(setVisibility.matches("kaikkiMokit")){
             bVuokraa.setVisibility(View.VISIBLE);
             bMuokkaa.setVisibility(View.GONE);
@@ -187,8 +179,7 @@ public class MokkiNakyma extends AppCompatActivity {
             calendarDates.setVisibility(View.VISIBLE);
             //ImageViewDelete.setVisibility(View.GONE);
         }else if(setVisibility.matches("vuokratutMokit")) {
-            bVuokraa.setVisibility(View.VISIBLE);
-            bVuokraa.setText("Varaukset");
+            bVuokraa.setVisibility(View.GONE);
             bMuokkaa.setVisibility(View.GONE);
             ImageViewDelete.setVisibility(View.GONE);
             bChat.setVisibility(View.VISIBLE);
@@ -196,12 +187,6 @@ public class MokkiNakyma extends AppCompatActivity {
             textViewDates.setText(gtDates);
             textViewPaivat.setText("Valitsemasi paivat: ");
             textViewValitsePaiva.setVisibility(View.GONE);
-
-            bVuokraa.setOnClickListener(v -> {
-                Intent varausIntent = new Intent(this,MokkiVaraukset.class);
-                startActivity(varausIntent);
-                finish();
-            });
         }
         Log.d("Tag",setVisibility);
 
