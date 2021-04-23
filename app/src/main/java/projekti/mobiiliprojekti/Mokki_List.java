@@ -105,6 +105,8 @@ public class Mokki_List extends AppCompatActivity {
     private ImageButton bSuosikit;
     private String suosikkiMokit = "suosikkiMokit";
 
+    //TODO: Vuokranantajalle näkymä tilauksista
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

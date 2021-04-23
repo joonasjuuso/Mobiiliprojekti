@@ -245,10 +245,10 @@ public class CheckoutActivity extends AppCompatActivity {
                                             mokkiID = postSnapshot.child("otsikkoID").getValue().toString();
                                             Log.d("tag",vuokraajaPosti);
                                             Log.d("tag",vuokraajaNro);
-                                            Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,mokkiID,currentUser.getUid(),asiakasNro,asiakasPosti,vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
+                                            Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,mokkiID,image,currentUser.getUid(),asiakasNro,asiakasPosti,vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
                                             postMap = newInvoice.toMap();
-                                            invoiceDetails.put(currentUser.getUid() + "/" + messagePushID, postMap);
-                                            invoiceDetails.put(vuokraajaID + "/" + messagePushID, postMap);
+                                            invoiceDetails.put(currentUser.getUid() + "/" +  "Omat vuokraukset" + "/" + messagePushID, postMap);
+                                            invoiceDetails.put(vuokraajaID + "/" + "Tilaukset" + "/" + messagePushID, postMap);
                                             rootRef.child("Invoices").updateChildren(invoiceDetails).addOnCompleteListener(new OnCompleteListener() {
 
                                                 @Override
@@ -265,6 +265,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                                         onnistuiIntent.putExtra("osoite",osoite);
                                                         onnistuiIntent.putExtra("vuokraNro",vuokraajaNro);
                                                         onnistuiIntent.putExtra("vuokraPosti",vuokraajaPosti);
+                                                        onnistuiIntent.putExtra("image",image);
                                                         onnistuiIntent.putStringArrayListExtra("paivat",paivat);
                                                         startActivity(onnistuiIntent);
                                                         finish();

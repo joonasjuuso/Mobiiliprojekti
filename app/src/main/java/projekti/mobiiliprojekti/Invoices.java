@@ -18,17 +18,19 @@ public class Invoices {
     private String asiakasNro;
     private String asiakasSposti;
     private String mokkiID;
+    private String mokkiImage;
 
     public Invoices() {
 
     }
 
 
-    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String mID, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
+    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String mID, String mImage, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
         this.setOrderID(messagePushID);
         this.setOtsikko(vuokraOtsikko);
         this.setOsoite(vuokraOsoite);
         this.setMokkiID(mID);
+        this.setMokkiImage(mImage);
         this.setVuokraaja(uid);
         this.setAsiakasNro(aNro);
         this.setAsiakasSposti(aSposti);
@@ -46,6 +48,7 @@ public class Invoices {
         result.put("otsikko", getOtsikko());
         result.put("osoite",getOsoite());
         result.put("mokkiID",getMokkiID());
+        result.put("mokkikuva",getMokkiImage());
         result.put("asiakas", getVuokraaja());
         result.put("asiakkaan nro",getAsiakasNro());
         result.put("asiakkaan sposti",getAsiakasSposti());
@@ -58,6 +61,8 @@ public class Invoices {
         return result;
     }
 
+    public String getMokkiImage() { return mokkiImage; }
+    public void setMokkiImage(String mImage) { this.mokkiImage = mImage; }
     public String getMokkiID() { return mokkiID; }
     public void setMokkiID(String mID) {
         this.mokkiID = mID;

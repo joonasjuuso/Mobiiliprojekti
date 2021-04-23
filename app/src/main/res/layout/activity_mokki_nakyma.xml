@@ -215,6 +215,15 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:text="Lähetä viesti"/>
+    <Button
+        android:fontFamily="@font/candara"
+        android:id="@+id/varauksetBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:text="Varaustilanne"/>
 
     <Button
         android:fontFamily="@font/candara"
