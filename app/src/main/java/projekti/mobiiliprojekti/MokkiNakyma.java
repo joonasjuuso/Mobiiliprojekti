@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +24,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 public class MokkiNakyma extends AppCompatActivity {
@@ -37,7 +33,6 @@ public class MokkiNakyma extends AppCompatActivity {
     private Button bMuokkaa;
     private ImageView ImageViewDelete;
     Button bChat;
-    private Context mContext;
 
     private String setVisibility = "";
 
@@ -64,7 +59,6 @@ public class MokkiNakyma extends AppCompatActivity {
     private String gtDates;
 
     private List<String> splitDates;
-    private List<String> splitString;
     private List<String> dateList;
     private String selectedYear;
     private String selectedMonth;
@@ -100,8 +94,6 @@ public class MokkiNakyma extends AppCompatActivity {
         Vuokraaja = mokkiItem.getVuokraaja();
         VuokraajaID = mokkiItem.getVuokraajaID();
         mDates = mokkiItem.getmDates();
-
-        //String Mokkiomistaja = mokkiItem.getOmistaja();
 
         ImageView imageViewMokki = findViewById(R.id.ImageMokkiNakyma);
         Picasso.get().load(mokkiItem.getMokkiImage()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(imageViewMokki);
@@ -143,9 +135,6 @@ public class MokkiNakyma extends AppCompatActivity {
             Log.e("asd", replace);
             splitDates = Arrays.asList(replace.split(",", -1));
         }
-        //Log.d("dfg", mDates);
-        //Log.e("asd", replace);
-
 
         calendarDates = findViewById(R.id.date_pick_calendar);
         textViewSelectedDates = findViewById(R.id.textViewSelectedDates);
@@ -265,7 +254,7 @@ public class MokkiNakyma extends AppCompatActivity {
                 selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
-                selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
+                selectedDate = selectedYear + "/" + selectedMonth + "/" + selectedDay;
 
                 if(!dateList.contains(selectedDate)){
                     if(splitDates.contains(selectedDate)){
@@ -310,8 +299,6 @@ public class MokkiNakyma extends AppCompatActivity {
         muokkaaIntent.putExtra("eKuvaus", MokkiKuvaus);
         muokkaaIntent.putExtra("muokkaaKey", deleteKey);
         muokkaaIntent.putExtra("dates", String.valueOf(splitDates));
-        //muokkaaIntent.putExtra("eUID", UID);
-
 
         startActivity(muokkaaIntent);
     }

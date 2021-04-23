@@ -40,9 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -115,9 +113,6 @@ public class MuokkausActivity extends AppCompatActivity {
 
         dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
 
-        //varausDates = new ArrayList<>();
-
-
         bHyvaksy = findViewById(R.id.bHyväksy);
         uploadImageProgressBar = findViewById(R.id.UploadImageProgressBar);
 
@@ -172,8 +167,6 @@ public class MuokkausActivity extends AppCompatActivity {
         eKuvaus = muokkausIntent.getStringExtra("eKuvaus");
         muokkaaKey = muokkausIntent.getStringExtra("muokkaaKey");
         getDates = muokkausIntent.getStringExtra("dates");
-        //dateList = (ArrayList<String>)getIntent().getSerializableExtra("dates");
-        //dateList = muokkausIntent.getStringExtra("dates");
         Log.d("listat", String.valueOf(getDates));
 
         String replace = getDates.replaceAll("\\[", "").replaceAll("\\(", "")
@@ -265,7 +258,7 @@ public class MuokkausActivity extends AppCompatActivity {
     private void setDates()
     {
 
-        dateList = new ArrayList<String>();
+        dateList = new ArrayList<>();
 
         setDateDalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -274,7 +267,7 @@ public class MuokkausActivity extends AppCompatActivity {
                 selectedMonth = String.valueOf(month + 1);
                 selectedDay = String.valueOf(dayOfMonth);
 
-                selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
+                selectedDate = selectedYear + "/" + selectedMonth + "/" + selectedDay;
 
                 if(!dateList.contains(selectedDate)){
                     dateList.add(selectedDate);
