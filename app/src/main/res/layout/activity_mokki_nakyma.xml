@@ -153,38 +153,39 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textViewVapaatPaivat"
                 android:fontFamily="@font/candara"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:text="Vapaana olevat päivät:">
-            </TextView>
-            <TextView
                 android:id="@+id/textViewDates"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </TextView>
-            <CalendarView
-                android:id="@+id/date_pick_calendar"
+                android:layout_height="wrap_content"></TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vapaana olevat päivät merkitty vihreällä:"
+                android:textColor="@color/black"
+                android:textSize="20sp"></TextView>
+
+            <com.squareup.timessquare.CalendarPickerView
+                android:id="@+id/kalenteri"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
-            </CalendarView>
+                android:layout_margin="10dp"
+                android:nestedScrollingEnabled="true"/>
+
             <TextView
+                android:fontFamily="@font/candara"
                 android:id="@+id/textViewValitsePaivamaara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Valitsemasi päivämäärät:">
             </TextView>
+
             <TextView
+                android:fontFamily="@font/candara"
                 android:id="@+id/textViewSelectedDates"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </TextView>
-
-
+                android:layout_height="wrap_content"></TextView>
 
             <ImageView
                 android:id="@+id/ImageViewDelete"

@@ -24,6 +24,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class IlmoitusVarmistus extends AppCompatActivity {
 
@@ -47,7 +50,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private String MokkiKuva;
     private String eID;
     private String UID;
-    private String varausDates;
+    private List<String> varausDates;
+    //private String varausDates;
     private String dates;
 
     private boolean deleteImage;
@@ -82,7 +86,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eSauna = varmistaIntent.getStringExtra("eSauna");
         eKuvaus = varmistaIntent.getStringExtra("eKuvaus");
         UID = varmistaIntent.getStringExtra("eUID");
-        varausDates = varmistaIntent.getStringExtra("dates");
+       //varausDates = varmistaIntent.getStringExtra("dates");
+        varausDates = (ArrayList<String>)getIntent().getSerializableExtra("dates");
         Log.d("listat", String.valueOf(varausDates));
 
 
@@ -107,7 +112,11 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sLammitys.setText(eLammitys);
         sVesi.setText(eVesi);
         sSauna.setText(eSauna);
-        sDates.setText(varausDates);
+        String tmpStr = varausDates.get(0);
+        tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
+        String tmpStr2 = varausDates.get(varausDates.size() - 1);
+        tmpStr2 = tmpStr2.substring(0, tmpStr2.length() - 2);
+        sDates.setText(tmpStr + " - " + tmpStr2);
         sKuvaus.setText(eKuvaus);
 
         dates = varausDates.toString();
@@ -170,7 +179,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eOtsikkoID = dbMokki.push().getKey();
 
         MokkiItem mokki = new MokkiItem(MokkiKuva, eOtsikko, eHinta, eOsoite, eHuoneet, eNeliot, eLammitys,
-                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, varausDates);
+                eVesi, eSauna, eKuvaus, eOtsikkoID, eVuokraaja, eID, dates);
 
         dbMokki.child(eOtsikkoID).setValue(mokki);
 

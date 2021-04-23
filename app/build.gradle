@@ -32,6 +32,7 @@ android {
 
 dependencies {
 
+    implementation 'com.squareup:android-times-square:1.6.5@aar'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     compile fileTree(dir: 'libs', include: '*.jar')
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
