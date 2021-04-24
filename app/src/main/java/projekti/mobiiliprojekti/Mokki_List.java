@@ -127,7 +127,7 @@ public class Mokki_List extends AppCompatActivity {
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
-        fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid());
+        fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid()).child("Omat vuokraukset");
 
         mMokkiItem = new ArrayList<>();
 

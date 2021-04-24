@@ -2,20 +2,24 @@ package projekti.mobiiliprojekti;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 class MokkiVarauksetAdapter extends Fragment {
@@ -87,6 +93,11 @@ public class MokkiVaraukset extends AppCompatActivity {
     private final FirebaseUser currentUser = mauth.getCurrentUser();
     private DatabaseReference invoiceRef;
     private LinearLayoutManager linearLayoutManager2;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageRef =  storage.getReference();
+
+    private ImageView profiiliKuva;
+    private ImageView takaisinBtn;
 
     private RecyclerView userInvoicesList;
 
@@ -94,8 +105,23 @@ public class MokkiVaraukset extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mokki_varaukset);
+        profiiliKuva = findViewById(R.id.profiiliKuva);
+        takaisinBtn = findViewById(R.id.goBack);
 
         invoiceRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid()).child("Tilaukset");
+
+        storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
+                })
+                .addOnFailureListener(e -> {
+                    profiiliKuva.setImageResource(R.mipmap.ic_launcher);
+                });
+
+        takaisinBtn.setOnClickListener(v -> {
+            finish();
+        });
+
         Init();
     }
     private void Init() {
@@ -103,6 +129,45 @@ public class MokkiVaraukset extends AppCompatActivity {
 
         linearLayoutManager2 = new LinearLayoutManager(this);
         userInvoicesList.setLayoutManager(linearLayoutManager2);
+    }
+
+    public void onClick_Usermenu(View view) {
+        PopupMenu popup = new PopupMenu(this, profiiliKuva);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.user:
+                    Intent userIntent = new Intent(this,ProfiiliActivity.class);
+                    startActivity(userIntent);
+                    finish();
+                    break;
+                case R.id.chat:
+                    Intent chatIntent = new Intent(this,ChatActivity.class);
+                    startActivity(chatIntent);
+                    finish();
+                    break;
+                case R.id.logout:
+                    mauth.signOut();
+                    Intent signOutIntent = new Intent(this, LoginActivity.class);
+                    startActivity(signOutIntent);
+                    finish();
+                    break;
+            }
+            return false;
+        });
+        if(mauth.getCurrentUser() != null) {
+            popup.inflate(R.menu.menu_list);
+            if (mauth.getCurrentUser().getDisplayName() != null) {
+                popup.getMenu().findItem(R.id.user).setTitle(mauth.getCurrentUser().getDisplayName());
+            } else {
+                popup.getMenu().findItem(R.id.user).setTitle(mauth.getCurrentUser().getEmail());
+            }
+            popup.show();
+        }
+        else if(mauth.getCurrentUser() == null) {
+            Intent kirjauduIntent = new Intent(this, LoginActivity.class);
+            startActivity(kirjauduIntent);
+            finish();
+        }
     }
 
     public void onStart() {
@@ -120,7 +185,6 @@ public class MokkiVaraukset extends AppCompatActivity {
                     protected void onBindViewHolder(@NonNull final MokkiVarauksetAdapter.VarauksetViewHolder holder, int position, @NonNull Invoices model)
                     {
                         final String usersIDs = getRef(position).getKey();
-                        final String[] retImage = {"default_image"};
 
                         invoiceRef.child(usersIDs).addValueEventListener(new ValueEventListener() {
                             @Override

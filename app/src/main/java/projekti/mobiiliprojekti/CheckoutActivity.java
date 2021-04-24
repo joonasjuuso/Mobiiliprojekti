@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -293,6 +294,26 @@ public class CheckoutActivity extends AppCompatActivity {
                                                         Log.d("TAG", "hashmap = " + hashMap);
                                                         Log.d("TAG", "mokkiID = " + mokkiID);
                                                         datesRef.child(otsikkoID).updateChildren(hashMap);
+
+                                                        /*datesRef.addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                for(DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                                                    if(postSnapshot.child("osoite").getValue().toString().equals(osoite)) {
+                                                                        String dateArray;
+                                                                        dateArray = postSnapshot.child("mDates").getValue().toString();
+                                                                        String paivatArray = paivat.toString();
+                                                                        dateArray.replace(paivatArray,"");
+                                                                        datesRef.child(postSnapshot.getValue().toString()).child("mDates").setValue(dateArray);
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });*/
 
                                                         startActivity(onnistuiIntent);
                                                         finish();
