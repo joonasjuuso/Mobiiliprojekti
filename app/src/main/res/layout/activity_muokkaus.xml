@@ -147,19 +147,45 @@
                 android:layout_height="wrap_content"
                 android:hint="anna kuvaus mökistäsi:"/>
 
-            <CalendarView
-                android:id="@+id/date_pick_calendar"
+            <TextView
+                android:id="@+id/TextPaivamaara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Aseta päivämäärä jolloin mökki on vuokrattavissa"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="35dp" />
+
+            <com.squareup.timessquare.CalendarPickerView
+                android:id="@+id/kalenteri"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
-            </CalendarView>
+                android:layout_margin="10dp"
+                android:nestedScrollingEnabled="true" />
             <TextView
-                android:fontFamily="@font/candara"
+                android:id="@+id/textViewVuokrattavissa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vuokrattavissa alkaen: "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:layout_marginStart="20dp"/>
+            <TextView
+                android:id="@+id/textViewVuokraAika"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:layout_marginStart="20dp" />
+
+            <TextView
                 android:id="@+id/textViewDates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TextView>
-
             <Button
                 android:fontFamily="@font/candara"
                 android:id="@+id/bChooseImage"

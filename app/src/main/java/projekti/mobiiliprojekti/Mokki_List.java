@@ -516,26 +516,37 @@ public class Mokki_List extends AppCompatActivity {
     private void naytaKaikkiMokit()
     {
         mMokkiItem.clear();
-
         Intent intent = new Intent(this, MokkiNakyma.class);
+        /*
 
         currentDate = Calendar.getInstance().getTime();
-        dateFormat = new SimpleDateFormat("yyyyMMdd");
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = dateFormat.format(currentDate);
         String newDate = null;
+
 
         if(formattedDate.charAt(4) == '0') {
             newDate = formattedDate.substring(0, 4) + formattedDate.substring(2 + 3);
         }
 
-
         int currentdateINT = Integer.parseInt(newDate);
+
+         */
+
 
         fbDbListener = fbDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    mokkiItem.setKey(postSnapshot.getKey());
+                    mMokkiItem.add(mokkiItem);
+                    /*
+                    MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    mokkiItem.setKey(postSnapshot.getKey());
+                    mMokkiItem.add(mokkiItem);
+
                     dates = mokkiItem.getmDates().toString().replaceAll("\\[", "").replaceAll("\\(", "")
                             .replaceAll("\\]", "").replaceAll("\\)", "")
                             .replaceAll("/", "").replaceAll(":", "");
@@ -545,27 +556,27 @@ public class Mokki_List extends AppCompatActivity {
                     for(String s : dateList){
                         dateListInt.add(Integer.valueOf(s));
                         Log.d("dateListInt", String.valueOf(dateListInt));
-                    }
 
+                    }
                     Log.d("currentDateInt", String.valueOf(currentdateINT));
 
                     for(int x : dateListInt){
                         if(x >= currentdateINT){
-                            mokkiItem.setKey(postSnapshot.getKey());
-                            mMokkiItem.add(mokkiItem);
+
                             Log.d("x", String.valueOf(x));
                             break;
                         }
                     }
 
+                    mokkiItem.setKey(postSnapshot.getKey());
+                    mMokkiItem.add(mokkiItem);
                     Log.d("dateList", String.valueOf(dateList));
                     Log.d("formattedDate", String.valueOf(formattedDate));
 
                     dateListInt.clear();
+                     */
+
                 }
-
-
-
                 mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
 
                 fbRecyclerView.setAdapter(mAdapter);
@@ -596,6 +607,7 @@ public class Mokki_List extends AppCompatActivity {
                 Toast.makeText(Mokki_List.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     //@Override

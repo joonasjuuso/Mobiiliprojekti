@@ -37,10 +37,14 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.squareup.timessquare.CalendarPickerView;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -67,6 +71,8 @@ public class MuokkausActivity extends AppCompatActivity {
     private Spinner editVesi;
     private Spinner editSauna;
     private  EditText editKuvaus;
+    private TextView textViewVuokrattavissa;
+    private TextView textViewVuokraAika;
 
     private ImageView ImageViewUpload;
     //private Button bUploadImage;
@@ -93,7 +99,6 @@ public class MuokkausActivity extends AppCompatActivity {
     private String eOtsikkoID;
     private String MokkiKuva;
     private String muokkaaKey;
-    private List<String> dateList;
     private String dates;
     private String selectedYear;
     private String selectedMonth;
@@ -105,6 +110,10 @@ public class MuokkausActivity extends AppCompatActivity {
     private TextView textViewDates;
 
     private String muokkausKuva;
+
+    //KALENTERIPASKAA
+    List<Date> dateList;
+    ArrayList<String> stringDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +180,7 @@ public class MuokkausActivity extends AppCompatActivity {
 
         String replace = getDates.replaceAll("\\[", "").replaceAll("\\(", "")
                 .replaceAll("\\]", "").replaceAll("\\)", "");
-
+/*
         dateList = Collections.singletonList(replace);
         Log.d("listat", String.valueOf(dateList));
 
@@ -181,14 +190,16 @@ public class MuokkausActivity extends AppCompatActivity {
         }
 
         setDateDalendar = findViewById(R.id.date_pick_calendar);
-
+ */
 
         editOtsikko.setText(eOtsikko);
         editHinta.setText(eHinta);
         editOsoite.setText(eOsoite);
         editNeliot.setText(eNeliot);
         editLammitys.setText(eLammitys);
-        textViewDates.setText(builder.toString());
+        //textViewDates.setText(builder.toString());
+        textViewVuokrattavissa = findViewById(R.id.textViewVuokrattavissa);
+        textViewVuokraAika = findViewById(R.id.textViewVuokraAika);
         editKuvaus.setText(eKuvaus);
         Picasso.get().load(MokkiKuva).fit().centerCrop().into(ImageViewUpload);
 
@@ -211,7 +222,7 @@ public class MuokkausActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
-                        || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("") || dateList.isEmpty()){
+                        || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
                     Toast.makeText(MuokkausActivity.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
                 }else{
                     //uploadImage();
@@ -235,9 +246,9 @@ public class MuokkausActivity extends AppCompatActivity {
         hashmap.put("sauna", eSauna);
         hashmap.put("vesi", eVesi);
         hashmap.put("kuvaus", eKuvaus);
-        if(!dateList.isEmpty()){
-            hashmap.put("mDates", dates);
-        }
+        hashmap.put("mDates", stringDates.toString());
+        Log.d("TAG", stringDates.toString());
+
         //hashmap.put("mDates", dateList.toString());
         hashmap.put("nelioMaara", eNeliot);
         //if(mImageUri != null){
@@ -255,6 +266,55 @@ public class MuokkausActivity extends AppCompatActivity {
         });
     }
 
+    private void setDates() {
+        //KALENTERI
+        stringDates = new ArrayList<>();
+        dateList = new ArrayList<>();
+        Date today = new Date();
+        Calendar nextMonth = Calendar.getInstance();
+        nextMonth.add(Calendar.MONTH, 2);
+
+        CalendarPickerView datePicker = findViewById(R.id.kalenteri);
+        datePicker.init(today, nextMonth.getTime())
+                .inMode(CalendarPickerView.SelectionMode.RANGE);
+
+        datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+
+                dateList = datePicker.getSelectedDates();
+                Log.d("TAG", "stringDates = " + stringDates);
+                stringDates.clear();
+
+                for (Date i : dateList) {
+
+                    SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+                    String str = fmt.format(i);
+                    stringDates.add(str + ":0");
+                }
+                Log.d("TAG", "stringDates = " + stringDates);
+
+                String tmpStr = stringDates.get(0);
+                tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
+                Log.d("TAG", "tmpStr = " + tmpStr);
+
+                String tmpStr2 = stringDates.get(stringDates.size() - 1);
+                tmpStr2 = tmpStr2.substring(0, tmpStr2.length() - 2);
+                Log.d("TAG", "tmpStr = " + tmpStr2);
+
+                textViewVuokrattavissa.setText("Vuokrattavissa alkaen:");
+                textViewVuokraAika.setText(tmpStr + " - " + tmpStr2);
+                dateList.clear();
+            }
+
+            @Override
+            public void onDateUnselected(Date date) {
+
+            }
+        });
+    }
+
+    /*
     private void setDates()
     {
 
@@ -290,6 +350,8 @@ public class MuokkausActivity extends AppCompatActivity {
         });
         //dates = dateList.toString();
     }
+
+     */
 
     private void OpenImageChooser()
     {

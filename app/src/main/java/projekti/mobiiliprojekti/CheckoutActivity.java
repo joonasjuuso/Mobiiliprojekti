@@ -35,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,7 +118,8 @@ public class CheckoutActivity extends AppCompatActivity {
         hintaText.setText(String.valueOf(summaInt));
         nameText.setText(vuokraaja);
         otsikkoText.setText(vuokraOtsikko);
-        paivaText.setText(paivat.get(0) + " - " + paivat.get(paivat.size() - 1));
+        if(paivat.size() == 1) {  paivaText.setText(paivat.get(0));  }
+        else { paivaText.setText(paivat.get(0) + " - " + paivat.get(paivat.size() - 1));  }
         osoiteText.setText(osoite);
 
         MobilePay.getInstance().init("APPFI0000000000", Country.FINLAND);
@@ -127,6 +129,8 @@ public class CheckoutActivity extends AppCompatActivity {
         mobilepayBtn.setOnClickListener(v -> {
             payNow();
         });
+
+        //paivat.clear();
 
         korttiBtn.setOnClickListener(v -> {
 
@@ -156,8 +160,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     menuImage.setImageResource(R.mipmap.ic_launcher);
                 });
-
-
     }
 
     public void onClick_menu(View view) {

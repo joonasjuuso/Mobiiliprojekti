@@ -149,11 +149,7 @@ public class MokkiNakyma extends AppCompatActivity {
         TextView textViewSauna = findViewById(R.id.SaunaMokkiNakyma);
         textViewSauna.setText(MokkiSauna);
 
-        /*
-        TextView textViewPaivat = findViewById(R.id.textViewVapaatPaivat);
         TextView textViewValitsePaiva = findViewById(R.id.textViewValitsePaivamaara);
-
-         */
 
         TextView textViewDates = findViewById(R.id.textViewDates);
         if(mDates != null){
@@ -263,19 +259,24 @@ public class MokkiNakyma extends AppCompatActivity {
         });
 
             bVuokraa.setOnClickListener(v -> {
-                Intent vuokraIntent = new Intent(this, CheckoutActivity.class);
-                vuokraIntent.putExtra("name", Vuokraaja);
-                vuokraIntent.putExtra("hinta",MokkiHinta);
-                vuokraIntent.putExtra("otsikko",MokkiOtsikko);
-                vuokraIntent.putExtra("osoite",MokkiOsoite);
-                vuokraIntent.putExtra("id",VuokraajaID);
-                vuokraIntent.putExtra("image",MokkiImage);
-                vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) valitut_sDates);
-                vuokraIntent.putStringArrayListExtra("dbpaivat", (ArrayList<String>) final_sDates);
-                vuokraIntent.putExtra("id",VuokraajaID);
-                vuokraIntent.putExtra("image",MokkiImage);
-                vuokraIntent.putExtra("otsikkoID", OtsikkoID);
-                startActivity(vuokraIntent);
+                if(valitut_sDates.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Valitse päivämäärät jotka haluat vuokrata", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent vuokraIntent = new Intent(this, CheckoutActivity.class);
+                    vuokraIntent.putExtra("name", Vuokraaja);
+                    vuokraIntent.putExtra("hinta",MokkiHinta);
+                    vuokraIntent.putExtra("otsikko",MokkiOtsikko);
+                    vuokraIntent.putExtra("osoite",MokkiOsoite);
+                    vuokraIntent.putExtra("id",VuokraajaID);
+                    vuokraIntent.putExtra("image",MokkiImage);
+                    vuokraIntent.putStringArrayListExtra("paivat", (ArrayList<String>) valitut_sDates);
+                    vuokraIntent.putStringArrayListExtra("dbpaivat", (ArrayList<String>) final_sDates);
+                    vuokraIntent.putExtra("id",VuokraajaID);
+                    vuokraIntent.putExtra("image",MokkiImage);
+                    vuokraIntent.putExtra("otsikkoID", OtsikkoID);
+                    startActivity(vuokraIntent);
+                }
+
         });
 
         bMuokkaa.setOnClickListener(new View.OnClickListener() {
@@ -317,11 +318,17 @@ public class MokkiNakyma extends AppCompatActivity {
         lastDay.setTime(tmpDate2);
         lastDay.add(Calendar.DATE, + 1);
 
-        datePicker.init(firstDay.getTime(), lastDay.getTime())
-                .inMode(CalendarPickerView.SelectionMode.RANGE);
+        if(setVisibility.matches("omatMokit")){
+            datePicker.init(firstDay.getTime(), lastDay.getTime())
+                    .displayOnly();
+            textViewSelectedDates.setVisibility(View.GONE);
+            textViewValitsePaiva.setVisibility(View.GONE);
+        } else {
+            datePicker.init(firstDay.getTime(), lastDay.getTime())
+                    .inMode(CalendarPickerView.SelectionMode.RANGE);
+        }
 
         datePicker.highlightDates(highlightedDates);
-
 
         datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
@@ -329,6 +336,9 @@ public class MokkiNakyma extends AppCompatActivity {
                 valitut_sDates.clear();
                 vapaat_sDates.clear();
                 final_sDates.clear();
+
+                bVuokraa.setClickable(true);
+                bVuokraa.setBackgroundColor(0xFF2073D8);
 
                 //VALITAAN DATET
                 tmpDates = datePicker.getSelectedDates();
@@ -338,9 +348,11 @@ public class MokkiNakyma extends AppCompatActivity {
                 for(Date i : tmpDates) {
                     SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
                     String str = fmt.format(i);
+                    Log.d("TAG", str);
                     valitut_sDates.add(str);
                 }
 
+                //TEXTVIEWILLE KASA EHTOJA
                 if(textViewFlag && valitut_sDates.size() == 1) {
                     textViewSelectedDates.setText(valitut_sDates.get(0));
                     if(valitut_sDates.size() == 1) {  textViewFlag = true;  }
@@ -355,18 +367,30 @@ public class MokkiNakyma extends AppCompatActivity {
                 //VÄLIAIKASEEN LISTAAN VAPAAT PÄIVÄT
                 for (String s : splitDates) {
                     String tmpStr = s;
-                    tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
-                    vapaat_sDates.add(tmpStr);
-
-                    //VERRATAAN VARATTUJA PÄIVIÄ(tmpStringDates) VAPAISIIN (tmpStringDates2)
+                    if(!tmpStr.endsWith(":1")) {
+                        tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
+                        vapaat_sDates.add(tmpStr);
+                    } else if (tmpStr.endsWith(":1")){
+                        final_sDates.add(tmpStr);
+                    }
+                    //VERRATAAN VARATTUJA PÄIVIÄ VAPAISIIN
                     for (String s2 : valitut_sDates) {
-                        if(s2.equals(tmpStr)) {
-                            vapaat_sDates.remove(tmpStr);
-                            tmpStr = tmpStr + ":1";
-                            final_sDates.add(tmpStr);
+                        //String tmpStr2 = s2 + ":1";
+                        if(s.equals(s2 + ":1")){
+                            Toast.makeText(getApplicationContext(), "Et voi valita jo varattua päivämäärää", Toast.LENGTH_SHORT).show();
+                            bVuokraa.setClickable(false);
+                            bVuokraa.setBackgroundColor(0xFF132D55);
+                            break;
+                        } else {
+                            if(s2.equals(tmpStr)) {
+                                vapaat_sDates.remove(tmpStr);
+                                tmpStr = tmpStr + ":1";
+                                final_sDates.add(tmpStr);
+                            }
                         }
                     }
                 }
+                //LISTATAAN FINAALI PÄIVÄT JOTKA HEITETÄÄN DATABASEEN :0 JA :1 PÄÄTTEILLÄ
                 for(String s : vapaat_sDates) {
                     if (!s.endsWith(":1")) {
                         String tmpStr = s + ":0";

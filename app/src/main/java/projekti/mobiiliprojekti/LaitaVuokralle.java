@@ -200,7 +200,6 @@ public class LaitaVuokralle extends AppCompatActivity {
         eKuvaus = takaisinIlmoitukseen.getStringExtra("eKuvaus");
         editKuvaus.setText(eKuvaus);
 
-
         checkText();
         setDates();
     }
