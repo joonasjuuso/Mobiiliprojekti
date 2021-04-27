@@ -416,8 +416,7 @@ public class Mokki_List extends AppCompatActivity {
                                                 }
 
                                                 @Override
-                                                public void onDeleteClick(int position) {
-                                                    deleteMokki(position); }
+                                                public void onDeleteClick(int position) { }
                                                 @Override
                                                 public void addFavoriteButtonClick(int position) { addFavoriteClick(position); }
                                                 @Override
@@ -442,7 +441,7 @@ public class Mokki_List extends AppCompatActivity {
             });
             if(currentUser.getDisplayName() == null)
             {
-                Toast.makeText(this, "Kirjaudu sisään nähdäksesi ilmoittamasi mökit", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Kirjaudu sisään nähdäksesi varaamasi mökit", Toast.LENGTH_SHORT).show();
             }
             else if(currentUser == null)
             {
