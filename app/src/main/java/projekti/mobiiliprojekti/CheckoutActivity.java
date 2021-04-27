@@ -32,12 +32,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -47,6 +50,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private final StorageReference storageRef =  storage.getReference();
     private final FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
     private final DatabaseReference rootRef = dbRef.getReference();
+    private ValueEventListener dateListener;
     private final DatabaseReference vuokraajaRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private final DatabaseReference datesRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
     private Button korttiBtn;
@@ -140,6 +144,51 @@ public class CheckoutActivity extends AppCompatActivity {
             Log.d("TAG", "hashmap = " + hashMap);
             Log.d("TAG", "mokkiID = " + mokkiID);
             datesRef.child(otsikkoID).updateChildren(hashMap);
+            /*
+            dateListener = datesRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        if(postSnapshot.child("osoite").getValue().toString().equals(osoite)) {
+                            Log.d("snaspsoht",postSnapshot.child("osoite").getValue().toString());
+                            String dateArray;
+                            //dateArray = postSnapshot.child("mDates").getValue().toString();
+                            String paivatArray = paivat.toString();
+                            Log.d("paivararya",paivatArray);
+                            dateArray = postSnapshot.child("mDates").getValue().toString();
+                            Log.d("prefor", String.valueOf(dateArray));
+                            paivatArray = paivatArray.replace("[","");
+                            paivatArray = paivatArray.replace("]","");
+                            dateArray = dateArray.replace("[","");
+                            dateArray = dateArray.replace("]","");
+                            String[] splitThisDate = paivatArray.split(",");
+                            String [] splitDbDate = dateArray.split(",");
+
+                            for(int a = 0; a < splitThisDate.length; a++) {
+                                Log.d("tag",splitThisDate[a]);
+                                for (int i = 0; i < splitDbDate.length; i++) {
+                                    Log.d("tag",splitDbDate[i]);
+                                    if(splitDbDate[i].matches(splitThisDate[a]+":1,")) {
+                                        Log.d("if","if");
+                                        splitDbDate[i] = splitDbDate[i].replace(splitThisDate[a]+":1,","VARATTU");
+                                    }
+                                }
+                            }
+                            Log.d("tag", Arrays.toString(splitDbDate));
+                            MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                            mokkiItem.setDates(Arrays.toString(splitDbDate));
+                            datesRef.child(postSnapshot.getKey()).setValue(mokkiItem);
+                            datesRef.removeEventListener(dateListener);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            */
             Intent i = new Intent(this, Mokki_List.class);
             startActivity(i);
             finish();
@@ -297,16 +346,39 @@ public class CheckoutActivity extends AppCompatActivity {
                                                         Log.d("TAG", "mokkiID = " + mokkiID);
                                                         datesRef.child(otsikkoID).updateChildren(hashMap);
 
-                                                        /*datesRef.addValueEventListener(new ValueEventListener() {
+                                                        datesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                 for(DataSnapshot postSnapshot : snapshot.getChildren()) {
                                                                     if(postSnapshot.child("osoite").getValue().toString().equals(osoite)) {
+                                                                        Log.d("snaspsoht",postSnapshot.child("osoite").getValue().toString());
                                                                         String dateArray;
-                                                                        dateArray = postSnapshot.child("mDates").getValue().toString();
+                                                                        //dateArray = postSnapshot.child("mDates").getValue().toString();
                                                                         String paivatArray = paivat.toString();
-                                                                        dateArray.replace(paivatArray,"");
-                                                                        datesRef.child(postSnapshot.getValue().toString()).child("mDates").setValue(dateArray);
+                                                                        Log.d("paivararya",paivatArray);
+                                                                        dateArray = postSnapshot.child("mDates").getValue().toString();
+                                                                        Log.d("prefor", String.valueOf(dateArray));
+                                                                        paivatArray = paivatArray.replace("[","");
+                                                                        paivatArray = paivatArray.replace("]","");
+                                                                        dateArray = dateArray.replace("[","");
+                                                                        dateArray = dateArray.replace("]","");
+                                                                        String[] splitThisDate = paivatArray.split(",");
+                                                                        String [] splitDbDate = dateArray.split(",");
+
+                                                                        for(int a = 0; a < splitThisDate.length; a++) {
+                                                                            Log.d("tag",splitThisDate[a]);
+                                                                            for (int i = 0; i < splitDbDate.length; i++) {
+                                                                                Log.d("tag",splitDbDate[i]);
+                                                                                if(splitDbDate[i].matches(splitThisDate[a]+":1,")) {
+                                                                                    Log.d("if","if");
+                                                                                    splitDbDate[i] = splitDbDate[i].replace(splitThisDate[a]+":1,","VARATTU");
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        Log.d("tag", Arrays.toString(splitDbDate));
+                                                                        MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                                                                        mokkiItem.setDates(Arrays.toString(splitDbDate));
+                                                                        datesRef.child(postSnapshot.getKey()).setValue(mokkiItem);
                                                                     }
                                                                 }
                                                             }
@@ -315,7 +387,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                                             public void onCancelled(@NonNull DatabaseError error) {
 
                                                             }
-                                                        });*/
+                                                        });
 
                                                         startActivity(onnistuiIntent);
                                                         finish();
