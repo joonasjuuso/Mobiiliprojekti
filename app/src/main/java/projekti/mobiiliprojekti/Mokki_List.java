@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -91,6 +92,10 @@ public class Mokki_List extends AppCompatActivity {
     private Button bVuokratut;
     private EditText editSearch;
     private String imageString;
+    private String jarjestysString;
+    private TextView jarjestysButton;
+
+
     private boolean NEW_USER = false;
 
     private final String omatMokit = "omatMokit";
@@ -121,7 +126,8 @@ public class Mokki_List extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
-
+        jarjestysButton = findViewById(R.id.jarjestysButton);
+        jarjestysString = "alinHinta";
 
         fbRecyclerView = findViewById(R.id.recyclerView);
         fbRecyclerView.setHasFixedSize(true);
@@ -512,8 +518,11 @@ public class Mokki_List extends AppCompatActivity {
         }
     }
 
+
+
     private void naytaKaikkiMokit()
     {
+        Query query;
         mMokkiItem.clear();
         Intent intent = new Intent(this, MokkiNakyma.class);
         /*
@@ -531,16 +540,59 @@ public class Mokki_List extends AppCompatActivity {
         int currentdateINT = Integer.parseInt(newDate);
 
          */
+        LinearLayoutManager reverseLayout = new LinearLayoutManager(this);
+        reverseLayout.setReverseLayout(true);
+        reverseLayout.setStackFromEnd(true);
 
+        LinearLayoutManager normalLayout = new LinearLayoutManager(this);
 
-        fbDbListener = fbDatabaseRef.addValueEventListener(new ValueEventListener() {
+        switch(jarjestysString) {
+
+            case "alinHinta":
+                query = fbDatabaseRef.orderByChild("hinta");
+                fbRecyclerView.setLayoutManager(normalLayout);
+                break;
+            case "ylinHinta":
+                query = fbDatabaseRef.orderByChild("hinta");
+                fbRecyclerView.setLayoutManager(reverseLayout);
+                break;
+            case "uusinIlmoitus":
+                query = fbDatabaseRef;
+                fbRecyclerView.setLayoutManager(reverseLayout);
+                break;
+            case "vanhinIlmoitus":
+                query = fbDatabaseRef;
+                fbRecyclerView.setLayoutManager(normalLayout);
+                break;
+            case "nelioMaara":
+                query = fbDatabaseRef.orderByChild("nelioMaara");
+                fbRecyclerView.setLayoutManager(reverseLayout);
+                break;
+            case "saunallinen":
+                query = fbDatabaseRef.orderByChild("sauna").equalTo("Kyllä");
+                fbRecyclerView.setLayoutManager(normalLayout);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + jarjestysString);
+        }
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
                     mokkiItem.setKey(postSnapshot.getKey());
                     mMokkiItem.add(mokkiItem);
+                }
+
+        /*fbDbListener = fbDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot postSnapshot : snapshot.getChildren()){
+                    MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
+                    mokkiItem.setKey(postSnapshot.getKey());
+                    mMokkiItem.add(mokkiItem);
+                    }
+                    */
                     /*
                     MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
                     mokkiItem.setKey(postSnapshot.getKey());
@@ -574,8 +626,6 @@ public class Mokki_List extends AppCompatActivity {
 
                     dateListInt.clear();
                      */
-
-                }
                 mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
 
                 fbRecyclerView.setAdapter(mAdapter);
@@ -608,6 +658,7 @@ public class Mokki_List extends AppCompatActivity {
         });
 
     }
+
 
     //@Override
     private void deleteMokki(int position)
@@ -726,6 +777,42 @@ public class Mokki_List extends AppCompatActivity {
     }
     private static void openDrawermenu(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void onClick_jarjestysmenu(View view) {
+        PopupMenu jarjestysPopup = new PopupMenu(this,jarjestysButton);
+        jarjestysPopup.setOnMenuItemClickListener(item -> {
+            switch(item.getItemId()) {
+                case R.id.alinHinta:
+                    jarjestysString = "alinHinta";
+                    naytaKaikkiMokit();
+                    break;
+                case R.id.ylinHinta:
+                    jarjestysString = "ylinHinta";
+                    naytaKaikkiMokit();
+                    break;
+                case R.id.uusinIlmoitus:
+                    jarjestysString = "uusinIlmoitus";
+                    naytaKaikkiMokit();
+                    break;
+                case R.id.vanhinIlmoitus:
+                    jarjestysString = "vanhinIlmoitus";
+                    naytaKaikkiMokit();
+                    break;
+                case R.id.nelioMaara:
+                    jarjestysString = "nelioMaara";
+                    naytaKaikkiMokit();
+                    break;
+                case R.id.saunallinen:
+                    jarjestysString = "saunallinen";
+                    naytaKaikkiMokit();
+                    break;
+
+            }
+            return false;
+        });
+        jarjestysPopup.inflate(R.menu.jarjestys_list);
+        jarjestysPopup.show();
     }
 
 
