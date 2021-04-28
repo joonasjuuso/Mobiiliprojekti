@@ -127,7 +127,7 @@ public class Mokki_List extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
         jarjestysButton = findViewById(R.id.jarjestysButton);
-        jarjestysString = "alinHinta";
+        jarjestysString = "uusinIlmoitus";
 
         fbRecyclerView = findViewById(R.id.recyclerView);
         fbRecyclerView.setHasFixedSize(true);
@@ -554,6 +554,7 @@ public class Mokki_List extends AppCompatActivity {
                 break;
             case "ylinHinta":
                 query = fbDatabaseRef.orderByChild("hinta");
+                Log.d("tag", String.valueOf(query));
                 fbRecyclerView.setLayoutManager(reverseLayout);
                 break;
             case "uusinIlmoitus":
