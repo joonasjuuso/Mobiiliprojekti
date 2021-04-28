@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MuokkausActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/background">
 
     <ScrollView
         android:layout_width="match_parent"

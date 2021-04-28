@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawerChat_layout"
-    tools:context=".ChatActivity">
+    tools:context=".ChatActivity"
+    style="@style/background">
 
     <RelativeLayout
     android:layout_width="match_parent"
@@ -40,6 +41,7 @@
 
 
         <EditText
+            style="@style/button"
             android:fontFamily="@font/candara"
             android:id="@+id/input_message"
             android:layout_width="match_parent"
@@ -53,6 +55,7 @@
 
 
         <ImageButton
+            style="@style/button"
             android:id="@+id/send_message_btn"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
