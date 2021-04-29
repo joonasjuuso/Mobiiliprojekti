@@ -57,7 +57,7 @@ public class MokkiNakyma extends AppCompatActivity {
     private int MokkiHinta;
     private String MokkiOsoite;
     private String MokkiHuoneet;
-    private String MokkiNelio;
+    private int MokkiNelio;
     private String MokkiLammitys;
     private String MokkiVesi;
     private String MokkiSauna;
@@ -129,7 +129,7 @@ public class MokkiNakyma extends AppCompatActivity {
         textViewOtsikko.setText(MokkiOtsikko);
 
         TextView textViewHinta = findViewById(R.id.HintaMokkiNakyma);
-        textViewHinta.setText(MokkiHinta);
+        textViewHinta.setText(String.valueOf(MokkiHinta));
 
         TextView textViewOsoite = findViewById(R.id.OsoiteMokkiNakyma);
         textViewOsoite.setText(MokkiOsoite);
@@ -138,7 +138,7 @@ public class MokkiNakyma extends AppCompatActivity {
         textViewHuoneet.setText(MokkiHuoneet);
 
         TextView textViewNeliot = findViewById(R.id.NeliotMokkiNakyma);
-        textViewNeliot.setText(MokkiNelio);
+        textViewNeliot.setText(String.valueOf(MokkiNelio));
 
         TextView textViewLammitys = findViewById(R.id.LammitysMokkiNakyma);
         textViewLammitys.setText(MokkiLammitys);

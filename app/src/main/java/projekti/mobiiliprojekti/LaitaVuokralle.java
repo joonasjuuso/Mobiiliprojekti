@@ -89,7 +89,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private int eHinta;
     private String eOsoite;
     private String eHuoneet;
-    private String eNeliot;
+    private int eNeliot;
     private String eLammitys;
     private String eVesi;
     private String eSauna;
@@ -142,8 +142,9 @@ public class LaitaVuokralle extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eHinta = Integer.parseInt(editHinta.getText().toString());
+                eNeliot = Integer.parseInt(editNeliot.getText().toString());
                 if(eOtsikko.matches("") || eHinta == 0 || eOsoite.matches("")
-                    || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
+                    || eLammitys.matches("") || eNeliot == 0 || eKuvaus.matches("")){
                     Toast.makeText(LaitaVuokralle.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
                 }else{
                     uploadImage();
@@ -182,9 +183,10 @@ public class LaitaVuokralle extends AppCompatActivity {
         eHuoneet = editHuoneet.getSelectedItem().toString();
 
         editNeliot = findViewById(R.id.EditNelioMaara);
-        eNeliot = editNeliot.getText().toString();
-        eNeliot = takaisinIlmoitukseen.getStringExtra("eNeliot");
-        editNeliot.setText(eNeliot);
+        editNeliot.setText(String.valueOf(0));
+        eNeliot = Integer.parseInt(editNeliot.getText().toString());
+        eNeliot = takaisinIlmoitukseen.getIntExtra("eNeliot",0);
+        editNeliot.setText(String.valueOf(eNeliot));
 
         editLammitys = findViewById(R.id.EditLammitys);
         eLammitys = editLammitys.getText().toString();
@@ -485,23 +487,6 @@ public class LaitaVuokralle extends AppCompatActivity {
             }
         });
 
-        editNeliot.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                eNeliot = editNeliot.getText().toString();
-            }
-        });
 
         editLammitys.addTextChangedListener(new TextWatcher() {
             @Override

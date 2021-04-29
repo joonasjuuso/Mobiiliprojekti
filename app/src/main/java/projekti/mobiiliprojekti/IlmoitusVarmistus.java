@@ -40,7 +40,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private int eHinta;
     private String eOsoite;
     private String eHuoneet;
-    private String eNeliot;
+    private int eNeliot;
     private String eLammitys;
     private String eVesi;
     private String eSauna;
@@ -80,7 +80,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         eHinta = varmistaIntent.getIntExtra("eHinta",0);
         eOsoite = varmistaIntent.getStringExtra("eOsoite");
         eHuoneet = varmistaIntent.getStringExtra("eHuoneet");
-        eNeliot = varmistaIntent.getStringExtra("eNeliot");
+        eNeliot = varmistaIntent.getIntExtra("eNeliot",0);
         eLammitys = varmistaIntent.getStringExtra("eLammitys");
         eVesi = varmistaIntent.getStringExtra("eVesi");
         eSauna = varmistaIntent.getStringExtra("eSauna");
@@ -108,7 +108,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sHinta.setText(String.valueOf(eHinta));
         sOsoite.setText(eOsoite);
         sHuoneet.setText(eHuoneet);
-        sNeliot.setText(eNeliot);
+        sNeliot.setText(String.valueOf(eNeliot));
         sLammitys.setText(eLammitys);
         sVesi.setText(eVesi);
         sSauna.setText(eSauna);
