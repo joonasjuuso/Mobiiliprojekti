@@ -136,77 +136,78 @@ public class Mokki_List extends AppCompatActivity {
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit");
-        fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid()).child("Omat vuokraukset");
-
+        if(currentUser != null) {
+            fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid()).child("Omat vuokraukset");
+        }
         mMokkiItem = new ArrayList<>();
 
         mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
         fbRecyclerView.setAdapter(mAdapter);
 
-        userRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()) {
-                    Users newUser = new Users(currentUser.getUid(),"", "", currentUser.getEmail());
-                    userRef.child(currentUser.getUid()).setValue(newUser);
-                    Log.d("Tag","new user");
-                    NEW_USER = true;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        userRef.child(currentUser.getUid()).child("image").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                imageString = uri.toString();
-                                Log.d("Tag",imageString);
-                                if(!snapshot.getValue().equals(imageString)) {
-                                    Contacts newContact = new Contacts(currentUser.getUid(),imageString);
-                                    userRef.child(currentUser.getUid()).removeValue();
-                                    userRef.child(currentUser.getUid()).setValue(newContact);
-                                    Log.d("Tag","Image addeasdasdd");
-                                }
-                                else {
-                                    return;
-                                }
-                            });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-        userRef.child(currentUser.getUid()).child("sahkoposti").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()) {
-                    userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getUid());
-                }
-                if(snapshot.exists()) {
-                    if(!snapshot.getValue().equals(currentUser.getEmail())) {
-                    userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getEmail());
+        if(currentUser != null) {
+            userRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        Users newUser = new Users(currentUser.getUid(), "", "", currentUser.getEmail());
+                        userRef.child(currentUser.getUid()).setValue(newUser);
+                        Log.d("Tag", "new user");
+                        NEW_USER = true;
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
+            userRef.child(currentUser.getUid()).child("image").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    imageString = uri.toString();
+                                    Log.d("Tag", imageString);
+                                    if (!snapshot.getValue().equals(imageString)) {
+                                        Contacts newContact = new Contacts(currentUser.getUid(), imageString);
+                                        userRef.child(currentUser.getUid()).removeValue();
+                                        userRef.child(currentUser.getUid()).setValue(newContact);
+                                        Log.d("Tag", "Image addeasdasdd");
+                                    } else {
+                                        return;
+                                    }
+                                });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+            userRef.child(currentUser.getUid()).child("sahkoposti").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getUid());
+                    }
+                    if (snapshot.exists()) {
+                        if (!snapshot.getValue().equals(currentUser.getEmail())) {
+                            userRef.child(currentUser.getUid()).child("sahkoposti").setValue(currentUser.getEmail());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
 
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
@@ -289,6 +290,9 @@ public class Mokki_List extends AppCompatActivity {
 
         } else if(currentUser==null) {
             profiiliKuva.setImageResource(R.mipmap.ic_launcher);
+            bVuokratut.setVisibility(View.GONE);
+            bOmatMokit.setVisibility(View.GONE);
+            bSuosikit.setVisibility(View.GONE);
         }
         naytaKaikkiMokit();
         content();

@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,6 +52,8 @@ public class MokkiNakyma extends AppCompatActivity {
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef =  storage.getReference();
     private DatabaseReference fbDatabaseRef;
+    private final FirebaseAuth mauth = FirebaseAuth.getInstance();
+    private final FirebaseUser currentUser = mauth.getCurrentUser();
     private String deleteKey;
 
     private String MokkiImage;
@@ -198,7 +202,12 @@ public class MokkiNakyma extends AppCompatActivity {
                 startActivity(varausIntent);
             });
         }else if(setVisibility.matches("kaikkiMokit")){
-            bVuokraa.setVisibility(View.VISIBLE);
+            if(currentUser != null) {
+                bVuokraa.setVisibility(View.VISIBLE);
+            }
+            else {
+                bVuokraa.setVisibility(View.GONE);
+            }
             bMuokkaa.setVisibility(View.GONE);
             textViewDates.setVisibility(View.VISIBLE);
             //calendarDates.setVisibility(View.VISIBLE);

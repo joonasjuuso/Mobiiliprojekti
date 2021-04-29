@@ -64,7 +64,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private ImageView takaisinBtn;
     private ImageView menuImage;
 
-    private String summa;
+    private int summa;
     private String vuokraajaID;
     private String vuokraaja;
     private String vuokraOtsikko;
@@ -107,7 +107,7 @@ public class CheckoutActivity extends AppCompatActivity {
         Intent fromMokki = getIntent();
         vuokraaja = fromMokki.getStringExtra("name");
         vuokraajaID = fromMokki.getStringExtra("id");
-        summa = fromMokki.getStringExtra("hinta");
+        summa = fromMokki.getIntExtra("hinta",0);
         vuokraOtsikko = fromMokki.getStringExtra("otsikko");
         osoite = fromMokki.getStringExtra("osoite");
         paivat = fromMokki.getStringArrayListExtra("paivat");
@@ -118,7 +118,7 @@ public class CheckoutActivity extends AppCompatActivity {
         Log.d("tag", dbpaivat.toString());
         Log.d("tag", otsikkoID);
 
-        summaInt = paivat.size() * Integer.parseInt(summa);
+        summaInt = paivat.size() * summa;
         hintaText.setText(String.valueOf(summaInt));
         nameText.setText(vuokraaja);
         otsikkoText.setText(vuokraOtsikko);
@@ -313,12 +313,14 @@ public class CheckoutActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for(DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                        if(postSnapshot.child("osoite").getValue().equals(osoite)) {
+                                        if (postSnapshot.child("osoite").getValue().equals(osoite)) {
                                             mokkiID = postSnapshot.child("otsikkoID").getValue().toString();
-                                            Log.d("tag",vuokraajaPosti);
-                                            Log.d("tag",vuokraajaNro);
-                                            Invoices newInvoice = new Invoices(messagePushID,vuokraOtsikko,osoite,mokkiID,image,currentUser.getUid(),asiakasNro,asiakasPosti,vuokraaja,vuokraajaID,vuokraajaPosti,vuokraajaNro,paivat,summa);
+                                            Log.d("tag", vuokraajaPosti);
+                                            Log.d("tag", vuokraajaNro);
+                                            Invoices newInvoice = new Invoices(messagePushID, vuokraOtsikko, osoite, mokkiID, image, currentUser.getUid(), asiakasNro, asiakasPosti, vuokraaja, vuokraajaID, vuokraajaPosti, vuokraajaNro, paivat, summa);
                                             postMap = newInvoice.toMap();
+                                        }
+                                    }
                                             invoiceDetails.put(currentUser.getUid() + "/" +  "Omat vuokraukset" + "/" + messagePushID, postMap);
                                             invoiceDetails.put(vuokraajaID + "/" + "Tilaukset" + "/" + messagePushID, postMap);
                                             rootRef.child("Invoices").updateChildren(invoiceDetails).addOnCompleteListener(new OnCompleteListener() {
@@ -346,49 +348,6 @@ public class CheckoutActivity extends AppCompatActivity {
                                                         Log.d("TAG", "mokkiID = " + mokkiID);
                                                         datesRef.child(otsikkoID).updateChildren(hashMap);
 
-                                                        datesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                for(DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                                                    if(postSnapshot.child("osoite").getValue().toString().equals(osoite)) {
-                                                                        Log.d("snaspsoht",postSnapshot.child("osoite").getValue().toString());
-                                                                        String dateArray;
-                                                                        //dateArray = postSnapshot.child("mDates").getValue().toString();
-                                                                        String paivatArray = paivat.toString();
-                                                                        Log.d("paivararya",paivatArray);
-                                                                        dateArray = postSnapshot.child("mDates").getValue().toString();
-                                                                        Log.d("prefor", String.valueOf(dateArray));
-                                                                        paivatArray = paivatArray.replace("[","");
-                                                                        paivatArray = paivatArray.replace("]","");
-                                                                        dateArray = dateArray.replace("[","");
-                                                                        dateArray = dateArray.replace("]","");
-                                                                        String[] splitThisDate = paivatArray.split(",");
-                                                                        String [] splitDbDate = dateArray.split(",");
-
-                                                                        for(int a = 0; a < splitThisDate.length; a++) {
-                                                                            Log.d("tag",splitThisDate[a]);
-                                                                            for (int i = 0; i < splitDbDate.length; i++) {
-                                                                                Log.d("tag",splitDbDate[i]);
-                                                                                if(splitDbDate[i].matches(splitThisDate[a]+":1,")) {
-                                                                                    Log.d("if","if");
-                                                                                    splitDbDate[i] = splitDbDate[i].replace(splitThisDate[a]+":1,","VARATTU");
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        Log.d("tag", Arrays.toString(splitDbDate));
-                                                                        MokkiItem mokkiItem = postSnapshot.getValue(MokkiItem.class);
-                                                                        mokkiItem.setDates(Arrays.toString(splitDbDate));
-                                                                        datesRef.child(postSnapshot.getKey()).setValue(mokkiItem);
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                            }
-                                                        });
-
                                                         startActivity(onnistuiIntent);
                                                         finish();
                                                     }
@@ -399,8 +358,6 @@ public class CheckoutActivity extends AppCompatActivity {
                                                 }
                                             });
                                         }
-                                    }
-                                }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {

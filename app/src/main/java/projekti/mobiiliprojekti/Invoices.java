@@ -9,7 +9,7 @@ public class Invoices {
     private String vuokraaja;
     private String vuokranAntaja;
     private ArrayList<String> paivamaarat;
-    private String hinta;
+    private int hinta;
     private String otsikko;
     private String osoite;
     private String vuokraajaID;
@@ -25,7 +25,7 @@ public class Invoices {
     }
 
 
-    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String mID, String mImage, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, String summa) {
+    public Invoices(String messagePushID, String vuokraOtsikko, String vuokraOsoite, String mID, String mImage, String uid, String aNro, String aSposti, String vuokraaja, String vuokraID, String posti, String nro, ArrayList<String> paivat, int summa) {
         this.setOrderID(messagePushID);
         this.setOtsikko(vuokraOtsikko);
         this.setOsoite(vuokraOsoite);
@@ -134,11 +134,11 @@ public class Invoices {
         this.paivamaarat = paivamaarat;
     }
 
-    public String getHinta() {
+    public int getHinta() {
         return hinta;
     }
 
-    public void setHinta(String hinta) {
+    public void setHinta(int hinta) {
         this.hinta = hinta;
     }
 
