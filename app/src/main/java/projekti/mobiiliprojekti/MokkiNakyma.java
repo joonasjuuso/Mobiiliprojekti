@@ -54,7 +54,7 @@ public class MokkiNakyma extends AppCompatActivity {
 
     private String MokkiImage;
     private String MokkiOtsikko;
-    private String MokkiHinta;
+    private int MokkiHinta;
     private String MokkiOsoite;
     private String MokkiHuoneet;
     private String MokkiNelio;

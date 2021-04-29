@@ -86,7 +86,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private Button bAsetaVuokralle;
 
     private String eOtsikko;
-    private String eHinta;
+    private int eHinta;
     private String eOsoite;
     private String eHuoneet;
     private String eNeliot;
@@ -141,7 +141,8 @@ public class LaitaVuokralle extends AppCompatActivity {
         bAsetaVuokralle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
+                eHinta = Integer.parseInt(editHinta.getText().toString());
+                if(eOtsikko.matches("") || eHinta == 0 || eOsoite.matches("")
                     || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
                     Toast.makeText(LaitaVuokralle.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
                 }else{
@@ -167,9 +168,10 @@ public class LaitaVuokralle extends AppCompatActivity {
         editOtsikko.setText(eOtsikko);
 
         editHinta = findViewById(R.id.EditHinta);
-        eHinta = editHinta.getText().toString();
-        eHinta = takaisinIlmoitukseen.getStringExtra("eHinta");
-        editHinta.setText(eHinta);
+        editHinta.setText(String.valueOf(0));
+        eHinta = Integer.parseInt(editHinta.getText().toString());
+        eHinta = takaisinIlmoitukseen.getIntExtra("eHinta",0);
+        editHinta.setText(String.valueOf(eHinta));
 
         editOsoite = findViewById(R.id.EditOsoite);
         eOsoite = editOsoite.getText().toString();
@@ -437,23 +439,6 @@ public class LaitaVuokralle extends AppCompatActivity {
             }
         });
 
-        editHinta.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                eHinta = editHinta.getText().toString();
-            }
-        });
 
         editOsoite.addTextChangedListener(new TextWatcher() {
             @Override

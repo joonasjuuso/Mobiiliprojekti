@@ -56,7 +56,7 @@ public class MokkiAdapterV2 extends RecyclerView.Adapter<MokkiAdapterV2.Mokkivie
     public void onBindViewHolder(@NonNull MokkiviewHolderV2 holder, int position) {
         MokkiItem mokkiItemCurrent = mMokkiList.get(position);
         holder.textViewOtsikko.setText(mokkiItemCurrent.getOtsikko());
-        holder.textViewHinta.setText(mokkiItemCurrent.getHinta());
+        holder.textViewHinta.setText(String.valueOf(mokkiItemCurrent.getHinta()));
         Picasso.get().load(mokkiItemCurrent.getMokkiImage()).placeholder(R.mipmap.ic_launcher)
                 .fit().centerCrop().into(holder.imageViewKuva);
     }

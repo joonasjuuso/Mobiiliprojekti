@@ -11,7 +11,7 @@ import java.util.List;
 public class MokkiItem implements Parcelable{
     private String mMokkiImage;
     private String mOtsikko;
-    private String mHinta;
+    private int mHinta;
     private String mOsoite;
     private String mHuoneMaara;
     private String mNelioMaara;
@@ -31,7 +31,7 @@ public class MokkiItem implements Parcelable{
 
     }
 
-    public MokkiItem(String MokkiImage, String otsikko, String hinta, String osoite, String huoneMaara,
+    public MokkiItem(String MokkiImage, String otsikko, int hinta, String osoite, String huoneMaara,
                      String nelioMaara, String lammitys, String vesi, String sauna, String kuvaus, String otsikkoID,
                      String vuokraaja, String vuokraajaID, String dates)
     {
@@ -55,7 +55,7 @@ public class MokkiItem implements Parcelable{
     protected MokkiItem(Parcel in) {
         mMokkiImage = in.readString();
         mOtsikko = in.readString();
-        mHinta = in.readString();
+        mHinta = in.readInt();
         mOsoite = in.readString();
         mHuoneMaara = in.readString();
         mNelioMaara = in.readString();
@@ -84,7 +84,7 @@ public class MokkiItem implements Parcelable{
 
     public String getMokkiImage() { return mMokkiImage; }
     public String getOtsikko() { return mOtsikko; }
-    public String getHinta() { return mHinta; }
+    public int getHinta() { return mHinta; }
     public String getOsoite() { return mOsoite; }
     public String getHuoneMaara() { return mHuoneMaara; }
     public String getNelioMaara() { return mNelioMaara; }
@@ -101,7 +101,7 @@ public class MokkiItem implements Parcelable{
 
     public void setMokkiImage(String mokkiImage) { this.mMokkiImage = mokkiImage; }
     public void setOtsikko(String otsikko ) { this.mOtsikko = otsikko; }
-    public void setHinta(String hinta ) { this.mHinta = hinta; }
+    public void setHinta(int hinta ) { this.mHinta = hinta; }
     public void setOsoite(String osoite ) { this.mOsoite = osoite; }
     public void setHuoneMaara(String huoneMaara ) { this.mHuoneMaara = huoneMaara; }
     public void setNelioMaara(String nelioMaara ) { this.mNelioMaara = nelioMaara; }
@@ -123,7 +123,7 @@ public class MokkiItem implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mMokkiImage);
         dest.writeString(mOtsikko);
-        dest.writeString(mHinta);
+        dest.writeInt(mHinta);
         dest.writeString(mOsoite);
         dest.writeString(mHuoneMaara);
         dest.writeString(mNelioMaara);

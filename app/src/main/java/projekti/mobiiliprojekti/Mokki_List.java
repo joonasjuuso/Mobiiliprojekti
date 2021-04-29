@@ -58,6 +58,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -132,7 +135,7 @@ public class Mokki_List extends AppCompatActivity {
         fbRecyclerView = findViewById(R.id.recyclerView);
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
+        fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit");
         fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid()).child("Omat vuokraukset");
 
         mMokkiItem = new ArrayList<>();
@@ -519,10 +522,8 @@ public class Mokki_List extends AppCompatActivity {
     }
 
 
-
     private void naytaKaikkiMokit()
     {
-        Query query;
         mMokkiItem.clear();
         Intent intent = new Intent(this, MokkiNakyma.class);
         /*
@@ -545,7 +546,7 @@ public class Mokki_List extends AppCompatActivity {
         reverseLayout.setStackFromEnd(true);
 
         LinearLayoutManager normalLayout = new LinearLayoutManager(this);
-
+        Query query;
         switch(jarjestysString) {
 
             case "alinHinta":
@@ -576,6 +577,7 @@ public class Mokki_List extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + jarjestysString);
         }
+
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -584,7 +586,6 @@ public class Mokki_List extends AppCompatActivity {
                     mokkiItem.setKey(postSnapshot.getKey());
                     mMokkiItem.add(mokkiItem);
                 }
-
         /*fbDbListener = fbDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -659,7 +660,6 @@ public class Mokki_List extends AppCompatActivity {
         });
 
     }
-
 
     //@Override
     private void deleteMokki(int position)

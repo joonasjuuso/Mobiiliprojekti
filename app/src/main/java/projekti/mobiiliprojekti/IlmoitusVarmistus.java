@@ -37,7 +37,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
     private final StorageReference storageRef =  storage.getReference();
 
     private String eOtsikko;
-    private String eHinta;
+    private int eHinta;
     private String eOsoite;
     private String eHuoneet;
     private String eNeliot;
@@ -77,7 +77,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
 
         Intent varmistaIntent = getIntent();
         eOtsikko = varmistaIntent.getStringExtra("eOtsikko");
-        eHinta = varmistaIntent.getStringExtra("eHinta");
+        eHinta = varmistaIntent.getIntExtra("eHinta",0);
         eOsoite = varmistaIntent.getStringExtra("eOsoite");
         eHuoneet = varmistaIntent.getStringExtra("eHuoneet");
         eNeliot = varmistaIntent.getStringExtra("eNeliot");
@@ -105,7 +105,7 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         sImageUpload = findViewById(R.id.ImageViewUpload);
 
         sOtsikko.setText(eOtsikko);
-        sHinta.setText(eHinta);
+        sHinta.setText(String.valueOf(eHinta));
         sOsoite.setText(eOsoite);
         sHuoneet.setText(eHuoneet);
         sNeliot.setText(eNeliot);
