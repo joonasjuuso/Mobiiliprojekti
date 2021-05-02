@@ -7,21 +7,12 @@
     android:layout_margin="5dp"
     style="@style/background">
 
-    <TextView
-        android:fontFamily="@font/candara"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vähä tekstikenttää vähä"
-        android:textSize="20dp"
-        android:layout_gravity="center"/>
-
-    <CalendarView
-        android:id="@+id/calender"
-        android:layout_width="278dp"
-        android:layout_height="311dp"
+    <com.squareup.timessquare.CalendarPickerView
+        android:id="@+id/kalenteri"
+        android:layout_width="243dp"
+        android:layout_height="249dp"
         android:layout_gravity="center"
-        android:background="@drawable/calender">
-
-    </CalendarView>
+        android:layout_margin="10dp"
+        android:nestedScrollingEnabled="true" />
 
 </LinearLayout>

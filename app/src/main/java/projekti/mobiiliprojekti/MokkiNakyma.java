@@ -39,12 +39,12 @@ import java.util.List;
 
 public class MokkiNakyma extends AppCompatActivity {
 
-    Button bTakaisinMokkilistaan;
-    private Button bVuokraa;
-    private Button bMuokkaa;
+    private TextView bTakaisinMokkilistaan;
+    private TextView bVuokraa;
+    private TextView bMuokkaa;
     private ImageView ImageViewDelete;
-    Button bChat;
-    Button bTilanne;
+    private TextView bChat;
+    private TextView bTilanne;
     private Context mContext;
 
     private String setVisibility = "";
@@ -347,7 +347,7 @@ public class MokkiNakyma extends AppCompatActivity {
                 final_sDates.clear();
 
                 bVuokraa.setClickable(true);
-                bVuokraa.setBackgroundColor(0xFF2073D8);
+                bVuokraa.setBackground(getDrawable(R.drawable.button_enabled));
 
                 //VALITAAN DATET
                 tmpDates = datePicker.getSelectedDates();
@@ -388,7 +388,7 @@ public class MokkiNakyma extends AppCompatActivity {
                         if(s.equals(s2 + ":1")){
                             Toast.makeText(getApplicationContext(), "Et voi valita jo varattua päivämäärää", Toast.LENGTH_SHORT).show();
                             bVuokraa.setClickable(false);
-                            bVuokraa.setBackgroundColor(0xFF132D55);
+                            bVuokraa.setBackground(getDrawable(R.drawable.button_disabled));
                             break;
                         } else {
                             if(s2.equals(tmpStr)) {

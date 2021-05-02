@@ -39,6 +39,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.squareup.timessquare.CalendarPickerView;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,12 +80,13 @@ public class LaitaVuokralle extends AppCompatActivity {
     private TextView textViewDates;
     private TextView textViewVuokrattavissa;
     private TextView textViewVuokraAika;
+    private TextView bTakaisinMokkiListaan;
+
+    private TextView bUploadImage;
+    private TextView bChooseimage;
+    private TextView bAsetaVuokralle;
 
     private ImageView ImageViewUpload;
-    private Button bUploadImage;
-    private Button bChooseimage;
-
-    private Button bAsetaVuokralle;
 
     private String eOtsikko;
     private int eHinta;
@@ -109,7 +112,7 @@ public class LaitaVuokralle extends AppCompatActivity {
     private String dates;
      */
 
-    //KALENTERIPASKAA
+    //KALENTERI VARIT
     List<Date> dateList;
     ArrayList<String> stringDates;
 
@@ -120,9 +123,8 @@ public class LaitaVuokralle extends AppCompatActivity {
 
         dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
-        Button bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
+        bTakaisinMokkiListaan = findViewById(R.id.bTakaisinMokkiListaan);
         bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
-
         bChooseimage = findViewById(R.id.bChooseImage);
         bUploadImage = findViewById(R.id.bUpload);
         ImageViewUpload = findViewById(R.id.ImageViewUpload);

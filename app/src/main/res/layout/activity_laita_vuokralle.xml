@@ -22,7 +22,7 @@
                 android:id="@+id/TextOtsikko"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Otsikko:"/>
             <EditText
                 android:id="@+id/EditOtsikko"
@@ -30,13 +30,11 @@
                 android:layout_height="wrap_content"
                 android:hint="Anna ilmoituksellesi otsikko:"/>
 
-
-
             <TextView
                 android:id="@+id/TextHinta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Hinta €/pvä:"/>
             <EditText
                 android:id="@+id/EditHinta"
@@ -50,7 +48,7 @@
                 android:id="@+id/TextOsoite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Mökin osoite:"/>
             <EditText
                 android:id="@+id/EditOsoite"
@@ -62,20 +60,22 @@
                 android:id="@+id/TextHuoneMaara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Huoneiden lukumäärä:"/>
             <Spinner
                 android:id="@+id/HuoneMaaraSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/HuoneMaara">
+                android:entries="@array/HuoneMaara"
+
+                >
             </Spinner>
 
             <TextView
                 android:id="@+id/TextNelioMaara"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Kohteen pinta-ala:"/>
             <EditText
                 android:id="@+id/EditNelioMaara"
@@ -88,7 +88,7 @@
                 android:id="@+id/TextLammitys"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Kohteen Lämmitys:"/>
             <EditText
                 android:id="@+id/EditLammitys"
@@ -100,7 +100,7 @@
                 android:id="@+id/TextVesi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Onko mökillä juokseva vesi?"/>
             <Spinner
                 android:id="@+id/VesiSpinner"
@@ -113,7 +113,7 @@
                 android:id="@+id/TextSauna"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Onko kohteessa saunaa?"/>
             <Spinner
                 android:id="@+id/SaunaSpinner"
@@ -126,7 +126,7 @@
                 android:id="@+id/TextKuvaus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Kuvaus:"/>
             <EditText
                 android:id="@+id/EditKuvaus"
@@ -139,8 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Aseta päivämäärä jolloin mökki on vuokrattavissa"
-                android:textColor="@color/black"
-                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:layout_marginTop="35dp" />
 
@@ -151,11 +150,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:nestedScrollingEnabled="true" />
+
             <TextView
                 android:id="@+id/textViewVuokrattavissa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Vuokrattavissa alkaen: "
+                android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:textSize="20dp"
                 android:layout_marginStart="20dp"/>
@@ -165,6 +166,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:layout_gravity="center"
+                android:textColor="@color/white"
                 android:textSize="20dp"
                 android:layout_marginStart="20dp" />
 
@@ -174,12 +176,14 @@
                 android:layout_height="wrap_content">
             </TextView>
 
-            <Button
+            <TextView
+                style="@style/button"
                 android:id="@+id/bChooseImage"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Valitse kuva">
-            </Button>
+            </TextView>
+
             <ImageView
                 android:id="@+id/ImageViewUpload"
                 android:layout_width="match_parent"
@@ -193,28 +197,32 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal">
             </ProgressBar>
-            <Button
+
+            <TextView
+                style="@style/button"
                 android:id="@+id/bUpload"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Upload"
                 android:layout_gravity="center">
-            </Button>
+            </TextView>
 
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <TextView
+        style="@style/button"
         android:id="@+id/bTakaisinMokkiListaan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:text="Takaisin"/>
+        android:text="Takaisin" />
 
-    <Button
+    <TextView
+        style="@style/button"
         android:id="@+id/bAsetaVuokralle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:text="Ilmoita"/>

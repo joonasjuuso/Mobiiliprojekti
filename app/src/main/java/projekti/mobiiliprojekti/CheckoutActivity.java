@@ -53,8 +53,8 @@ public class CheckoutActivity extends AppCompatActivity {
     private ValueEventListener dateListener;
     private final DatabaseReference vuokraajaRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private final DatabaseReference datesRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
-    private Button korttiBtn;
-    private Button mobilepayBtn;
+    private TextView korttiBtn;
+    private TextView mobilepayBtn;
     private TextView nameText;
     private TextView hintaText;
     private TextView paivaText;
@@ -122,8 +122,10 @@ public class CheckoutActivity extends AppCompatActivity {
         hintaText.setText(String.valueOf(summaInt));
         nameText.setText(vuokraaja);
         otsikkoText.setText(vuokraOtsikko);
+
         if(paivat.size() == 1) {  paivaText.setText(paivat.get(0));  }
         else { paivaText.setText(paivat.get(0) + " - " + paivat.get(paivat.size() - 1));  }
+
         osoiteText.setText(osoite);
 
         MobilePay.getInstance().init("APPFI0000000000", Country.FINLAND);
@@ -139,11 +141,26 @@ public class CheckoutActivity extends AppCompatActivity {
         korttiBtn.setOnClickListener(v -> {
 
             //TESTIMIELINEN MAKSUHOMMA ETTEI TARVI MOBILEPAYLLA SÄÄTÄÄ
+            Log.d("tag","tasksuccessfull");
+            Toast.makeText(CheckoutActivity.this, "Maksu onnistui!", Toast.LENGTH_SHORT).show();
+            Intent onnistuiIntent = new Intent(getApplicationContext(),TilausVahvistusActivity.class);
+            onnistuiIntent.putExtra("orderID",messagePushID);
+            onnistuiIntent.putExtra("vuokranantaja",vuokraaja);
+            onnistuiIntent.putExtra("otsikko",vuokraOtsikko);
+            onnistuiIntent.putExtra("osoite",osoite);
+            onnistuiIntent.putExtra("vuokraNro",vuokraajaNro);
+            onnistuiIntent.putExtra("vuokraPosti",vuokraajaPosti);
+            onnistuiIntent.putExtra("image",image);
+            onnistuiIntent.putStringArrayListExtra("paivat",paivat);
+
             HashMap hashMap = new HashMap();
             hashMap.put("mDates", dbpaivat.toString());
             Log.d("TAG", "hashmap = " + hashMap);
             Log.d("TAG", "mokkiID = " + mokkiID);
             datesRef.child(otsikkoID).updateChildren(hashMap);
+
+            startActivity(onnistuiIntent);
+            finish();
             /*
             dateListener = datesRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -189,11 +206,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 }
             });
             */
-            Intent i = new Intent(this, Mokki_List.class);
-            startActivity(i);
-            finish();
 
-            //TODO  Intent korttiIntent = new Intent();
         });
 
 

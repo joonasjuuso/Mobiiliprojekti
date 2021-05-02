@@ -61,9 +61,9 @@ public class ProfiiliActivity extends AppCompatActivity {
     TextView txtEmail;
     TextView txtSalasana;
     ImageView imageView;
-    Button lataaButton;
-    Button poistaTiliBtn;
-    Button btnPuhelin;
+    TextView lataaButton;
+    TextView poistaTiliBtn;
+    TextView btnPuhelin;
 
     ImageView goBack;
 

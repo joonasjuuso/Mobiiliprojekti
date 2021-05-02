@@ -29,10 +29,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +55,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.timessquare.CalendarPickerView;
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,15 +93,14 @@ public class Mokki_List extends AppCompatActivity {
     private ValueEventListener fbDbListener;
 
     ImageView profiiliKuva;
-    private Button bLaitaVuokralle;
-    private  Button bNaytaKaikkienMokit;
-    private Button bOmatMokit;
-    private Button bVuokratut;
+    private TextView bLaitaVuokralle;
+    private TextView bNaytaKaikkienMokit;
+    private TextView bOmatMokit;
+    private TextView bVuokratut;
     private EditText editSearch;
     private String imageString;
     private String jarjestysString;
     private TextView jarjestysButton;
-
 
     private boolean NEW_USER = false;
 
@@ -106,14 +109,14 @@ public class Mokki_List extends AppCompatActivity {
     private final String vuokratutMokit = "vuokratutMokit";
 
     private String dates;
-    private List<String> dateList;
-    private List<Integer> dateListInt;
+    //private List<String> dateList;
+    //private List<Integer> dateListInt;
     private Date currentDate;
     private SimpleDateFormat dateFormat;
 
     //suosikkitoiminnolle
     private DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference();
-    private ImageButton bSuosikit;
+    private TextView bSuosikit;
     private String suosikkiMokit = "suosikkiMokit";
 
     //TODO: Vuokranantajalle näkymä tilauksista
@@ -124,8 +127,7 @@ public class Mokki_List extends AppCompatActivity {
         setContentView(R.layout.activity_mokki__list);
 
         //dbDates = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
-        dateList = new ArrayList<>();
-        dateListInt = new ArrayList<>();
+        //dateListInt = new ArrayList<>();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         profiiliKuva = findViewById(R.id.profiiliKuva);
@@ -136,7 +138,7 @@ public class Mokki_List extends AppCompatActivity {
         fbRecyclerView.setHasFixedSize(true);
         fbRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         fbDatabaseRef = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit");
-        if(currentUser != null) {
+        if (currentUser != null) {
             fbVuokratutRef = FirebaseDatabase.getInstance().getReference().child("Invoices").child(currentUser.getUid()).child("Omat vuokraukset");
         }
         mMokkiItem = new ArrayList<>();
@@ -144,7 +146,7 @@ public class Mokki_List extends AppCompatActivity {
         mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
         fbRecyclerView.setAdapter(mAdapter);
 
-        if(currentUser != null) {
+        if (currentUser != null) {
             userRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -212,7 +214,7 @@ public class Mokki_List extends AppCompatActivity {
 
         bLaitaVuokralle = findViewById(R.id.bVuokraa);
         bLaitaVuokralle.setOnClickListener(view -> {
-            if(currentUser.getUid() != null){
+            if (currentUser.getUid() != null) {
                 Intent vuokraaIntent = new Intent(this, LaitaVuokralle.class);
                 startActivity(vuokraaIntent);
                 //dbVarmistamatonMokki.removeValue();
@@ -239,8 +241,6 @@ public class Mokki_List extends AppCompatActivity {
         });
 
 
-
-
         //mokkien nayttoa vaihtavat napit
         bOmatMokit = findViewById(R.id.bOmatMökit);
         bOmatMokit.setOnClickListener(new View.OnClickListener() {
@@ -253,8 +253,7 @@ public class Mokki_List extends AppCompatActivity {
         bNaytaKaikkienMokit = findViewById(R.id.bNaytaKaikkienMokit);
         bNaytaKaikkienMokit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 naytaKaikkiMokit();
             }
         });
@@ -272,7 +271,7 @@ public class Mokki_List extends AppCompatActivity {
             }
         });
 
-        if(currentUser!=null) {
+        if (currentUser != null) {
             storageRef.child("ProfilePictures/" + currentUser.getUid()).getDownloadUrl()
                     .addOnSuccessListener(uri -> {
                         Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(profiiliKuva);
@@ -283,12 +282,14 @@ public class Mokki_List extends AppCompatActivity {
                     });
 
 
-            if(currentUser.getDisplayName() == null) {
+            if (currentUser.getDisplayName() == null) {
                 Log.d("TAG", "moro " + currentUser.getDisplayName());
-            } else { Log.d("TAG", "EI OO NULL"); }
+            } else {
+                Log.d("TAG", "EI OO NULL");
+            }
 
 
-        } else if(currentUser==null) {
+        } else if (currentUser == null) {
             profiiliKuva.setImageResource(R.mipmap.ic_launcher);
             bVuokratut.setVisibility(View.GONE);
             bOmatMokit.setVisibility(View.GONE);
@@ -296,7 +297,17 @@ public class Mokki_List extends AppCompatActivity {
         }
         naytaKaikkiMokit();
         content();
+
+        //KALENTERI
+        Date today = new Date();
+        Calendar nextMonth = Calendar.getInstance();
+        nextMonth.add(Calendar.MONTH, 5);
+
+        CalendarPickerView datePicker = findViewById(R.id.kalenteri);
+        datePicker.init(today, nextMonth.getTime())
+                .inMode(CalendarPickerView.SelectionMode.SINGLE).displayOnly();
     }
+
 
     //Search funtkio
     private void filter(String text)
@@ -463,6 +474,7 @@ public class Mokki_List extends AppCompatActivity {
         }
     }
 
+
     private void naytaOmatMokit()
     {
         if( currentUser != null) {
@@ -480,7 +492,6 @@ public class Mokki_List extends AppCompatActivity {
                         mokkiItem.setKey(postSnapshot.getKey());
                         mMokkiItem.add(mokkiItem);
                     }
-
 
                     mAdapter = new MokkiAdapterV2(Mokki_List.this, mMokkiItem);
 
@@ -780,7 +791,8 @@ public class Mokki_List extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
-    private static void openDrawermenu(DrawerLayout drawerLayout) {
+
+    private void openDrawermenu(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 

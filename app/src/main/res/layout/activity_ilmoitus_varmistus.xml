@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Otsikko:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hinta €/pvä:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp" />
             <TextView
                 android:id="@+id/sHinta"
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen osoite:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Huonemäärä:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen neliömäärä:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -103,7 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kohteen lämmitys:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Onko kohteessa juokseva vesi?"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -133,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Onko kohteessa saunaa?"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -148,7 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Valitsemasi vuokraus päivät:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kuvaus:"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20dp">
             </TextView>
             <TextView
@@ -175,19 +175,21 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:fontFamily="@font/candara"
+    <TextView
         android:id="@+id/bTakaisinIlmoitukseen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/button"
+        android:layout_width="104dp"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:text="Takaisin"/>
+        android:fontFamily="@font/candara"
+        android:text="Takaisin" />
 
-    <Button
+    <TextView
+        style="@style/button"
         android:fontFamily="@font/candara"
         android:id="@+id/bAsetaVuokralle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="104dp"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:text="Ilmoita"/>

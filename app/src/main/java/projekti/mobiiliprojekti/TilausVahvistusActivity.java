@@ -84,13 +84,20 @@ public class TilausVahvistusActivity extends AppCompatActivity {
         osoite = onnistuiIntent.getStringExtra("osoite");
         orderID = onnistuiIntent.getStringExtra("orderID");
         paivat = onnistuiIntent.getStringArrayListExtra("paivat");
+        Log.d("TAG", paivat.toString());
 
         tOrderID.setText("Tilausnumero " + orderID);
         tSposti.setText(sposti);
         tNimi.setText(nimi);
         tOsoite.setText("Mökin osoite on " + osoite);
         tOtsikko.setText("Mökki: " + otsikko);
-        tPaivat.setText("Varaamanne päivät: " + paivat.toString());
+
+        //TODO
+        if(paivat.size() == 1) {  tPaivat.setText(paivat.get(0));  }
+        else { tPaivat.setText(paivat.get(0) + " - " + paivat.get(paivat.size() - 1));  }
+
+
+        /*
         if(nro.equals("123")) {
             tNro.setVisibility(View.GONE);
             Log.d("tag","if-yes");
@@ -98,6 +105,7 @@ public class TilausVahvistusActivity extends AppCompatActivity {
         else {
             tNro.setText(nro);
         }
+         */
         storageRef.child("ProfilePictures/"+currentUser.getUid()).getDownloadUrl()
                 .addOnSuccessListener(uri -> {
                     Glide.with(getApplicationContext()).load(uri.toString()).circleCrop().into(tImage);
@@ -221,5 +229,11 @@ public class TilausVahvistusActivity extends AppCompatActivity {
             startActivity(kirjauduIntent);
             finish();
         }
+    }
+
+    public void etusivulle(View view) {
+        Intent i = new Intent(this, Mokki_List.class);
+        startActivity(i);
+        finish();
     }
 }

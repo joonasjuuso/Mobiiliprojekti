@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class varmistusActivity extends AppCompatActivity  {
     private final FirebaseAuth mauth = FirebaseAuth.getInstance();
     private final FirebaseUser currentUser = mauth.getCurrentUser();
-    Button checkBtn;
+    private TextView checkBtn;
     private int count = 0;
     private final Handler handler = new Handler();
     private Runnable runnable;

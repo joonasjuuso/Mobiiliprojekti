@@ -71,8 +71,8 @@ public class IlmoitusVarmistus extends AppCompatActivity {
         dbMokki = FirebaseDatabase.getInstance().getReference("Vuokralla olevat mökit/");
         dbVarmistamatonMokki = FirebaseDatabase.getInstance().getReference("Varmistamattomat mökit/" + currentUser.getUid());
 
-        Button bTakaisinIlmoitukseen = findViewById(R.id.bTakaisinIlmoitukseen);
-        Button bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
+        TextView bTakaisinIlmoitukseen = findViewById(R.id.bTakaisinIlmoitukseen);
+        TextView bAsetaVuokralle = findViewById(R.id.bAsetaVuokralle);
 
 
         Intent varmistaIntent = getIntent();

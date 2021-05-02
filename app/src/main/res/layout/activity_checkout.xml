@@ -13,6 +13,7 @@
 
     <TextView
         android:id="@+id/textViewMökki"
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/checkoutToolbar"
@@ -22,6 +23,7 @@
         android:padding="20dp"
         android:text="TextView" />
     <TextView
+        android:textColor="@color/white"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewVuokraaja"
@@ -30,6 +32,7 @@
         android:layout_below="@id/textViewMökki"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewVuokraajaNimi"
@@ -38,6 +41,7 @@
         android:text="yes"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewOsoite"
@@ -46,6 +50,7 @@
         android:layout_below="@id/textViewVuokraaja"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewOsoiteMaarat"
@@ -54,6 +59,7 @@
         android:text="yes"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewPaivat"
@@ -61,6 +67,7 @@
         android:layout_below="@id/textViewOsoite"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewPaivaMaarat"
@@ -69,6 +76,7 @@
         android:text="yes"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewHinta"
@@ -76,6 +84,7 @@
         android:layout_below="@id/textViewPaivat"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewHintaMaarat"
@@ -84,6 +93,7 @@
         android:text="yes"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewPalvelut"
@@ -91,6 +101,7 @@
         android:layout_below="@id/textViewHinta"
         android:padding="20dp"/>
     <TextView
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewHintaPalvelutMaara"
@@ -99,7 +110,8 @@
         android:text="yes"
         android:padding="20dp"/>
 
-    <Button
+    <TextView
+        style="@style/button"
         android:id="@+id/toggleKortti"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -111,7 +123,8 @@
         android:padding="20dp"
         android:text="Korttimaksu" />
 
-    <Button
+    <TextView
+        style="@style/button"
         android:id="@+id/toggleMobilepay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,22 +132,23 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="-120dp"
         android:layout_marginHorizontal="170dp"
-        android:layout_marginEnd="54dp"
+        android:layout_marginEnd="50dp"
         android:padding="20dp"
         android:text="Mobilepay" />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/textViewMaksutapa"
         android:layout_width="173dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/checkoutToolbar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="438dp"
-        android:layout_marginEnd="118dp"
-        android:layout_marginBottom="219dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="469dp"
+        android:layout_marginEnd="132dp"
+        android:layout_marginBottom="152dp"
         android:gravity="center"
         android:text="Valitse maksutapa:" />
 </RelativeLayout>

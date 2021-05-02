@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:text="OtsikkoTest"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_toLeftOf="@id/TextViewEuro"
             android:layout_marginEnd="8dp"
             android:text="hinta"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:id="@+id/TextViewHinta"/>
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:text="€/Pv"
             android:id="@+id/TextViewEuro"/>
