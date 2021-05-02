@@ -96,6 +96,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
+                android:fontFamily="@font/candarab"
                 android:id="@+id/jarjestysButton"
                 style="@style/button"
                 android:layout_width="81dp"

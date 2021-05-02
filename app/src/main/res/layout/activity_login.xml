@@ -28,6 +28,7 @@
         app:layout_constraintVertical_bias="0.949" />
 
     <ImageView
+        android:src="@drawable/logonoalpha"
         android:id="@+id/imageView3"
         android:layout_width="176dp"
         android:layout_height="119dp"
