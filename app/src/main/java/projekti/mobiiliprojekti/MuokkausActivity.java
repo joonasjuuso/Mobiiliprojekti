@@ -166,10 +166,10 @@ public class MuokkausActivity extends AppCompatActivity {
         Intent muokkausIntent = getIntent();
         eOtsikko = muokkausIntent.getStringExtra("eOtsikko");
         MokkiKuva = muokkausIntent.getStringExtra("eKuva");
-        eHinta = muokkausIntent.getStringExtra("eHinta");
+        eHinta = String.valueOf(muokkausIntent.getIntExtra("eHinta", 1));
         eOsoite = muokkausIntent.getStringExtra("eOsoite");
         eHuoneet = muokkausIntent.getStringExtra("eHuoneet");
-        eNeliot = muokkausIntent.getStringExtra("eNeliot");
+        eNeliot = String.valueOf(muokkausIntent.getIntExtra("eNeliot", 1));
         eLammitys = muokkausIntent.getStringExtra("eLammitys");
         eVesi = muokkausIntent.getStringExtra("eVesi");
         eSauna = muokkausIntent.getStringExtra("eSauna");
@@ -197,6 +197,8 @@ public class MuokkausActivity extends AppCompatActivity {
         editOsoite.setText(eOsoite);
         editNeliot.setText(eNeliot);
         editLammitys.setText(eLammitys);
+        editNeliot.setText(eNeliot);
+        editHinta.setText(eHinta);
         //textViewDates.setText(builder.toString());
         //textViewVuokrattavissa = findViewById(R.id.textViewVuokrattavissa);
         //textViewVuokraAika = findViewById(R.id.textViewVuokraAika);
@@ -221,8 +223,8 @@ public class MuokkausActivity extends AppCompatActivity {
         bHyvaksy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(eOtsikko.matches("") || eHinta.matches("") || eOsoite.matches("")
-                        || eLammitys.matches("") || eNeliot.matches("") || eKuvaus.matches("")){
+                if(eOtsikko.matches("") /*|| eHinta == 0*/|| eOsoite.matches("")
+                        /*|| eLammitys.matches("") /*|| eNeliot.matches("")*/ || eKuvaus.matches("")){
                     Toast.makeText(MuokkausActivity.this, "Täytä kaikki tiedot mökistäsi", Toast.LENGTH_SHORT).show();
                 }else{
                     //uploadImage();
@@ -239,18 +241,18 @@ public class MuokkausActivity extends AppCompatActivity {
     {
         HashMap hashmap = new HashMap();
         hashmap.put("otsikko", eOtsikko);
-        hashmap.put("hinta", eHinta);
+        hashmap.put("hinta", Integer.valueOf(eHinta));
         hashmap.put("huoneMaara", eHuoneet);
         hashmap.put("osoite", eOsoite);
         hashmap.put("lammitys", eLammitys);
         hashmap.put("sauna", eSauna);
         hashmap.put("vesi", eVesi);
         hashmap.put("kuvaus", eKuvaus);
-        hashmap.put("mDates", stringDates.toString());
-        Log.d("TAG", stringDates.toString());
+        //hashmap.put("mDates", stringDates.toString());
+        //Log.d("TAG", stringDates.toString());
 
         //hashmap.put("mDates", dateList.toString());
-        hashmap.put("nelioMaara", eNeliot);
+        hashmap.put("nelioMaara", Integer.valueOf(eNeliot));
         //if(mImageUri != null){
         //    hashmap.put("mokkiImage", );
         //}
