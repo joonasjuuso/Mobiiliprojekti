@@ -70,16 +70,16 @@ public class MuokkausActivity extends AppCompatActivity {
     private EditText editLammitys;
     private Spinner editVesi;
     private Spinner editSauna;
-    private  EditText editKuvaus;
+    private EditText editKuvaus;
     private TextView textViewVuokrattavissa;
     private TextView textViewVuokraAika;
 
     private ImageView ImageViewUpload;
     //private Button bUploadImage;
-    private Button bChooseimage;
-    private Button bTakaisinMokkiListaan;
+    private TextView bChooseimage;
+    private TextView bTakaisinMokkiListaan;
 
-    private Button bHyvaksy;
+    private TextView bHyvaksy;
 
     private Uri mImageUri;
     private ProgressBar uploadImageProgressBar;
@@ -157,7 +157,7 @@ public class MuokkausActivity extends AppCompatActivity {
         editSauna = findViewById(R.id.SaunaSpinner);
         eSauna = editSauna.getSelectedItem().toString();
 
-        textViewDates = findViewById(R.id.textViewDates);
+        //textViewDates = findViewById(R.id.textViewDates);
 
         editKuvaus = findViewById(R.id.EditKuvaus);
         eKuvaus = editKuvaus.getText().toString();
@@ -175,12 +175,12 @@ public class MuokkausActivity extends AppCompatActivity {
         eSauna = muokkausIntent.getStringExtra("eSauna");
         eKuvaus = muokkausIntent.getStringExtra("eKuvaus");
         muokkaaKey = muokkausIntent.getStringExtra("muokkaaKey");
-        getDates = muokkausIntent.getStringExtra("dates");
+        //getDates = muokkausIntent.getStringExtra("dates");
         Log.d("listat", String.valueOf(getDates));
-
+/*
         String replace = getDates.replaceAll("\\[", "").replaceAll("\\(", "")
                 .replaceAll("\\]", "").replaceAll("\\)", "");
-/*
+
         dateList = Collections.singletonList(replace);
         Log.d("listat", String.valueOf(dateList));
 
@@ -198,8 +198,8 @@ public class MuokkausActivity extends AppCompatActivity {
         editNeliot.setText(eNeliot);
         editLammitys.setText(eLammitys);
         //textViewDates.setText(builder.toString());
-        textViewVuokrattavissa = findViewById(R.id.textViewVuokrattavissa);
-        textViewVuokraAika = findViewById(R.id.textViewVuokraAika);
+        //textViewVuokrattavissa = findViewById(R.id.textViewVuokrattavissa);
+        //textViewVuokraAika = findViewById(R.id.textViewVuokraAika);
         editKuvaus.setText(eKuvaus);
         Picasso.get().load(MokkiKuva).fit().centerCrop().into(ImageViewUpload);
 
@@ -232,7 +232,7 @@ public class MuokkausActivity extends AppCompatActivity {
         });
 
         checkText();
-        setDates();
+        //setDates();
     }
 
     private void updateMokki()
@@ -266,53 +266,21 @@ public class MuokkausActivity extends AppCompatActivity {
         });
     }
 
+    /*
     private void setDates() {
         //KALENTERI
         stringDates = new ArrayList<>();
         dateList = new ArrayList<>();
         Date today = new Date();
         Calendar nextMonth = Calendar.getInstance();
-        nextMonth.add(Calendar.MONTH, 2);
+        nextMonth.add(Calendar.MONTH, 5);
 
         CalendarPickerView datePicker = findViewById(R.id.kalenteri);
         datePicker.init(today, nextMonth.getTime())
-                .inMode(CalendarPickerView.SelectionMode.RANGE);
-
-        datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(Date date) {
-
-                dateList = datePicker.getSelectedDates();
-                Log.d("TAG", "stringDates = " + stringDates);
-                stringDates.clear();
-
-                for (Date i : dateList) {
-
-                    SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
-                    String str = fmt.format(i);
-                    stringDates.add(str + ":0");
-                }
-                Log.d("TAG", "stringDates = " + stringDates);
-
-                String tmpStr = stringDates.get(0);
-                tmpStr = tmpStr.substring(0, tmpStr.length() - 2);
-                Log.d("TAG", "tmpStr = " + tmpStr);
-
-                String tmpStr2 = stringDates.get(stringDates.size() - 1);
-                tmpStr2 = tmpStr2.substring(0, tmpStr2.length() - 2);
-                Log.d("TAG", "tmpStr = " + tmpStr2);
-
-                textViewVuokrattavissa.setText("Vuokrattavissa alkaen:");
-                textViewVuokraAika.setText(tmpStr + " - " + tmpStr2);
-                dateList.clear();
-            }
-
-            @Override
-            public void onDateUnselected(Date date) {
-
-            }
-        });
+                .inMode(CalendarPickerView.SelectionMode.SINGLE).displayOnly();
     }
+
+     */
 
     /*
     private void setDates()

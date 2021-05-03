@@ -144,7 +144,7 @@ public class CheckoutActivity extends AppCompatActivity {
             Log.d("tag","tasksuccessfull");
             Toast.makeText(CheckoutActivity.this, "Maksu onnistui!", Toast.LENGTH_SHORT).show();
             Intent onnistuiIntent = new Intent(getApplicationContext(),TilausVahvistusActivity.class);
-            onnistuiIntent.putExtra("orderID",messagePushID);
+            //onnistuiIntent.putExtra("orderID",messagePushID);
             onnistuiIntent.putExtra("vuokranantaja",vuokraaja);
             onnistuiIntent.putExtra("otsikko",vuokraOtsikko);
             onnistuiIntent.putExtra("osoite",osoite);

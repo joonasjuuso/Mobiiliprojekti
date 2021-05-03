@@ -195,7 +195,7 @@ public class MokkiNakyma extends AppCompatActivity {
             bChat.setVisibility(View.GONE);
             textViewDates.setVisibility(View.GONE);
             //calendarDates.setVisibility(View.GONE);
-            bTilanne.setVisibility(View.VISIBLE);
+            bTilanne.setVisibility(View.GONE);
 
             bTilanne.setOnClickListener(v -> {
                 Intent varausIntent = new Intent(this,MokkiVaraukset.class);

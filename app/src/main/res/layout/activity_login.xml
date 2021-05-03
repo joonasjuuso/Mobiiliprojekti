@@ -105,6 +105,7 @@
         android:alpha="0.7"
         android:ems="10"
         android:textColor="@color/white"
+        android:inputType="textPassword"
         android:padding="8dp"
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

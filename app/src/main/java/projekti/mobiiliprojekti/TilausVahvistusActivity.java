@@ -41,7 +41,7 @@ public class TilausVahvistusActivity extends AppCompatActivity {
     private TextView tNro;
     private TextView tSposti;
     private TextView tPaivat;
-    private TextView tOrderID;
+    //private TextView tOrderID;
     private TextView goChat1;
     private TextView goChat2;
     private TextView goChat3;
@@ -53,7 +53,7 @@ public class TilausVahvistusActivity extends AppCompatActivity {
     private String otsikko;
     private String nro;
     private String sposti;
-    private String orderID;
+    //private String orderID;
     private ArrayList<String> paivat;
 
     @Override
@@ -68,7 +68,7 @@ public class TilausVahvistusActivity extends AppCompatActivity {
         tNro = findViewById(R.id.textViewTilausPuhNro);
         tOtsikko = findViewById(R.id.textViewTilausOtsikko);
         tPaivat = findViewById(R.id.textViewTilausPaivat);
-        tOrderID = findViewById(R.id.textViewTilausNumero);
+        //tOrderID = findViewById(R.id.textViewTilausNumero);
         goChat1 = findViewById(R.id.textViewTilausMyyjä);
         goChat2 = findViewById(R.id.textViewTilausSahkoposti);
         goChat3 = findViewById(R.id.textViewTilausPuhNro);
@@ -82,11 +82,11 @@ public class TilausVahvistusActivity extends AppCompatActivity {
         otsikko = onnistuiIntent.getStringExtra("otsikko");
         nro = onnistuiIntent.getStringExtra("vuokraNro");
         osoite = onnistuiIntent.getStringExtra("osoite");
-        orderID = onnistuiIntent.getStringExtra("orderID");
+        //orderID = onnistuiIntent.getStringExtra("orderID");
         paivat = onnistuiIntent.getStringArrayListExtra("paivat");
         Log.d("TAG", paivat.toString());
 
-        tOrderID.setText("Tilausnumero " + orderID);
+        //tOrderID.setText("Tilausnumero " + orderID);
         tSposti.setText(sposti);
         tNimi.setText(nimi);
         tOsoite.setText("Mökin osoite on " + osoite);
